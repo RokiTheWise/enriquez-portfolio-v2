@@ -3,56 +3,7 @@
 import { useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-
-/* ──────────────────────────── Gear background ──────────────────────────── */
-
-const GEAR_PATH =
-  "M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.05.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64L19.43 12.97Z";
-
-interface GearProps {
-  size: number;
-  top?: string;
-  left?: string;
-  right?: string;
-  bottom?: string;
-  duration: number;
-  direction: "cw" | "ccw";
-  opacity?: number;
-}
-
-function Gear({
-  size,
-  top,
-  left,
-  right,
-  bottom,
-  duration,
-  direction,
-  opacity = 0.06,
-}: GearProps) {
-  return (
-    <motion.svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className="absolute text-zinc-300 pointer-events-none"
-      style={{ top, left, right, bottom, opacity }}
-      animate={{ rotate: direction === "cw" ? 360 : -360 }}
-      transition={{ duration, repeat: Infinity, ease: "linear" }}
-    >
-      <path d={GEAR_PATH} />
-    </motion.svg>
-  );
-}
-
-const gears: GearProps[] = [
-  { size: 320, top: "-60px", left: "-80px", duration: 40, direction: "cw" },
-  { size: 200, top: "15%", right: "-40px", duration: 30, direction: "ccw", opacity: 0.04 },
-  { size: 160, bottom: "10%", left: "5%", duration: 25, direction: "cw", opacity: 0.05 },
-  { size: 260, bottom: "-80px", right: "10%", duration: 35, direction: "ccw", opacity: 0.04 },
-  { size: 120, top: "40%", left: "25%", duration: 20, direction: "cw", opacity: 0.03 },
-];
+import Particles from "./Particles";
 
 /* ──────────────────── Frame-buffer feedback reveal ──────────────────── */
 
@@ -241,10 +192,22 @@ export default function Hero() {
       onMouseLeave={handleMouseLeave}
       className="relative w-full h-screen overflow-hidden bg-white"
     >
-      {/* Rotating gear background */}
-      {gears.map((gear, i) => (
-        <Gear key={i} {...gear} />
-      ))}
+      {/* Particles background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <Particles
+          particleCount={460}
+          particleSpread={5}
+          speed={0.19}
+          particleColors={["#db8b00", "#000000", "#ffffff"]}
+          moveParticlesOnHover
+          particleHoverFactor={1}
+          alphaParticles={false}
+          particleBaseSize={100}
+          sizeRandomness={1}
+          cameraDistance={20}
+          disableRotation={false}
+        />
+      </div>
 
       {/* Image A — Casual (always visible) */}
       <div className="absolute inset-0 z-10 flex items-center justify-center">
