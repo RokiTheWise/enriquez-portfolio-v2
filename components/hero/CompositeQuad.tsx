@@ -26,6 +26,7 @@ export default function CompositeQuad({
       uBusinessTex: { value: businessTex },
       uMaskTex: { value: null as THREE.Texture | null },
       uImageBounds: { value: new THREE.Vector4(0, 0, 1, 1) },
+      uTime: { value: 0 },
     }),
     [casualTex, businessTex],
   );
@@ -33,6 +34,8 @@ export default function CompositeQuad({
   useFrame((state) => {
     const mat = matRef.current;
     if (!mat) return;
+
+    mat.uniforms.uTime.value = state.clock.elapsedTime;
 
     // Update mask texture from FBO
     const maskTarget = heroRefs.maskRef.current;

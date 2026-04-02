@@ -3,7 +3,6 @@
 import { useRef, useCallback, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
-import * as THREE from "three";
 import Particles from "./hero/Particles";
 import BrushStrokeMask from "./hero/BrushStrokeMask";
 import CompositeQuad from "./hero/CompositeQuad";
@@ -52,18 +51,20 @@ export default function Hero() {
     (e: React.MouseEvent) => {
       const rect = sectionRef.current?.getBoundingClientRect();
       if (!rect) return;
-      heroRefs.mouseRef.current.x = e.clientX - rect.left;
-      heroRefs.mouseRef.current.y = e.clientY - rect.top;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      heroRefs.mouseRef.current.x = x;
+      heroRefs.mouseRef.current.y = y;
 
       if (!heroRefs.hasEnteredRef.current) {
         heroRefs.hasEnteredRef.current = true;
         // Snap all trail points to current mouse position
         const trail = heroRefs.trailRef.current;
         for (let i = 0; i < trail.length; i++) {
-          trail[i].x = heroRefs.mouseRef.current.x;
-          trail[i].y = heroRefs.mouseRef.current.y;
-          trail[i].prevX = heroRefs.mouseRef.current.x;
-          trail[i].prevY = heroRefs.mouseRef.current.y;
+          trail[i].x = x;
+          trail[i].y = y;
+          trail[i].prevX = x;
+          trail[i].prevY = y;
         }
       }
     },
@@ -81,7 +82,7 @@ export default function Hero() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full h-screen overflow-hidden bg-white"
+      className="relative w-full h-screen overflow-hidden bg-white cursor-none"
     >
       <Canvas
         gl={{ antialias: false, alpha: false, stencil: false }}

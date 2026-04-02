@@ -150,16 +150,20 @@ void main() {
 
 /* ── Composite fragment shader ──
    Samples both portrait textures and the mask FBO.
-   Inside image bounds: mix casual/business based on mask.
+   Simplex noise distorts mask sampling + threshold for organic "torn film" edges.
+   Inside image bounds: mix casual/business based on noisy mask.
    Outside image bounds: transparent (particles show through).
 ── */
 export const compositeFragment = /* glsl */ `
 precision highp float;
 
+${noise3D}
+
 uniform sampler2D uCasualTex;
 uniform sampler2D uBusinessTex;
 uniform sampler2D uMaskTex;
 uniform vec4 uImageBounds; // (left, bottom, right, top) in UV space [0,1]
+uniform float uTime;
 
 varying vec2 vUv;
 
@@ -179,9 +183,18 @@ void main() {
 
   vec4 casual = texture2D(uCasualTex, imgUv);
   vec4 business = texture2D(uBusinessTex, imgUv);
-  float mask = texture2D(uMaskTex, vUv).r;
 
-  gl_FragColor = mix(casual, business, smoothstep(0.0, 0.1, mask));
+  // Noise-distorted mask UV for spatial wobble on edges
+  float n1 = snoise(vec3(vUv * 15.0, uTime * 0.6));
+  float n2 = snoise(vec3(vUv * 15.0 + 43.0, uTime * 0.6));
+  vec2 maskUv = vUv + vec2(n1, n2) * 0.012;
+  float mask = texture2D(uMaskTex, maskUv).r;
+
+  // Noise-driven threshold — shredded / torn-film edge profile
+  float edgeNoise = snoise(vec3(vUv * 25.0, uTime * 0.4));
+  float threshold = 0.08 + edgeNoise * 0.06;
+
+  gl_FragColor = mix(casual, business, smoothstep(threshold - 0.03, threshold + 0.03, mask));
 }
 `;
 

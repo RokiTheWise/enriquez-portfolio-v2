@@ -32,7 +32,7 @@ export const MIN_VEL = 0.5; // ignore micro-movements
 
 // Perlin noise distortion
 export const NOISE_FREQ = 3.0;
-export const NOISE_AMP = 0.3;
+export const NOISE_AMP = 0.45;
 export const NOISE_SCROLL_SPEED = 1.5;
 
 // FBO decay
@@ -46,8 +46,9 @@ export const PARTICLE_BASE_SIZE = 100;
 export const PARTICLE_SIZE_RANDOMNESS = 1;
 export const CAMERA_DISTANCE = 20;
 export const CAMERA_FOV = 15;
-export const REPULSION_RADIUS_SCALE = 2.0;
+export const REPULSION_RADIUS_SCALE = 6.0;
 export const REPULSION_STRENGTH = 0.5;
+export const REPULSION_MIN_WORLD_RADIUS = 0.4; // minimum radius in world units for visible feedback
 export const PARTICLE_COLORS = ["#db8b00", "#000000", "#ffffff"];
 
 // Image sizing (px) — responsive breakpoints

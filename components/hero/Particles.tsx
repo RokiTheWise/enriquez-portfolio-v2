@@ -14,6 +14,8 @@ import {
   PARTICLE_COLORS,
   TRAIL_LENGTH,
   REPULSION_STRENGTH,
+  REPULSION_RADIUS_SCALE,
+  REPULSION_MIN_WORLD_RADIUS,
   CAMERA_FOV,
   CAMERA_DISTANCE,
 } from "./types";
@@ -107,8 +109,9 @@ export default function Particles({ heroRefs }: ParticlesProps) {
         // Convert pixel coords to world space
         const worldX = ((pt.x / width) * 2 - 1) * halfW;
         const worldY = -((pt.y / height) * 2 - 1) * halfH;
-        const worldRadius =
-          (pt.width / Math.min(width, height)) * 2 * halfH * 2;
+        const baseRadius =
+          (pt.width / Math.min(width, height)) * 2 * halfH * REPULSION_RADIUS_SCALE;
+        const worldRadius = Math.max(REPULSION_MIN_WORLD_RADIUS, baseRadius);
         trailUniformArray[i].set(worldX, worldY, worldRadius);
       } else {
         trailUniformArray[i].set(0, 0, 0);
