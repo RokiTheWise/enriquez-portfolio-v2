@@ -78,6 +78,7 @@ export default function Particles({ heroRefs }: ParticlesProps) {
 
     const u = {
       uTime: { value: 0 },
+      uDeltaTime: { value: 0.016 },
       uSpread: { value: PARTICLE_SPREAD },
       uBaseSize: { value: PARTICLE_BASE_SIZE },
       uSizeRandomness: { value: PARTICLE_SIZE_RANDOMNESS },
@@ -98,6 +99,7 @@ export default function Particles({ heroRefs }: ParticlesProps) {
   useFrame((state, delta) => {
     elapsedRef.current += delta * PARTICLE_SPEED * 1000;
     uniforms.uTime.value = elapsedRef.current * 0.001;
+    uniforms.uDeltaTime.value = delta;
 
     const mesh = meshRef.current;
     if (!mesh) return;

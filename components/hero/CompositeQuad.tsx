@@ -19,6 +19,7 @@ export default function CompositeQuad({
   heroRefs,
 }: CompositeQuadProps) {
   const matRef = useRef<THREE.ShaderMaterial>(null);
+  const elapsedRef = useRef(0);
 
   const uniforms = useMemo(
     () => ({
@@ -31,11 +32,12 @@ export default function CompositeQuad({
     [casualTex, businessTex],
   );
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const mat = matRef.current;
     if (!mat) return;
 
-    mat.uniforms.uTime.value = state.clock.elapsedTime;
+    elapsedRef.current += delta;
+    mat.uniforms.uTime.value = elapsedRef.current;
 
     // Update mask texture from FBO
     const maskTarget = heroRefs.maskRef.current;

@@ -36,7 +36,7 @@ export const NOISE_AMP = 0.45;
 export const NOISE_SCROLL_SPEED = 1.5;
 
 // FBO decay
-export const FADE_FACTOR = 0.93; // per-frame alpha multiply (~0.5s full decay at 60fps)
+export const FADE_FACTOR = 0.82; // aggressive evaporation — fast-drying alcohol feel
 
 // Particles
 export const PARTICLE_COUNT = 460;
@@ -47,9 +47,9 @@ export const PARTICLE_SIZE_RANDOMNESS = 1;
 export const CAMERA_DISTANCE = 20;
 export const CAMERA_FOV = 15;
 export const REPULSION_RADIUS_SCALE = 6.0;
-export const REPULSION_STRENGTH = 0.5;
+export const REPULSION_STRENGTH = 0.85;
 export const REPULSION_MIN_WORLD_RADIUS = 0.4; // minimum radius in world units for visible feedback
-export const WAKE_STRENGTH = 0.6; // directional bow-wave / wake intensity
+export const WAKE_STRENGTH = 0.8; // directional bow-wave / wake intensity
 export const PARTICLE_COLORS = ["#db8b00", "#000000", "#ffffff"];
 
 // Image sizing (px) — responsive breakpoints

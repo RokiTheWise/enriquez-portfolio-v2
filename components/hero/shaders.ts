@@ -107,7 +107,10 @@ precision highp float;
 varying float vAlpha;
 
 void main() {
-  gl_FragColor = vec4(vAlpha, vAlpha, vAlpha, 1.0);
+  // Boost alpha so mask punches through the noisy composite threshold.
+  // Head (vAlpha=1) stays 1, mid-trail values are lifted to carry more weight.
+  float boosted = pow(vAlpha, 0.5);
+  gl_FragColor = vec4(boosted, boosted, boosted, 1.0);
 }
 `;
 
@@ -149,52 +152,64 @@ void main() {
 `;
 
 /* ── Composite fragment shader ──
-   Samples both portrait textures and the mask FBO.
-   Simplex noise distorts mask sampling + threshold for organic "torn film" edges.
-   Inside image bounds: mix casual/business based on noisy mask.
-   Outside image bounds: transparent (particles show through).
+   FBM metaball clusters on mask edges for liquid-droplet breakup.
+   Background wake: subtle gray specular highlight outside image bounds.
 ── */
 export const compositeFragment = /* glsl */ `
 precision highp float;
 
 ${noise3D}
 
+// 4-octave Fractal Brownian Motion for metaball cluster breakup
+float fbm(vec3 p) {
+  float val = 0.0;
+  float amp = 0.5;
+  float freq = 1.0;
+  for (int i = 0; i < 4; i++) {
+    val += amp * snoise(p * freq);
+    freq *= 2.0;
+    amp *= 0.5;
+  }
+  return val;
+}
+
 uniform sampler2D uCasualTex;
 uniform sampler2D uBusinessTex;
 uniform sampler2D uMaskTex;
-uniform vec4 uImageBounds; // (left, bottom, right, top) in UV space [0,1]
+uniform vec4 uImageBounds;
 uniform float uTime;
 
 varying vec2 vUv;
 
 void main() {
-  // Compute UV within image bounds
   vec2 boundsMin = uImageBounds.xy;
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
-
-  // Check if we're inside the image region
   bool inBounds = imgUv.x >= 0.0 && imgUv.x <= 1.0 && imgUv.y >= 0.0 && imgUv.y <= 1.0;
 
+  float mask = texture2D(uMaskTex, vUv).r;
+
+  // FBM metaball modulation — clusters merge/break at edges
+  float fbmVal = fbm(vec3(vUv * 14.0, uTime * 0.5));
+  float modulatedMask = mask + fbmVal * 0.35 * smoothstep(0.0, 0.6, mask);
+
+  // ── Background wake (outside image) ──
   if (!inBounds) {
-    gl_FragColor = vec4(0.0);
+    float wake = smoothstep(0.0, 0.4, modulatedMask);
+    // Specular highlight: subtle gray ripple on the white background
+    float highlight = wake * 0.1;
+    gl_FragColor = vec4(vec3(0.7), highlight);
     return;
   }
 
+  // ── Image reveal (inside image) ──
   vec4 casual = texture2D(uCasualTex, imgUv);
   vec4 business = texture2D(uBusinessTex, imgUv);
 
-  // Noise-distorted mask UV for spatial wobble on edges
-  float n1 = snoise(vec3(vUv * 15.0, uTime * 0.6));
-  float n2 = snoise(vec3(vUv * 15.0 + 43.0, uTime * 0.6));
-  vec2 maskUv = vUv + vec2(n1, n2) * 0.012;
-  float mask = texture2D(uMaskTex, maskUv).r;
+  float edgeNoise = snoise(vec3(vUv * 10.0, uTime * 0.3));
+  float threshold = 0.1 + edgeNoise * 0.05;
 
-  // Noise-driven threshold — shredded / torn-film edge profile
-  float edgeNoise = snoise(vec3(vUv * 25.0, uTime * 0.4));
-  float threshold = 0.08 + edgeNoise * 0.06;
-
-  gl_FragColor = mix(casual, business, smoothstep(threshold - 0.03, threshold + 0.03, mask));
+  gl_FragColor = mix(casual, business, smoothstep(threshold - 0.15, threshold + 0.15, modulatedMask));
 }
 `;
 
@@ -214,6 +229,7 @@ uniform vec3 uTrailPoints[15]; // xy = world-space position, z = repulsion radiu
 uniform vec2 uTrailVelocities[15]; // world-space velocity vector per trail point
 uniform float uRepulsionStrength;
 uniform float uWakeStrength;
+uniform float uDeltaTime; // frame delta in seconds, for framerate-independent physics
 
 varying vec4 vRandom;
 varying vec3 vColor;
@@ -233,6 +249,9 @@ void main() {
   mPos.y += sin(t * aRandom.y + 6.28 * aRandom.x) * mix(0.1, 1.5, aRandom.w);
   mPos.z += sin(t * aRandom.w + 6.28 * aRandom.y) * mix(0.1, 1.5, aRandom.z);
 
+  // Framerate-independent physics scale (normalized to 60fps)
+  float dtScale = uDeltaTime * 60.0;
+
   // Repulsion + directional wake from trail points
   for (int i = 0; i < 15; i++) {
     vec2 diff = mPos.xy - uTrailPoints[i].xy;
@@ -241,10 +260,10 @@ void main() {
     if (dist < radius && dist > 0.001) {
       vec2 dir = normalize(diff);
       float force = (1.0 - dist / radius);
-      force = force * force; // quadratic falloff
+      force = force * force * force; // cubic falloff — gentler at edges, prevents popping
 
       // Radial repulsion (pushes outward)
-      mPos.xy += dir * force * uRepulsionStrength;
+      mPos.xy += dir * force * uRepulsionStrength * dtScale;
 
       // Directional bow-wave / wake
       vec2 vel = uTrailVelocities[i];
@@ -252,11 +271,9 @@ void main() {
       if (speed > 0.0001) {
         vec2 velDir = vel / speed;
         float normalizedSpeed = min(speed * 8.0, 1.0);
-        // +1 = particle is ahead of movement, -1 = behind
         float ahead = dot(dir, velDir);
-        // ahead → strong forward push, behind → slight drag/suction
         float wakePush = mix(-0.25, 1.0, ahead * 0.5 + 0.5);
-        mPos.xy += velDir * force * normalizedSpeed * wakePush * uWakeStrength;
+        mPos.xy += velDir * force * normalizedSpeed * wakePush * uWakeStrength * dtScale;
       }
     }
   }
