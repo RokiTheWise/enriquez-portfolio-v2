@@ -16,6 +16,7 @@ import {
   REPULSION_STRENGTH,
   REPULSION_RADIUS_SCALE,
   REPULSION_MIN_WORLD_RADIUS,
+  WAKE_STRENGTH,
   CAMERA_FOV,
   CAMERA_DISTANCE,
 } from "./types";
@@ -34,7 +35,7 @@ export default function Particles({ heroRefs }: ParticlesProps) {
   const meshRef = useRef<THREE.Points>(null);
   const elapsedRef = useRef(0);
 
-  const { geometry, uniforms, trailUniformArray } = useMemo(() => {
+  const { geometry, uniforms, trailUniformArray, trailVelArray } = useMemo(() => {
     const count = PARTICLE_COUNT;
     const positions = new Float32Array(count * 3);
     const randoms = new Float32Array(count * 4);
@@ -65,10 +66,14 @@ export default function Particles({ heroRefs }: ParticlesProps) {
     geo.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 4));
     geo.setAttribute("aColor", new THREE.BufferAttribute(colors, 3));
 
-    // Pre-allocate trail uniform array (vec3 each: x, y, radius)
+    // Pre-allocate trail uniform arrays
     const trailArr = Array.from(
       { length: TRAIL_LENGTH },
       () => new THREE.Vector3(0, 0, 0),
+    );
+    const trailVelArr = Array.from(
+      { length: TRAIL_LENGTH },
+      () => new THREE.Vector2(0, 0),
     );
 
     const u = {
@@ -77,10 +82,17 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       uBaseSize: { value: PARTICLE_BASE_SIZE },
       uSizeRandomness: { value: PARTICLE_SIZE_RANDOMNESS },
       uTrailPoints: { value: trailArr },
+      uTrailVelocities: { value: trailVelArr },
       uRepulsionStrength: { value: REPULSION_STRENGTH },
+      uWakeStrength: { value: WAKE_STRENGTH },
     };
 
-    return { geometry: geo, uniforms: u, trailUniformArray: trailArr };
+    return {
+      geometry: geo,
+      uniforms: u,
+      trailUniformArray: trailArr,
+      trailVelArray: trailVelArr,
+    };
   }, []);
 
   useFrame((state, delta) => {
@@ -113,8 +125,16 @@ export default function Particles({ heroRefs }: ParticlesProps) {
           (pt.width / Math.min(width, height)) * 2 * halfH * REPULSION_RADIUS_SCALE;
         const worldRadius = Math.max(REPULSION_MIN_WORLD_RADIUS, baseRadius);
         trailUniformArray[i].set(worldX, worldY, worldRadius);
+
+        // Pixel velocity → world-space velocity vector
+        const velPxX = pt.x - pt.prevX;
+        const velPxY = pt.y - pt.prevY;
+        const worldVelX = (velPxX / width) * 2 * halfW;
+        const worldVelY = -(velPxY / height) * 2 * halfH;
+        trailVelArray[i].set(worldVelX, worldVelY);
       } else {
         trailUniformArray[i].set(0, 0, 0);
+        trailVelArray[i].set(0, 0);
       }
     }
   });

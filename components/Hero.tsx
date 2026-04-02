@@ -82,7 +82,7 @@ export default function Hero() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full h-screen overflow-hidden bg-white cursor-none"
+      className="relative w-full h-screen overflow-hidden bg-white"
     >
       <Canvas
         gl={{ antialias: false, alpha: false, stencil: false }}

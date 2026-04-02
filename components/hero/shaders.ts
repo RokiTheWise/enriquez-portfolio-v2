@@ -199,7 +199,8 @@ void main() {
 `;
 
 /* ── Particle vertex shader ──
-   Port of the existing OGL particle system with added repulsion.
+   Port of the existing OGL particle system with radial repulsion
+   plus directional bow-wave / wake from trail velocity.
 ── */
 export const particleVertex = /* glsl */ `
 attribute vec4 aRandom;
@@ -210,7 +211,9 @@ uniform float uSpread;
 uniform float uBaseSize;
 uniform float uSizeRandomness;
 uniform vec3 uTrailPoints[15]; // xy = world-space position, z = repulsion radius
+uniform vec2 uTrailVelocities[15]; // world-space velocity vector per trail point
 uniform float uRepulsionStrength;
+uniform float uWakeStrength;
 
 varying vec4 vRandom;
 varying vec3 vColor;
@@ -230,15 +233,31 @@ void main() {
   mPos.y += sin(t * aRandom.y + 6.28 * aRandom.x) * mix(0.1, 1.5, aRandom.w);
   mPos.z += sin(t * aRandom.w + 6.28 * aRandom.y) * mix(0.1, 1.5, aRandom.z);
 
-  // Repulsion from trail points
+  // Repulsion + directional wake from trail points
   for (int i = 0; i < 15; i++) {
     vec2 diff = mPos.xy - uTrailPoints[i].xy;
     float dist = length(diff);
     float radius = uTrailPoints[i].z;
     if (dist < radius && dist > 0.001) {
+      vec2 dir = normalize(diff);
       float force = (1.0 - dist / radius);
       force = force * force; // quadratic falloff
-      mPos.xy += normalize(diff) * force * uRepulsionStrength;
+
+      // Radial repulsion (pushes outward)
+      mPos.xy += dir * force * uRepulsionStrength;
+
+      // Directional bow-wave / wake
+      vec2 vel = uTrailVelocities[i];
+      float speed = length(vel);
+      if (speed > 0.0001) {
+        vec2 velDir = vel / speed;
+        float normalizedSpeed = min(speed * 8.0, 1.0);
+        // +1 = particle is ahead of movement, -1 = behind
+        float ahead = dot(dir, velDir);
+        // ahead → strong forward push, behind → slight drag/suction
+        float wakePush = mix(-0.25, 1.0, ahead * 0.5 + 0.5);
+        mPos.xy += velDir * force * normalizedSpeed * wakePush * uWakeStrength;
+      }
     }
   }
 
