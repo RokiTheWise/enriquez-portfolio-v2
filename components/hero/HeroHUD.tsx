@@ -340,9 +340,7 @@ const HUDButton = ({
       </motion.a>
 
       {/* Divider line below each nav item (except last) */}
-      {!isLast && (
-        <div className="h-[1px] bg-[#FFB800]/8 w-full" />
-      )}
+      {!isLast && <div className="h-[1px] bg-[#FFB800]/8 w-full" />}
     </div>
   );
 };
@@ -421,11 +419,28 @@ export default function HeroHUD() {
       {/* ═══ NAVIGATION: Directly below header on mobile, centered on desktop ═══ */}
       <div className="mt-2 md:mt-0 md:flex-grow md:flex md:items-center md:px-6">
         <div className="flex flex-col relative pl-3 md:pl-0 w-fit max-w-[70%] md:max-w-[40%]">
-          <HUDButton label="Featured Projects" className="text-base md:text-xl leading-tight" />
-          <HUDButton label="Techstack" className="text-base md:text-xl leading-tight" />
-          <HUDButton label="About" className="text-base md:text-xl leading-tight" />
-          <HUDButton label="Beyond Coding" className="text-base md:text-xl leading-tight" />
-          <HUDButton label="Contact" className="text-base md:text-xl leading-tight" isLast />
+          <HUDButton
+            label="Techstack"
+            href="#techstack"
+            className="text-base md:text-xl leading-tight"
+          />
+          <HUDButton
+            label="Featured Projects"
+            className="text-base md:text-xl leading-tight"
+          />
+          <HUDButton
+            label="About"
+            className="text-base md:text-xl leading-tight"
+          />
+          <HUDButton
+            label="Beyond Coding"
+            className="text-base md:text-xl leading-tight"
+          />
+          <HUDButton
+            label="Contact"
+            className="text-base md:text-xl leading-tight"
+            isLast
+          />
 
           {/* Vertical accent line */}
           <div className="absolute -left-0.5 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
@@ -466,22 +481,30 @@ export default function HeroHUD() {
               icon={GithubIcon}
               href="https://github.com/RokiTheWise"
             />
-            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">
+              |
+            </span>
             <SocialLink
               icon={LinkedinIcon}
               href="https://www.linkedin.com/in/dexter-jethro-enriquez/"
             />
-            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">
+              |
+            </span>
             <SocialLink
               icon={InstagramIcon}
               href="https://www.instagram.com/dexjet_enriquez/"
             />
-            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">
+              |
+            </span>
             <SocialLink
               icon={FacebookIcon}
               href="https://www.facebook.com/dexterjethro.enriquez"
             />
-            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">
+              |
+            </span>
             <SocialLink
               icon={Mail}
               href="mailto:dexterjethro.enriquez@gmail.com"
