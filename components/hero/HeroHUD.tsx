@@ -4,19 +4,38 @@ import { motion, useSpring, useMotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import DecryptedText from "./DecryptedText";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const Sparkline = () => {
+  return (
+    <svg width="60" height="20" className="opacity-50">
+      <motion.path
+        d="M0 10 L5 15 L10 5 L15 12 L20 8 L25 18 L30 10 L35 14 L40 4 L45 12 L50 8 L55 15 L60 10"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      />
+    </svg>
+  );
+};
+
 const HUDButton = ({
   label,
   href = "#",
   className,
+  decryptedProps = {},
 }: {
   label: string;
   href?: string;
   className?: string;
+  decryptedProps?: any;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<HTMLAnchorElement>(null);
@@ -70,7 +89,14 @@ const HUDButton = ({
       </motion.span>
       
       <span className="relative">
-        <span className="group-hover:text-orange-600 transition-colors duration-300">{label}</span>
+        <DecryptedText 
+          text={label}
+          animateOn="hover"
+          revealDirection="center"
+          className="group-hover:text-orange-600 transition-colors duration-300"
+          encryptedClassName="text-orange-500/50"
+          {...decryptedProps}
+        />
         
         {/* Subtle glitch offset version */}
         {isHovered && (
@@ -124,7 +150,11 @@ export default function HeroHUD() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none p-8 md:p-12 flex flex-col justify-between select-none">
+    <div className="absolute inset-0 z-10 pointer-events-none p-8 md:p-12 flex flex-col justify-between select-none overflow-hidden">
+      {/* Scanline / Grain Overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
+
       {/* Background Grid Pattern (Very subtle) */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:40px_40px]" />
 
@@ -148,7 +178,14 @@ export default function HeroHUD() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="relative z-10">Explore Archive</span>
+              <span className="relative z-10">
+                <DecryptedText 
+                  text="Explore Archive" 
+                  animateOn="hover"
+                  revealDirection="center"
+                  encryptedClassName="text-white/40"
+                />
+              </span>
               <motion.div
                 className="absolute inset-0 bg-orange-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"
               />
@@ -158,12 +195,38 @@ export default function HeroHUD() {
           
           <div className="flex flex-col items-end gap-1 opacity-40 font-mono text-[10px] tracking-widest uppercase">
             <div className="flex items-center gap-2">
-              <span>Time:</span>
+              <DecryptedText text="Time:" animateOn="view" speed={100} />
               <span className="tabular-nums">{time}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span>System:</span>
+              <DecryptedText text="System:" animateOn="view" speed={100} />
               <span>Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Middle Section (Stats) */}
+      <div className="flex justify-end pr-4">
+        <div className="flex flex-col items-end gap-4 pointer-events-auto">
+          <div className="flex flex-col items-end gap-2 p-4 border border-black/5 bg-white/5 backdrop-blur-[2px] font-mono text-[10px] tracking-widest text-black/80">
+            <div className="text-orange-500 font-bold mb-1 opacity-70">
+              <DecryptedText text="SYSTEM_STATS // 04-2026" animateOn="view" sequential />
+            </div>
+            <div className="flex items-center gap-3">
+              <span>
+                <DecryptedText text="PROJECT_COUNT: [12]" animateOn="view" sequential speed={40} />
+              </span>
+              <Sparkline />
+            </div>
+            <div>
+              <DecryptedText text="CORE_TECH: [08]" animateOn="view" sequential speed={45} />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-1 h-1 bg-green-500 rounded-full" />
+              <span>
+                <DecryptedText text="UPTIME: 99.9%" animateOn="view" sequential speed={50} />
+              </span>
             </div>
           </div>
         </div>
@@ -172,21 +235,29 @@ export default function HeroHUD() {
       {/* Bottom Section */}
       <div className="flex justify-between items-end">
         {/* Left: Status Block */}
-        <div className="flex flex-col gap-3 font-mono text-[10px] tracking-[0.15em] text-black/60">
-          <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-3 font-mono text-[10px] tracking-[0.15em] text-black/60 mb-2">
+          <div className="flex flex-col gap-1.5 p-3 border-l-2 border-orange-500/30 bg-white/10">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-              <span className="text-black font-bold">AVAILABILITY:</span>
-              <span>OPEN FOR ROLES</span>
+              <span className="text-black font-bold">
+                <DecryptedText text="AVAILABILITY:" animateOn="view" sequential speed={30} />
+              </span>
+              <span>
+                <DecryptedText text="OPEN FOR ROLES" animateOn="view" sequential speed={35} />
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 border border-black/20" />
-              <span className="text-black font-bold">LOC:</span>
-              <span>MANILA, PH</span>
+              <span className="text-black font-bold">
+                <DecryptedText text="LOC:" animateOn="view" sequential speed={30} />
+              </span>
+              <span>
+                <DecryptedText text="MANILA, PH" animateOn="view" sequential speed={35} />
+              </span>
             </div>
           </div>
           
-          <div className="text-[9px] opacity-30 mt-2">
+          <div className="text-[9px] opacity-30 mt-1">
             © 2026 DEXTER JETHRO ENRIQUEZ / PORTFOLIO V2.0
           </div>
         </div>
@@ -194,9 +265,9 @@ export default function HeroHUD() {
         {/* Right: Socials Stack */}
         <div className="flex flex-col items-end gap-4">
           <div className="flex gap-6">
-            <HUDButton label="Github" className="text-[11px] tracking-widest" />
-            <HUDButton label="LinkedIn" className="text-[11px] tracking-widest" />
-            <HUDButton label="Instagram" className="text-[11px] tracking-widest" />
+            <HUDButton label="Github" className="text-[11px] tracking-widest" decryptedProps={{ speed: 60 }} />
+            <HUDButton label="LinkedIn" className="text-[11px] tracking-widest" decryptedProps={{ speed: 65 }} />
+            <HUDButton label="Instagram" className="text-[11px] tracking-widest" decryptedProps={{ speed: 70 }} />
           </div>
           
           {/* Decorative telemetry graphic */}

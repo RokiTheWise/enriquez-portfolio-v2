@@ -176,8 +176,14 @@ void main() {
   vec2 boundsMin = uImageBounds.xy;
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
-  float inBounds = smoothstep(0.0, 0.02, imgUv.x) * smoothstep(0.0, 0.02, 1.0 - imgUv.x)
-                 * smoothstep(0.0, 0.02, imgUv.y) * smoothstep(0.0, 0.02, 1.0 - imgUv.y);
+  
+  // X-axis fade (left/right edges)
+  float fadeX = smoothstep(0.0, 0.02, imgUv.x) * smoothstep(0.0, 0.02, 1.0 - imgUv.x);
+  
+  // Y-axis fade (top edge crisp, bottom edge smooth gradient fade)
+  float fadeY = smoothstep(0.0, 0.02, 1.0 - imgUv.y) * smoothstep(0.0, 0.15, imgUv.y);
+  
+  float inBounds = fadeX * fadeY;
 
   // ── Sample portraits ──
   vec2 safeUv = clamp(imgUv, 0.0, 1.0);

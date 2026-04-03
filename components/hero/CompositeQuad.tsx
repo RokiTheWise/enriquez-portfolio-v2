@@ -68,11 +68,13 @@ export default function CompositeQuad({
 
     const imgW = imageSize / width;
     const imgH = imageSize / height;
+    
+    // Grounded: bottom is 0, top is imgH
     mat.uniforms.uImageBounds.value.set(
       0.5 - imgW / 2, // left
-      0.5 - imgH / 2, // bottom
+      0.0,            // bottom (flush with viewport bottom)
       0.5 + imgW / 2, // right
-      0.5 + imgH / 2, // top
+      imgH            // top
     );
   });
 
