@@ -4,20 +4,108 @@ import { motion, useSpring, useMotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { FileTextIcon } from "lucide-react";
 import DecryptedText from "./DecryptedText";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const CYCLES_PER_LETTER = 2;
+const SHUFFLE_TIME = 50;
+const CHARS = "!@#$%^&*():{};|,.<>/?";
+
+const ExploreButton = () => {
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const TARGET_TEXT = isMobile ? "Resume" : "View Resume";
+  const [text, setText] = useState(TARGET_TEXT);
+
+  // Update text when target changes (on resize)
+  useEffect(() => {
+    setText(TARGET_TEXT);
+  }, [TARGET_TEXT]);
+
+  const scramble = () => {
+    let pos = 0;
+
+    intervalRef.current = setInterval(() => {
+      const scrambled = TARGET_TEXT.split("")
+        .map((char, index) => {
+          if (pos / CYCLES_PER_LETTER > index) {
+            return char;
+          }
+
+          const randomCharIndex = Math.floor(Math.random() * CHARS.length);
+          const randomChar = CHARS[randomCharIndex];
+
+          return randomChar;
+        })
+        .join("");
+
+      setText(scrambled);
+      pos++;
+
+      if (pos >= TARGET_TEXT.length * CYCLES_PER_LETTER) {
+        stopScramble();
+      }
+    }, SHUFFLE_TIME);
+  };
+
+  const stopScramble = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setText(TARGET_TEXT);
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onMouseEnter={scramble}
+      onMouseLeave={stopScramble}
+      className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-4 py-2 md:px-10 md:py-4 font-mono text-[9px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
+    >
+      <div className="relative z-10 flex items-center gap-2">
+        <FileTextIcon size={isMobile ? 12 : 16} className="text-yellow-500" />
+        <span>{text}</span>
+      </div>
+
+      {/* Scanning Gradient Overlay */}
+      <motion.span
+        initial={{ y: "100%" }}
+        animate={{ y: "-100%" }}
+        transition={{
+          repeat: Infinity,
+          repeatType: "mirror",
+          duration: 1.5,
+          ease: "linear",
+        }}
+        className="absolute inset-0 z-0 scale-125 bg-gradient-to-t from-orange-500/0 from-40% via-orange-500/40 to-orange-500/0 to-60% opacity-0 transition-opacity group-hover:opacity-100"
+      />
+    </motion.button>
+  );
+};
+
 const Sparkline = () => {
   return (
-    <svg width="60" height="20" className="opacity-50">
+    <svg
+      width="60"
+      height="15"
+      className="opacity-50 inline-block align-baseline ml-2"
+    >
       <motion.path
         d="M0 10 L5 15 L10 5 L15 12 L20 8 L25 18 L30 10 L35 14 L40 4 L45 12 L50 8 L55 15 L60 10"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1"
+        strokeWidth="1.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -39,11 +127,10 @@ const HUDButton = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<HTMLAnchorElement>(null);
-  
-  // Magnetic Effect Logic
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   const springConfig = { stiffness: 150, damping: 15, mass: 0.1 };
   const springX = useSpring(x, springConfig);
   const springY = useSpring(y, springConfig);
@@ -55,8 +142,7 @@ const HUDButton = ({
     const centerY = rect.top + rect.height / 2;
     const distanceX = e.clientX - centerX;
     const distanceY = e.clientY - centerY;
-    
-    // Magnetic pull strength
+
     x.set(distanceX * 0.35);
     y.set(distanceY * 0.35);
   };
@@ -76,20 +162,20 @@ const HUDButton = ({
       onMouseLeave={handleMouseLeave}
       style={{ x: springX, y: springY }}
       className={cn(
-        "pointer-events-auto relative group flex items-center font-mono text-sm tracking-widest text-black uppercase transition-colors duration-300",
+        "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-colors duration-300",
         className,
       )}
     >
       <motion.span
         initial={{ opacity: 0, x: -5 }}
         animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -5 }}
-        className="mr-2 text-orange-500 font-bold"
+        className="mr-1 md:mr-2 text-orange-500 font-bold"
       >
         [
       </motion.span>
-      
+
       <span className="relative">
-        <DecryptedText 
+        <DecryptedText
           text={label}
           animateOn="hover"
           revealDirection="center"
@@ -97,19 +183,18 @@ const HUDButton = ({
           encryptedClassName="text-orange-500/50"
           {...decryptedProps}
         />
-        
-        {/* Subtle glitch offset version */}
+
         {isHovered && (
-          <motion.span 
+          <motion.span
             className="absolute inset-0 text-orange-400 opacity-50 blur-[1px] select-none pointer-events-none"
-            animate={{ 
+            animate={{
               x: [0, -2, 2, -1, 0],
-              y: [0, 1, -1, 0, 0]
+              y: [0, 1, -1, 0, 0],
             }}
-            transition={{ 
-              repeat: Infinity, 
+            transition={{
+              repeat: Infinity,
               duration: 0.15,
-              ease: "linear"
+              ease: "linear",
             }}
           >
             {label}
@@ -120,12 +205,11 @@ const HUDButton = ({
       <motion.span
         initial={{ opacity: 0, x: 5 }}
         animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 5 }}
-        className="ml-2 text-orange-500 font-bold"
+        className="ml-1 md:ml-2 text-orange-500 font-bold"
       >
         ]
       </motion.span>
 
-      {/* Underline line */}
       <motion.div
         className="absolute -bottom-1 left-0 h-[1px] bg-black group-hover:bg-orange-500"
         initial={{ width: 0 }}
@@ -150,55 +234,46 @@ export default function HeroHUD() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none p-8 md:p-12 flex flex-col justify-between select-none overflow-hidden">
+    <div className="absolute inset-0 z-10 pointer-events-none p-4 md:p-12 flex flex-col justify-between select-none overflow-hidden">
       {/* Scanline / Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
 
-      {/* Background Grid Pattern (Very subtle) */}
+      {/* Background Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:40px_40px]" />
 
-      {/* Top Section */}
-      <div className="flex justify-between items-start">
-        {/* Left: Navigation Stack */}
-        <div className="flex flex-col gap-6 relative">
-          <HUDButton label="Selected Works" />
-          <HUDButton label="Technical Stack" />
-          <HUDButton label="About" />
-          
-          {/* Decorative vertical line */}
-          <div className="absolute -left-4 top-0 bottom-0 w-[1px] bg-black/5" />
+      {/* Top Section: Identity & CTA */}
+      <div className="flex justify-between items-start gap-4">
+        {/* Identity Block */}
+        <div className="flex flex-col gap-0.5">
+          <h1 className="font-mono text-lg sm:text-xl md:text-3xl font-bold tracking-tighter text-black uppercase leading-tight max-w-[200px] sm:max-w-none">
+            <DecryptedText
+              text="DEXTER JETHRO C. ENRIQUEZ"
+              animateOn="view"
+              sequential
+              speed={40}
+            />
+          </h1>
+          <div className="font-mono text-[8px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-black/50 font-medium">
+            <DecryptedText
+              text="FULL STACK DEVELOPER"
+              animateOn="view"
+              sequential
+              speed={60}
+            />
+          </div>
         </div>
 
-        {/* Right: Primary CTA */}
-        <div className="flex flex-col items-end gap-6">
-          <div className="flex flex-col items-end">
-            <motion.button
-              className="pointer-events-auto px-10 py-4 bg-black text-white font-mono text-sm tracking-[0.3em] uppercase border border-black hover:bg-transparent hover:text-black transition-all duration-500 relative overflow-hidden group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="relative z-10">
-                <DecryptedText 
-                  text="Explore Archive" 
-                  animateOn="hover"
-                  revealDirection="center"
-                  encryptedClassName="text-white/40"
-                />
-              </span>
-              <motion.div
-                className="absolute inset-0 bg-orange-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"
-              />
-            </motion.button>
-            <div className="mt-2 h-[1px] w-full bg-black/10 origin-right transition-colors" />
-          </div>
-          
-          <div className="flex flex-col items-end gap-1 opacity-40 font-mono text-[10px] tracking-widest uppercase">
-            <div className="flex items-center gap-2">
+        {/* Right CTA */}
+        <div className="flex flex-col items-end gap-3 md:gap-6">
+          <ExploreButton />
+
+          <div className="flex flex-col items-end gap-0.5 opacity-40 font-mono text-[7px] md:text-[10px] tracking-widest uppercase">
+            <div className="flex items-center gap-1.5">
               <DecryptedText text="Time:" animateOn="view" speed={100} />
               <span className="tabular-nums">{time}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <DecryptedText text="System:" animateOn="view" speed={100} />
               <span>Online</span>
             </div>
@@ -206,78 +281,113 @@ export default function HeroHUD() {
         </div>
       </div>
 
-      {/* Middle Section (Stats) */}
-      <div className="flex justify-end pr-4">
-        <div className="flex flex-col items-end gap-4 pointer-events-auto">
-          <div className="flex flex-col items-end gap-2 p-4 border border-black/5 bg-white/5 backdrop-blur-[2px] font-mono text-[10px] tracking-widest text-black/80">
-            <div className="text-orange-500 font-bold mb-1 opacity-70">
-              <DecryptedText text="SYSTEM_STATS // 04-2026" animateOn="view" sequential />
+      {/* Middle Section: Main Navigation & Stats */}
+      <div className="flex flex-grow items-center justify-between mt-4 mb-4">
+        {/* Navigation Stack */}
+        <div className="flex flex-col gap-4 md:gap-8 relative pl-3 md:pl-0">
+          <HUDButton label="Featured Projects" className="text-xs md:text-xl" />
+          <HUDButton label="Techstack" className="text-xs md:text-xl" />
+          <HUDButton label="About" className="text-xs md:text-xl" />
+          <HUDButton label="Beyond Coding" className="text-xs md:text-xl" />
+          <HUDButton label="Contact" className="text-xs md:text-xl" />
+
+          <div className="absolute -left-2 md:-left-6 top-0 bottom-0 w-[1px] bg-black/5" />
+        </div>
+
+        {/* System Stats Block - Hidden on small mobile */}
+        <div className="hidden sm:flex flex-col items-end gap-4 pointer-events-auto">
+          <div className="flex flex-col items-end gap-2 p-4 md:p-6 border border-black/5 bg-white/5 backdrop-blur-[2px] font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black">
+            <div className="text-orange-500 font-bold mb-1 md:mb-2 opacity-70 tracking-widest text-[10px] md:text-[11px]">
+              <DecryptedText
+                text="SYSTEM_STATS // 04-2026"
+                animateOn="view"
+                sequential
+              />
             </div>
             <div className="flex items-center gap-3">
-              <span>
-                <DecryptedText text="PROJECT_COUNT: [12]" animateOn="view" sequential speed={40} />
-              </span>
+              <span className="text-black/40">PROJECT_COUNT:</span>
+              <span className="font-bold">[12]</span>
               <Sparkline />
             </div>
-            <div>
-              <DecryptedText text="CORE_TECH: [08]" animateOn="view" sequential speed={45} />
+            <div className="flex items-center gap-3">
+              <span className="text-black/40">CORE_TECH:</span>
+              <span className="font-bold">[08]</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1 h-1 bg-green-500 rounded-full" />
-              <span>
-                <DecryptedText text="UPTIME: 99.9%" animateOn="view" sequential speed={50} />
-              </span>
+            <div className="flex items-center gap-3">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+              <span className="text-black/40">UPTIME:</span>
+              <span className="font-bold">99.9%</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Section */}
-      <div className="flex justify-between items-end">
+      {/* Bottom Section: Horizon Line */}
+      <div className="flex justify-between items-end gap-4 pt-3 border-t border-black/5">
         {/* Left: Status Block */}
-        <div className="flex flex-col gap-3 font-mono text-[10px] tracking-[0.15em] text-black/60 mb-2">
-          <div className="flex flex-col gap-1.5 p-3 border-l-2 border-orange-500/30 bg-white/10">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-              <span className="text-black font-bold">
-                <DecryptedText text="AVAILABILITY:" animateOn="view" sequential speed={30} />
-              </span>
-              <span>
-                <DecryptedText text="OPEN FOR ROLES" animateOn="view" sequential speed={35} />
-              </span>
+        <div className="flex flex-col gap-2 font-mono text-[7px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-black/60">
+          <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-orange-500/30 bg-white/10">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+              <span className="text-black font-bold">AVAILABILITY:</span>
+              <span>OPEN</span>
+              <span className="hidden sm:inline"> FOR ROLES</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 border border-black/20" />
-              <span className="text-black font-bold">
-                <DecryptedText text="LOC:" animateOn="view" sequential speed={30} />
-              </span>
-              <span>
-                <DecryptedText text="MANILA, PH" animateOn="view" sequential speed={35} />
-              </span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <span className="w-1 md:w-1.5 h-1 md:h-1.5 border border-black/20" />
+              <span className="text-black font-bold">LOC:</span>
+              <span>MANILA, PH</span>
             </div>
           </div>
-          
-          <div className="text-[9px] opacity-30 mt-1">
-            © 2026 DEXTER JETHRO ENRIQUEZ / PORTFOLIO V2.0
+
+          <div className="text-[6px] md:text-[9px] opacity-30 uppercase">
+            © 2026 DEXTER JETHRO ENRIQUEZ
           </div>
         </div>
 
         {/* Right: Socials Stack */}
-        <div className="flex flex-col items-end gap-4">
-          <div className="flex gap-6">
-            <HUDButton label="Github" className="text-[11px] tracking-widest" decryptedProps={{ speed: 60 }} />
-            <HUDButton label="LinkedIn" className="text-[11px] tracking-widest" decryptedProps={{ speed: 65 }} />
-            <HUDButton label="Instagram" className="text-[11px] tracking-widest" decryptedProps={{ speed: 70 }} />
+        <div className="flex flex-col items-end gap-3 md:gap-4">
+          <div className="flex gap-3 md:gap-8 justify-end items-baseline">
+            <HUDButton
+              label="Github"
+              className="text-[9px] md:text-xs"
+              decryptedProps={{ speed: 60 }}
+            />
+            <HUDButton
+              label="LinkedIn"
+              className="text-[9px] md:text-xs"
+              decryptedProps={{ speed: 65 }}
+            />
+            <HUDButton
+              label="Instagram"
+              className="text-[9px] md:text-xs"
+              decryptedProps={{ speed: 70 }}
+            />
+            <HUDButton
+              label="Facebook"
+              className="text-[9px] md:text-xs"
+              decryptedProps={{ speed: 75 }}
+            />
+            <HUDButton
+              label="Email"
+              className="text-[9px] md:text-xs"
+              decryptedProps={{ speed: 80 }}
+            />
           </div>
-          
-          {/* Decorative telemetry graphic */}
-          <div className="flex items-end gap-1 h-4">
+
+          <div className="flex items-end gap-0.5 md:gap-1 h-2.5 md:h-4 opacity-20">
             {[0.4, 0.7, 0.3, 0.9, 0.5, 0.8, 0.2].map((h, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
-                className="w-1 bg-black/10"
-                animate={{ height: [`${h * 100}%`, `${(1-h) * 100}%`, `${h * 100}%`] }}
-                transition={{ repeat: Infinity, duration: 1 + i * 0.2, ease: "easeInOut" }}
+                className="w-0.5 md:w-1 bg-black"
+                animate={{
+                  height: [`${h * 100}%`, `${(1 - h) * 100}%`, `${h * 100}%`],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1 + i * 0.2,
+                  ease: "easeInOut",
+                }}
               />
             ))}
           </div>
@@ -285,10 +395,10 @@ export default function HeroHUD() {
       </div>
 
       {/* Border Corner Accents */}
-      <div className="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-black/5" />
-      <div className="absolute top-6 right-6 w-12 h-12 border-t-2 border-r-2 border-black/5" />
-      <div className="absolute bottom-6 left-6 w-12 h-12 border-b-2 border-l-2 border-black/5" />
-      <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-black/5" />
+      <div className="absolute top-3 left-3 md:top-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-t border-l md:border-t-2 md:border-l-2 border-black/5" />
+      <div className="absolute top-3 right-3 md:top-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-t border-r md:border-t-2 md:border-r-2 border-black/5" />
+      <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-b border-l md:border-b-2 md:border-l-2 border-black/5" />
+      <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-b border-r md:border-b-2 md:border-r-2 border-black/5" />
     </div>
   );
 }
