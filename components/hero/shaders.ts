@@ -153,42 +153,52 @@ uniform float uTime;
 varying vec2 vUv;
 
 void main() {
+  // ── Sample raw mask, then distort UV by noise scaled by mask ──
+  // Where mask = 0 the distortion is zero → clean, flicker-free background
   float rawMask = texture2D(uMaskTex, vUv).r;
 
-  // ── Metaball threshold with FBM organic edges ──
-  float fbmEdge = snoise(vec3(vUv * 12.0, uTime * 0.4)) * 0.08;
-  float metaball = smoothstep(0.35 + fbmEdge, 0.42 + fbmEdge, rawMask);
+  vec2 distortion = vec2(
+    snoise(vec3(vUv * 12.0, uTime * 0.4)),
+    snoise(vec3(vUv * 12.0 + 50.0, uTime * 0.4))
+  ) * 0.005;
+  vec2 maskLookup = vUv + distortion * rawMask;
+  float distortedMask = texture2D(uMaskTex, maskLookup).r;
+
+  // ── Metaball threshold on distorted mask ──
+  float metaball = smoothstep(0.35, 0.42, distortedMask);
 
   // ── Refractive shimmer: specular boost at mask edges (0.4–0.7) ──
-  float edgeHighlight = smoothstep(0.4, 0.55, rawMask) * (1.0 - smoothstep(0.55, 0.7, rawMask));
+  float edgeHighlight = smoothstep(0.4, 0.55, distortedMask)
+                      * (1.0 - smoothstep(0.55, 0.7, distortedMask));
   float shimmer = edgeHighlight * 0.1;
 
-  // ── Image bounds (soft edge) ──
+  // ── Image bounds ──
+  // Start at 0.0 so we NEVER sample outside the actual texture area.
+  // Fade over the first/last 2 % of the image to kill any edge texels.
   vec2 boundsMin = uImageBounds.xy;
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
-  float inBounds = smoothstep(-0.01, 0.01, imgUv.x) * smoothstep(-0.01, 0.01, 1.0 - imgUv.x)
-                 * smoothstep(-0.01, 0.01, imgUv.y) * smoothstep(-0.01, 0.01, 1.0 - imgUv.y);
+  float inBounds = smoothstep(0.0, 0.02, imgUv.x) * smoothstep(0.0, 0.02, 1.0 - imgUv.x)
+                 * smoothstep(0.0, 0.02, imgUv.y) * smoothstep(0.0, 0.02, 1.0 - imgUv.y);
 
-  if (inBounds > 0.01) {
-    // ── Inside image: casual→business blend, portrait alpha (cutout) ──
+  if (inBounds > 0.001) {
+    // ── Inside image: casual→business blend ──
     vec2 safeUv = clamp(imgUv, 0.0, 1.0);
     vec4 casual = texture2D(uCasualTex, safeUv);
     vec4 business = texture2D(uBusinessTex, safeUv);
 
     // Linear interpolation: casual (default) → business (revealed by mask)
-    vec3 imgColor = mix(casual.rgb, business.rgb, metaball);
+    vec4 imgColor = mix(casual, business, metaball);
 
-    // Shimmer on mask edges inside the portrait
-    imgColor += shimmer;
+    // Shimmer on mask edges
+    imgColor.rgb += shimmer;
 
-    // Alpha from portrait cutout, NOT from mask
-    float imgAlpha = mix(casual.a, business.a, metaball);
-
-    gl_FragColor = vec4(imgColor, imgAlpha * inBounds);
+    // Alpha from portrait cutout, multiplied by inBounds to
+    // smoothly erase any opaque edge texels at the rectangle border
+    gl_FragColor = vec4(imgColor.rgb, imgColor.a * inBounds);
   } else {
     // ── Outside image: ghost layer + shimmer ──
-    float ghost = smoothstep(0.0, 0.2, rawMask) * 0.08;
+    float ghost = smoothstep(0.05, 0.3, rawMask) * 0.08;
     gl_FragColor = vec4(vec3(0.65) + shimmer, ghost);
   }
 }

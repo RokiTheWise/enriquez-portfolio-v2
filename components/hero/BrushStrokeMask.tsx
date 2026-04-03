@@ -46,7 +46,7 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
   });
 
   // Single offscreen scene: combined decay + metaball field
-  const { maskScene, maskMaterial, clipCamera } = useMemo(() => {
+  const { maskScene, maskMaterial, clipCamera, scratchColor } = useMemo(() => {
     const clipCam = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
 
     const pointsArr = Array.from(
@@ -73,7 +73,12 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
     const scene = new THREE.Scene();
     scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
 
-    return { maskScene: scene, maskMaterial: mat, clipCamera: clipCam };
+    return {
+      maskScene: scene,
+      maskMaterial: mat,
+      clipCamera: clipCam,
+      scratchColor: new THREE.Color(),
+    };
   }, []);
 
   useFrame((state, delta) => {
@@ -149,12 +154,22 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
     const fboRead = pingRef.current === 0 ? fboA : fboB;
     const fboWrite = pingRef.current === 0 ? fboB : fboA;
 
+    // Save renderer clear state
+    gl.getClearColor(scratchColor);
+    const prevClearAlpha = gl.getClearAlpha();
+
+    // Clear FBO to premultiplied transparent black (0,0,0,0)
+    gl.setClearColor(0x000000, 0);
+
     maskMaterial.uniforms.uPrevFrame.value = fboRead.texture;
     gl.setRenderTarget(fboWrite);
     gl.clear();
     gl.render(maskScene, clipCamera);
 
     gl.setRenderTarget(null);
+
+    // Restore renderer clear state
+    gl.setClearColor(scratchColor, prevClearAlpha);
     pingRef.current = pingRef.current === 0 ? 1 : 0;
 
     // Expose current mask to other components
