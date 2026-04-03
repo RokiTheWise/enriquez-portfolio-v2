@@ -133,9 +133,11 @@ void main() {
 `;
 
 /* ── Composite fragment shader ──
-   Sharp threshold on mask → liquid metaball edges.
-   Ghost layer → subtle gray fluid following the mouse.
-   Porter-Duff compositing → transparent bg, no box artifact.
+   Casual portrait always visible (default state).
+   Metaball mask drives casual→business linear mix.
+   Alpha from portrait textures (cutout), NOT from mask.
+   Refractive shimmer at mask edges (0.4–0.7).
+   Ghost layer outside image bounds.
 ── */
 export const compositeFragment = /* glsl */ `
 precision highp float;
@@ -153,13 +155,13 @@ varying vec2 vUv;
 void main() {
   float rawMask = texture2D(uMaskTex, vUv).r;
 
-  // ── Ghost layer: blurred, low-opacity gray fluid ──
-  float ghost = smoothstep(0.0, 0.2, rawMask) * 0.08;
-
-  // ── Sharp threshold for metaball edges ──
-  // FBM noise modulates threshold for organic shredded breakup
+  // ── Metaball threshold with FBM organic edges ──
   float fbmEdge = snoise(vec3(vUv * 12.0, uTime * 0.4)) * 0.08;
   float metaball = smoothstep(0.35 + fbmEdge, 0.42 + fbmEdge, rawMask);
+
+  // ── Refractive shimmer: specular boost at mask edges (0.4–0.7) ──
+  float edgeHighlight = smoothstep(0.4, 0.55, rawMask) * (1.0 - smoothstep(0.55, 0.7, rawMask));
+  float shimmer = edgeHighlight * 0.1;
 
   // ── Image bounds (soft edge) ──
   vec2 boundsMin = uImageBounds.xy;
@@ -168,30 +170,33 @@ void main() {
   float inBounds = smoothstep(-0.01, 0.01, imgUv.x) * smoothstep(-0.01, 0.01, 1.0 - imgUv.x)
                  * smoothstep(-0.01, 0.01, imgUv.y) * smoothstep(-0.01, 0.01, 1.0 - imgUv.y);
 
-  float reveal = metaball * inBounds;
+  if (inBounds > 0.01) {
+    // ── Inside image: casual→business blend, portrait alpha (cutout) ──
+    vec2 safeUv = clamp(imgUv, 0.0, 1.0);
+    vec4 casual = texture2D(uCasualTex, safeUv);
+    vec4 business = texture2D(uBusinessTex, safeUv);
 
-  // ── Image sampling ──
-  vec2 safeUv = clamp(imgUv, 0.0, 1.0);
-  vec4 casual = texture2D(uCasualTex, safeUv);
-  vec4 business = texture2D(uBusinessTex, safeUv);
-  float edgeNoise = snoise(vec3(vUv * 10.0, uTime * 0.3));
-  float blend = smoothstep(0.4 + edgeNoise * 0.1, 0.7 + edgeNoise * 0.1, metaball);
-  vec3 imgColor = mix(casual.rgb, business.rgb, blend);
+    // Linear interpolation: casual (default) → business (revealed by mask)
+    vec3 imgColor = mix(casual.rgb, business.rgb, metaball);
 
-  // ── Porter-Duff compositing: image over ghost ──
-  // Produces clean transparent pixels where no mask → no box
-  float outAlpha = reveal + ghost * (1.0 - reveal);
-  vec3 outColor = (outAlpha > 0.001)
-    ? (imgColor * reveal + vec3(0.65) * ghost * (1.0 - reveal)) / outAlpha
-    : vec3(0.0);
+    // Shimmer on mask edges inside the portrait
+    imgColor += shimmer;
 
-  gl_FragColor = vec4(outColor, outAlpha);
+    // Alpha from portrait cutout, NOT from mask
+    float imgAlpha = mix(casual.a, business.a, metaball);
+
+    gl_FragColor = vec4(imgColor, imgAlpha * inBounds);
+  } else {
+    // ── Outside image: ghost layer + shimmer ──
+    float ghost = smoothstep(0.0, 0.2, rawMask) * 0.08;
+    gl_FragColor = vec4(vec3(0.65) + shimmer, ghost);
+  }
 }
 `;
 
 /* ── Particle vertex shader ──
-   Accepts CPU-computed displacement (aOffset) for viscous fluid physics.
-   Computes screen UV for mask sampling in fragment shader.
+   CPU displacement + GPU wake shiver from uMaskTex.
+   Particles physically react when the fluid trail passes over them.
 ── */
 export const particleVertex = /* glsl */ `
 attribute vec4 aRandom;
@@ -202,6 +207,7 @@ uniform float uTime;
 uniform float uSpread;
 uniform float uBaseSize;
 uniform float uSizeRandomness;
+uniform sampler2D uMaskTex;
 
 varying vec4 vRandom;
 varying vec3 vColor;
@@ -225,9 +231,21 @@ void main() {
   // CPU-computed fluid displacement
   mPos.xy += aOffset;
 
+  // ── Wake shiver: sample mask at screen position ──
+  vec4 tempClip = projectionMatrix * viewMatrix * mPos;
+  vec2 maskUv = clamp(tempClip.xy / tempClip.w * 0.5 + 0.5, 0.0, 1.0);
+  float mask = texture2D(uMaskTex, maskUv).r;
+
+  // High-frequency displacement when the fluid passes over
+  float shiverAmt = smoothstep(0.1, 0.5, mask) * 0.06;
+  mPos.x += sin(t * 45.0 + aRandom.x * 100.0) * shiverAmt;
+  mPos.y += cos(t * 38.0 + aRandom.y * 100.0) * shiverAmt;
+
   vec4 mvPos = viewMatrix * mPos;
 
-  gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (aRandom.x - 0.5))) / length(mvPos.xyz);
+  // Slight size boost in wake — particles swell near the fluid
+  float sizeBoost = 1.0 + smoothstep(0.1, 0.4, mask) * 0.15;
+  gl_PointSize = sizeBoost * (uBaseSize * (1.0 + uSizeRandomness * (aRandom.x - 0.5))) / length(mvPos.xyz);
 
   gl_Position = projectionMatrix * mvPos;
 
