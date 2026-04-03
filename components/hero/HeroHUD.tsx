@@ -219,31 +219,19 @@ const SocialLink = ({ icon: Icon, href }: { icon: any; href: string }) => {
   );
 };
 
-const Sparkline = () => {
-  return (
-    <svg width="60" height="15" className="inline-block align-baseline ml-2">
-      <motion.path
-        d="M0 10 L5 15 L10 5 L15 12 L20 8 L25 18 L30 10 L35 14 L40 4 L45 12 L50 8 L55 15 L60 10"
-        fill="none"
-        stroke="#CCFF00"
-        strokeWidth="1.5"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-      />
-    </svg>
-  );
-};
+// ── Tactile Terminal Navigation Row ──
 
 const HUDButton = ({
   label,
   href = "#",
   className,
+  isLast = false,
   decryptedProps = {},
 }: {
   label: string;
   href?: string;
   className?: string;
+  isLast?: boolean;
   decryptedProps?: any;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -275,69 +263,87 @@ const HUDButton = ({
   };
 
   return (
-    <motion.a
-      ref={ref}
-      href={href}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: springX, y: springY }}
-      className={cn(
-        "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-colors duration-300",
-        className,
-      )}
-    >
-      <motion.span
-        initial={{ opacity: 0, x: -5 }}
-        animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -5 }}
-        className="mr-1 md:mr-2 text-[#FFB800] font-bold"
+    <div className="flex flex-col">
+      <motion.a
+        ref={ref}
+        href={href}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        style={{ x: springX, y: springY }}
+        className={cn(
+          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-all duration-300 py-1.5 md:py-2",
+          className,
+        )}
       >
-        [
-      </motion.span>
-
-      <span className="relative">
-        <DecryptedText
-          text={label}
-          animateOn="hover"
-          revealDirection="center"
-          className="group-hover:text-[#FFB800] transition-colors duration-300"
-          encryptedClassName="text-[#FFB800]/50"
-          {...decryptedProps}
+        {/* Status dot — appears on hover with amber glow */}
+        <motion.span
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{
+            opacity: isHovered ? 1 : 0,
+            scale: isHovered ? 1 : 0,
+          }}
+          transition={{ duration: 0.15 }}
+          className="mr-2 md:mr-3 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#FFB800] shadow-[0_0_8px_rgba(255,184,0,0.6)] flex-shrink-0"
         />
 
-        {isHovered && (
-          <motion.span
-            className="absolute inset-0 text-[#FFB800] opacity-50 blur-[1px] select-none pointer-events-none"
-            animate={{
-              x: [0, -2, 2, -1, 0],
-              y: [0, 1, -1, 0, 0],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 0.15,
-              ease: "linear",
-            }}
-          >
-            {label}
-          </motion.span>
-        )}
-      </span>
+        {/* Bracket open */}
+        <motion.span
+          initial={{ opacity: 0, x: -5 }}
+          animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -5 }}
+          className="mr-1 md:mr-2 text-[#FFB800] font-bold"
+        >
+          [
+        </motion.span>
 
-      <motion.span
-        initial={{ opacity: 0, x: 5 }}
-        animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 5 }}
-        className="ml-1 md:ml-2 text-[#FFB800] font-bold"
-      >
-        ]
-      </motion.span>
+        {/* Shift right 8px on hover */}
+        <motion.span
+          className="relative"
+          animate={{ x: isHovered ? 8 : 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          <DecryptedText
+            text={label}
+            animateOn="hover"
+            revealDirection="center"
+            className="group-hover:text-[#FFB800] transition-colors duration-300"
+            encryptedClassName="text-[#FFB800]/50"
+            {...decryptedProps}
+          />
 
-      <motion.div
-        className="absolute -bottom-1 left-0 h-[1px] bg-black group-hover:bg-[#FFB800]"
-        initial={{ width: 0 }}
-        animate={{ width: isHovered ? "100%" : 0 }}
-        transition={{ duration: 0.2 }}
-      />
-    </motion.a>
+          {isHovered && (
+            <motion.span
+              className="absolute inset-0 text-[#FFB800] opacity-50 blur-[1px] select-none pointer-events-none"
+              animate={{
+                x: [0, -2, 2, -1, 0],
+                y: [0, 1, -1, 0, 0],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 0.15,
+                ease: "linear",
+              }}
+            >
+              {label}
+            </motion.span>
+          )}
+        </motion.span>
+
+        {/* Bracket close */}
+        <motion.span
+          initial={{ opacity: 0, x: 5 }}
+          animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 5 }}
+          className="ml-1 md:ml-2 text-[#FFB800] font-bold"
+        >
+          ]
+        </motion.span>
+      </motion.a>
+
+      {/* Divider line below each nav item (except last) */}
+      {!isLast && (
+        <div className="h-[1px] bg-[#FFB800]/10 w-full" />
+      )}
+    </div>
   );
 };
 
@@ -355,7 +361,7 @@ export default function HeroHUD() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none px-6 py-8 md:p-12 flex flex-col justify-between select-none overflow-hidden">
+    <div className="absolute inset-0 z-10 pointer-events-none px-6 py-4 md:p-12 flex flex-col justify-between select-none overflow-hidden">
       {/* Scanline / Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
@@ -363,10 +369,10 @@ export default function HeroHUD() {
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:40px_40px]" />
 
-      {/* Top Section: Identity & CTA */}
+      {/* ── Top Section: Identity & CTA ── */}
       <div className="flex justify-between items-start gap-4">
         {/* Identity Block */}
-        <div className="flex flex-col gap-2 max-w-[55%] md:max-w-[35%] lg:max-w-[40%]">
+        <div className="flex flex-col gap-1 md:gap-2 max-w-[60%] md:max-w-[35%] lg:max-w-[40%]">
           <div className="flex items-center gap-2 md:gap-3">
             <Image
               src="/DexDev-Logo.svg"
@@ -376,7 +382,7 @@ export default function HeroHUD() {
               className="w-7 h-7 md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
             />
             <div className="flex flex-col">
-              <h1 className="font-mono text-xl md:text-3xl font-bold tracking-tighter text-black uppercase leading-tight">
+              <h1 className="font-mono text-lg md:text-3xl font-bold tracking-tighter text-black uppercase leading-none">
                 <DecryptedText
                   text="DEXTER JETHRO ENRIQUEZ"
                   animateOn="view"
@@ -384,7 +390,7 @@ export default function HeroHUD() {
                   speed={40}
                 />
               </h1>
-              <div className="font-mono text-xs md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#FFB800] font-bold">
+              <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#FFB800] font-bold leading-relaxed">
                 <DecryptedText
                   text="FULL STACK DEVELOPER"
                   animateOn="view"
@@ -397,34 +403,10 @@ export default function HeroHUD() {
         </div>
 
         {/* Right CTA */}
-        <div className="flex flex-col items-end gap-2 md:gap-6 max-w-[40%] md:max-w-[35%] lg:max-w-[40%]">
+        <div className="flex flex-col items-end gap-2 md:gap-6">
           <ExploreButton />
 
-          {/* Telemetry: System Stats — on mobile, show here below Resume */}
-          <div className="flex md:hidden flex-col items-end gap-1.5 p-2 border border-[#FFB800]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[8px] tracking-[0.15em] text-black">
-            <div className="text-[#FFB800] font-bold opacity-90 tracking-widest text-[9px]">
-              <DecryptedText
-                text="SYSTEM_STATS // 04-2026"
-                animateOn="view"
-                sequential
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#666666]">PROJECT_COUNT:</span>
-              <span className="font-bold text-[#FFB800]">[12]</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#666666]">CORE_TECH:</span>
-              <span className="font-bold text-[#FFB800]">[08]</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-[#CCFF00] rounded-full shadow-[0_0_8px_#CCFF00]" />
-              <span className="text-[#666666]">UPTIME:</span>
-              <span className="font-bold">99.9%</span>
-            </div>
-          </div>
-
-          {/* Time/System on desktop */}
+          {/* Time/System — desktop only */}
           <div className="hidden md:flex flex-col items-end gap-0.5 opacity-40 font-mono text-[10px] tracking-widest uppercase">
             <div className="flex items-center gap-1.5">
               <DecryptedText text="Time:" animateOn="view" speed={100} />
@@ -438,54 +420,29 @@ export default function HeroHUD() {
         </div>
       </div>
 
-      {/* Middle Section: Main Navigation & Stats */}
-      <div className="flex flex-grow items-start md:items-center justify-between mt-2 md:mt-4 mb-4 px-0 md:px-6">
-        {/* Navigation Stack */}
-        <div className="flex flex-col gap-2 md:gap-8 relative pl-3 md:pl-0 max-w-[40%] md:max-w-[35%] lg:max-w-[40%]">
-          <HUDButton label="Featured Projects" className="text-[10px] md:text-xl" />
-          <HUDButton label="Techstack" className="text-[10px] md:text-xl" />
-          <HUDButton label="About" className="text-[10px] md:text-xl" />
-          <HUDButton label="Beyond Coding" className="text-[10px] md:text-xl" />
-          <HUDButton label="Contact" className="text-[10px] md:text-xl" />
+      {/* ── Middle Section: Navigation ── */}
+      {/* On mobile: pushed down with mt-auto so it sits just above the portrait's head */}
+      <div className="flex mt-auto md:mt-0 md:flex-grow items-end md:items-center justify-start mb-2 md:mb-4 px-0 md:px-6">
+        {/* Navigation Stack — tactile terminal rows */}
+        <div className="flex flex-col relative pl-3 md:pl-0 w-full max-w-[65%] md:max-w-[40%]">
+          <HUDButton label="Featured Projects" className="text-xs md:text-xl" />
+          <HUDButton label="Techstack" className="text-xs md:text-xl" />
+          <HUDButton label="About" className="text-xs md:text-xl" />
+          <HUDButton label="Beyond Coding" className="text-xs md:text-xl" />
+          <HUDButton label="Contact" className="text-xs md:text-xl" isLast />
 
-          <div className="absolute -left-2 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
-        </div>
-
-        {/* System Stats Block - Desktop only (moved to top-right on mobile) */}
-        <div className="hidden md:flex flex-col items-end gap-4 pointer-events-auto max-w-[35%] lg:max-w-[40%]">
-          <div className="flex flex-col items-end gap-2 p-6 border border-[#FFB800]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[10px] tracking-[0.2em] text-black">
-            <div className="text-[#FFB800] font-bold mb-2 opacity-90 tracking-widest text-[11px]">
-              <DecryptedText
-                text="SYSTEM_STATS // 04-2026"
-                animateOn="view"
-                sequential
-              />
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#666666]">PROJECT_COUNT:</span>
-              <span className="font-bold text-[#FFB800]">[12]</span>
-              <Sparkline />
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#666666]">CORE_TECH:</span>
-              <span className="font-bold text-[#FFB800]">[08]</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="w-1.5 h-1.5 bg-[#CCFF00] rounded-full shadow-[0_0_8px_#CCFF00]" />
-              <span className="text-[#666666]">UPTIME:</span>
-              <span className="font-bold">99.9%</span>
-            </div>
-          </div>
+          {/* Vertical accent line */}
+          <div className="absolute -left-1 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
         </div>
       </div>
 
-      {/* Bottom Section: Horizon Line */}
+      {/* ── Bottom Section: Horizon Line ── */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 md:gap-4 pt-3 border-t border-[#FFB800]/10">
-        {/* Row 1 (mobile) / Left (desktop): Availability & Location */}
-        <div className="flex flex-col gap-2 font-mono text-[7px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666]">
+        {/* Availability & Location */}
+        <div className="flex flex-col gap-1 font-mono text-[8px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666]">
           <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-[#FFB800] bg-white/10">
             <div className="flex items-center gap-1.5 md:gap-2">
-              <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_8px_rgba(204,255,0,0.5)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_8px_rgba(204,255,0,0.5)]" />
               <span className="text-[#666666] font-bold uppercase">
                 Availability:
               </span>
@@ -494,20 +451,16 @@ export default function HeroHUD() {
               </span>
             </div>
             <div className="flex items-center gap-1.5 md:gap-2">
-              <span className="w-1 md:w-1.5 h-1 md:h-1.5 border border-[#666666]/30" />
+              <span className="w-1.5 h-1.5 border border-[#666666]/30" />
               <span className="text-[#666666] font-bold uppercase">Loc:</span>
               <span className="uppercase font-medium text-[#FFB800]">
                 Manila, Ph
               </span>
             </div>
           </div>
-
-          <div className="text-[6px] md:text-[9px] opacity-50 uppercase">
-            © 2026 DEXTER JETHRO ENRIQUEZ
-          </div>
         </div>
 
-        {/* Row 2 (mobile) / Right (desktop): Socials */}
+        {/* Socials — stacked below availability on mobile */}
         <div className="flex flex-col items-start md:items-end gap-2 md:gap-4">
           <div className="flex gap-1.5 md:gap-4 items-center">
             <SocialLink
