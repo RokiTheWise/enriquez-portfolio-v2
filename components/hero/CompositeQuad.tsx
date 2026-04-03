@@ -21,15 +21,27 @@ export default function CompositeQuad({
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const elapsedRef = useRef(0);
 
+  // 1×1 black texture prevents first-frame flash (Three.js defaults null samplers to white)
+  const blackTex = useMemo(() => {
+    const t = new THREE.DataTexture(
+      new Uint8Array([0, 0, 0, 255]),
+      1,
+      1,
+      THREE.RGBAFormat,
+    );
+    t.needsUpdate = true;
+    return t;
+  }, []);
+
   const uniforms = useMemo(
     () => ({
       uCasualTex: { value: casualTex },
       uBusinessTex: { value: businessTex },
-      uMaskTex: { value: null as THREE.Texture | null },
+      uMaskTex: { value: blackTex },
       uImageBounds: { value: new THREE.Vector4(0, 0, 1, 1) },
       uTime: { value: 0 },
     }),
-    [casualTex, businessTex],
+    [casualTex, businessTex, blackTex],
   );
 
   useFrame((state, delta) => {

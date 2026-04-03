@@ -1,6 +1,5 @@
 /* ══════════════════════════════════════════════════════════════
-   GLSL shader sources for the brush-stroke mask hero.
-   All shaders are exported as template literal strings.
+   GLSL shader sources – Kinetic Particle & Metaball Reveal
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Simplex 3D noise (Ashima Arts / Stefan Gustavson) ── */
@@ -64,60 +63,10 @@ float snoise(vec3 v) {
 }
 `;
 
-/* ── Ribbon vertex shader ──
-   Renders the brush-stroke ribbon into the mask FBO.
-   Positions are in pixel coordinates; ortho camera maps them to clip space.
-   Perlin noise displaces edge vertices for the shredded/liquid look.
+/* ── Fullscreen quad vertex shader ──
+   Shared by mask pass (combined decay + metaball field).
 ── */
-export const ribbonVertex = /* glsl */ `
-${noise3D}
-
-attribute float aSide;
-attribute vec2 aNormal;
-attribute float aAlpha;
-attribute float aVelocity;
-
-uniform float uTime;
-uniform float uNoiseFreq;
-uniform float uNoiseAmp;
-uniform float uNoiseSpeed;
-
-varying float vAlpha;
-
-void main() {
-  vAlpha = aAlpha;
-  vec3 pos = position;
-
-  // Perlin noise displacement along perpendicular
-  // aSide offsets noise lookup so left/right edges distort independently
-  float n = snoise(vec3(pos.xy * uNoiseFreq * 0.002 + vec2(aSide * 5.0, 0.0), uTime * uNoiseSpeed));
-  float amp = uNoiseAmp * (0.3 + aVelocity * 0.7);
-  // aSide makes left(+1)/right(-1) push outward in opposite directions
-  pos.xy += aNormal * n * amp * aSide * 40.0;
-
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-}
-`;
-
-/* ── Ribbon fragment shader ──
-   Outputs white with alpha gradient — only used as FBO mask data.
-── */
-export const ribbonFragment = /* glsl */ `
-precision highp float;
-varying float vAlpha;
-
-void main() {
-  // Boost alpha so mask punches through the noisy composite threshold.
-  // Head (vAlpha=1) stays 1, mid-trail values are lifted to carry more weight.
-  float boosted = pow(vAlpha, 0.5);
-  gl_FragColor = vec4(boosted, boosted, boosted, 1.0);
-}
-`;
-
-/* ── Fade pass vertex shader ──
-   Simple fullscreen quad for the FBO decay pass.
-── */
-export const fadeVertex = /* glsl */ `
+export const fullscreenVertex = /* glsl */ `
 varying vec2 vUv;
 void main() {
   vUv = uv;
@@ -125,23 +74,55 @@ void main() {
 }
 `;
 
-/* ── Fade pass fragment shader ──
-   Reads previous frame's mask FBO, multiplies by decay factor.
+/* ── Mask fragment shader ──
+   Combined decay + metaball field in a single pass.
+   Reads previous FBO, decays it, computes the Gaussian metaball field
+   from trail points, and outputs max(decayed_prev, new_field).
+   Organic noise distorts field boundaries.
 ── */
-export const fadeFragment = /* glsl */ `
+export const maskFragment = /* glsl */ `
 precision highp float;
+
+${noise3D}
+
 uniform sampler2D uPrevFrame;
 uniform float uDecay;
+uniform vec2 uResolution;
+uniform vec3 uPoints[15]; // xy = pixel position (Y-up), z = radius
+uniform float uIntensities[15];
+uniform float uTime;
+
 varying vec2 vUv;
 
 void main() {
-  vec4 prev = texture2D(uPrevFrame, vUv);
-  gl_FragColor = vec4(prev.rgb * uDecay, 1.0);
+  // Decay previous frame
+  float prev = texture2D(uPrevFrame, vUv).r * uDecay;
+
+  // Compute current metaball field (sum of Gaussians)
+  vec2 pixelPos = vUv * uResolution;
+
+  float field = 0.0;
+  for (int i = 0; i < 15; i++) {
+    vec2 diff = pixelPos - uPoints[i].xy;
+    float radius = max(uPoints[i].z, 1.0);
+    float d = length(diff) / radius;
+    float falloff = exp(-d * d * 3.0);
+    field += falloff * uIntensities[i];
+  }
+
+  // Organic noise on field boundaries
+  float edgeNoise = snoise(vec3(pixelPos * 0.004, uTime * 0.8));
+  field += edgeNoise * 0.08 * smoothstep(0.02, 0.2, field);
+
+  // Max of decayed previous and new field — persistent trail
+  float result = max(prev, field);
+
+  gl_FragColor = vec4(vec3(result), 1.0);
 }
 `;
 
 /* ── Composite vertex shader ──
-   Fullscreen quad that bypasses the scene camera (renders in clip space).
+   Fullscreen quad in clip space (bypasses scene camera).
 ── */
 export const compositeVertex = /* glsl */ `
 varying vec2 vUv;
@@ -152,26 +133,14 @@ void main() {
 `;
 
 /* ── Composite fragment shader ──
-   FBM metaball clusters on mask edges for liquid-droplet breakup.
-   Background wake: subtle gray specular highlight outside image bounds.
+   Sharp threshold on mask → liquid metaball edges.
+   Ghost layer → subtle gray fluid following the mouse.
+   Porter-Duff compositing → transparent bg, no box artifact.
 ── */
 export const compositeFragment = /* glsl */ `
 precision highp float;
 
 ${noise3D}
-
-// 4-octave Fractal Brownian Motion for metaball cluster breakup
-float fbm(vec3 p) {
-  float val = 0.0;
-  float amp = 0.5;
-  float freq = 1.0;
-  for (int i = 0; i < 4; i++) {
-    val += amp * snoise(p * freq);
-    freq *= 2.0;
-    amp *= 0.5;
-  }
-  return val;
-}
 
 uniform sampler2D uCasualTex;
 uniform sampler2D uBusinessTex;
@@ -182,57 +151,61 @@ uniform float uTime;
 varying vec2 vUv;
 
 void main() {
+  float rawMask = texture2D(uMaskTex, vUv).r;
+
+  // ── Ghost layer: blurred, low-opacity gray fluid ──
+  float ghost = smoothstep(0.0, 0.2, rawMask) * 0.08;
+
+  // ── Sharp threshold for metaball edges ──
+  // FBM noise modulates threshold for organic shredded breakup
+  float fbmEdge = snoise(vec3(vUv * 12.0, uTime * 0.4)) * 0.08;
+  float metaball = smoothstep(0.35 + fbmEdge, 0.42 + fbmEdge, rawMask);
+
+  // ── Image bounds (soft edge) ──
   vec2 boundsMin = uImageBounds.xy;
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
-  bool inBounds = imgUv.x >= 0.0 && imgUv.x <= 1.0 && imgUv.y >= 0.0 && imgUv.y <= 1.0;
+  float inBounds = smoothstep(-0.01, 0.01, imgUv.x) * smoothstep(-0.01, 0.01, 1.0 - imgUv.x)
+                 * smoothstep(-0.01, 0.01, imgUv.y) * smoothstep(-0.01, 0.01, 1.0 - imgUv.y);
 
-  float mask = texture2D(uMaskTex, vUv).r;
+  float reveal = metaball * inBounds;
 
-  // FBM metaball modulation — clusters merge/break at edges
-  float fbmVal = fbm(vec3(vUv * 14.0, uTime * 0.5));
-  float modulatedMask = mask + fbmVal * 0.35 * smoothstep(0.0, 0.6, mask);
-
-  // ── Background wake (outside image) ──
-  if (!inBounds) {
-    float wake = smoothstep(0.0, 0.4, modulatedMask);
-    // Specular highlight: subtle gray ripple on the white background
-    float highlight = wake * 0.1;
-    gl_FragColor = vec4(vec3(0.7), highlight);
-    return;
-  }
-
-  // ── Image reveal (inside image) ──
-  vec4 casual = texture2D(uCasualTex, imgUv);
-  vec4 business = texture2D(uBusinessTex, imgUv);
-
+  // ── Image sampling ──
+  vec2 safeUv = clamp(imgUv, 0.0, 1.0);
+  vec4 casual = texture2D(uCasualTex, safeUv);
+  vec4 business = texture2D(uBusinessTex, safeUv);
   float edgeNoise = snoise(vec3(vUv * 10.0, uTime * 0.3));
-  float threshold = 0.1 + edgeNoise * 0.05;
+  float blend = smoothstep(0.4 + edgeNoise * 0.1, 0.7 + edgeNoise * 0.1, metaball);
+  vec3 imgColor = mix(casual.rgb, business.rgb, blend);
 
-  gl_FragColor = mix(casual, business, smoothstep(threshold - 0.15, threshold + 0.15, modulatedMask));
+  // ── Porter-Duff compositing: image over ghost ──
+  // Produces clean transparent pixels where no mask → no box
+  float outAlpha = reveal + ghost * (1.0 - reveal);
+  vec3 outColor = (outAlpha > 0.001)
+    ? (imgColor * reveal + vec3(0.65) * ghost * (1.0 - reveal)) / outAlpha
+    : vec3(0.0);
+
+  gl_FragColor = vec4(outColor, outAlpha);
 }
 `;
 
 /* ── Particle vertex shader ──
-   Port of the existing OGL particle system with radial repulsion
-   plus directional bow-wave / wake from trail velocity.
+   Accepts CPU-computed displacement (aOffset) for viscous fluid physics.
+   Computes screen UV for mask sampling in fragment shader.
 ── */
 export const particleVertex = /* glsl */ `
 attribute vec4 aRandom;
 attribute vec3 aColor;
+attribute vec2 aOffset;
 
 uniform float uTime;
 uniform float uSpread;
 uniform float uBaseSize;
 uniform float uSizeRandomness;
-uniform vec3 uTrailPoints[15]; // xy = world-space position, z = repulsion radius
-uniform vec2 uTrailVelocities[15]; // world-space velocity vector per trail point
-uniform float uRepulsionStrength;
-uniform float uWakeStrength;
-uniform float uDeltaTime; // frame delta in seconds, for framerate-independent physics
 
 varying vec4 vRandom;
 varying vec3 vColor;
+varying vec2 vScreenUv;
 
 void main() {
   vRandom = aRandom;
@@ -243,71 +216,54 @@ void main() {
 
   vec4 mPos = modelMatrix * vec4(pos, 1.0);
 
-  // Sine-wave animation (preserved from OGL version)
+  // Sine-wave ambient animation
   float t = uTime;
   mPos.x += sin(t * aRandom.z + 6.28 * aRandom.w) * mix(0.1, 1.5, aRandom.x);
   mPos.y += sin(t * aRandom.y + 6.28 * aRandom.x) * mix(0.1, 1.5, aRandom.w);
   mPos.z += sin(t * aRandom.w + 6.28 * aRandom.y) * mix(0.1, 1.5, aRandom.z);
 
-  // Framerate-independent physics scale (normalized to 60fps)
-  float dtScale = uDeltaTime * 60.0;
-
-  // Repulsion + directional wake from trail points
-  for (int i = 0; i < 15; i++) {
-    vec2 diff = mPos.xy - uTrailPoints[i].xy;
-    float dist = length(diff);
-    float radius = uTrailPoints[i].z;
-    if (dist < radius && dist > 0.001) {
-      vec2 dir = normalize(diff);
-      float force = (1.0 - dist / radius);
-      force = force * force * force; // cubic falloff — gentler at edges, prevents popping
-
-      // Radial repulsion (pushes outward)
-      mPos.xy += dir * force * uRepulsionStrength * dtScale;
-
-      // Directional bow-wave / wake
-      vec2 vel = uTrailVelocities[i];
-      float speed = length(vel);
-      if (speed > 0.0001) {
-        vec2 velDir = vel / speed;
-        float normalizedSpeed = min(speed * 8.0, 1.0);
-        float ahead = dot(dir, velDir);
-        float wakePush = mix(-0.25, 1.0, ahead * 0.5 + 0.5);
-        mPos.xy += velDir * force * normalizedSpeed * wakePush * uWakeStrength * dtScale;
-      }
-    }
-  }
+  // CPU-computed fluid displacement
+  mPos.xy += aOffset;
 
   vec4 mvPos = viewMatrix * mPos;
 
-  if (uSizeRandomness == 0.0) {
-    gl_PointSize = uBaseSize;
-  } else {
-    gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (aRandom.x - 0.5))) / length(mvPos.xyz);
-  }
+  gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (aRandom.x - 0.5))) / length(mvPos.xyz);
 
   gl_Position = projectionMatrix * mvPos;
+
+  // Screen UV for mask sampling in fragment
+  vec2 ndc = gl_Position.xy / gl_Position.w;
+  vScreenUv = ndc * 0.5 + 0.5;
 }
 `;
 
 /* ── Particle fragment shader ──
-   Point sprite rendering with color shimmer (preserved from OGL version).
+   Mask-driven opacity: particles glow brighter near the fluid trail.
 ── */
 export const particleFragment = /* glsl */ `
 precision highp float;
 
 uniform float uTime;
+uniform sampler2D uMaskTex;
 
 varying vec4 vRandom;
 varying vec3 vColor;
+varying vec2 vScreenUv;
 
 void main() {
   vec2 uv = gl_PointCoord.xy;
   float d = length(uv - vec2(0.5));
-
   if (d > 0.5) discard;
 
+  // Mask-driven glow
+  float mask = texture2D(uMaskTex, clamp(vScreenUv, 0.0, 1.0)).r;
+  float maskGlow = smoothstep(0.0, 0.4, mask);
+
   vec3 color = vColor + 0.2 * sin(uv.yxx + uTime + vRandom.y * 6.28);
-  gl_FragColor = vec4(color, 1.0);
+  color = mix(color, color * 1.3, maskGlow * 0.5);
+
+  float alpha = 0.6 + maskGlow * 0.4;
+
+  gl_FragColor = vec4(color, alpha);
 }
 `;
