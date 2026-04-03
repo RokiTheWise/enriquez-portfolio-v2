@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useCallback, Suspense } from "react";
+import { useRef, useCallback, Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import Particles from "./hero/Particles";
 import BrushStrokeMask from "./hero/BrushStrokeMask";
 import CompositeQuad from "./hero/CompositeQuad";
-import type { HeroRefs, TrailPoint } from "./hero/types";
+import type { HeroRefs } from "./hero/types";
 import { TRAIL_LENGTH, CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
 
 function HeroScene({ heroRefs }: { heroRefs: HeroRefs }) {
@@ -31,21 +31,24 @@ function HeroScene({ heroRefs }: { heroRefs: HeroRefs }) {
 export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  const heroRefs: HeroRefs = {
-    mouseRef: useRef({ x: -9999, y: -9999 }),
-    trailRef: useRef<TrailPoint[]>(
-      Array.from({ length: TRAIL_LENGTH }, () => ({
-        x: -9999,
-        y: -9999,
-        prevX: -9999,
-        prevY: -9999,
-        velocity: 0,
-        width: 0,
-      })),
-    ),
-    maskRef: useRef(null),
-    hasEnteredRef: useRef(false),
-  };
+  const heroRefs: HeroRefs = useMemo(
+    () => ({
+      mouseRef: { current: { x: -9999, y: -9999 } },
+      trailRef: {
+        current: Array.from({ length: TRAIL_LENGTH }, () => ({
+          x: -9999,
+          y: -9999,
+          prevX: -9999,
+          prevY: -9999,
+          velocity: 0,
+          width: 0,
+        })),
+      },
+      maskRef: { current: null },
+      hasEnteredRef: { current: false },
+    }),
+    [],
+  );
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {

@@ -81,6 +81,8 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
     };
   }, []);
 
+  const fadeRef = useRef(0);
+
   useFrame((state, delta) => {
     timeRef.current += delta;
     const { width, height } = state.size;
@@ -89,6 +91,13 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
     const trail = heroRefs.trailRef.current;
     const mouse = heroRefs.mouseRef.current;
     const entered = heroRefs.hasEnteredRef.current;
+
+    // Smoothly transition fade factor
+    if (entered) {
+      fadeRef.current = Math.min(fadeRef.current + delta * 4, 1);
+    } else {
+      fadeRef.current = Math.max(fadeRef.current - delta * 2, 0);
+    }
 
     if (entered && mouse.x > -999) {
       // Head follows mouse
@@ -120,14 +129,13 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
     }
 
     // ── Update metaball uniforms ──
-    const pointsArr = maskMaterial.uniforms.uPoints
-      .value as THREE.Vector3[];
-    const intensitiesArr = maskMaterial.uniforms.uIntensities
-      .value as number[];
+    const pointsArr = maskMaterial.uniforms.uPoints.value as THREE.Vector3[];
+    const intensitiesArr = maskMaterial.uniforms.uIntensities.value as number[];
 
     for (let i = 0; i < TRAIL_LENGTH; i++) {
       const pt = trail[i];
-      if (entered && pt.x > -999) {
+      // Keep updating if there's still some fade left, even if !entered
+      if (fadeRef.current > 0 && pt.x > -999) {
         // Map trail width to metaball radius
         const velRatio =
           (pt.width - MIN_RIBBON_HALF_WIDTH) /
@@ -137,10 +145,10 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
         // Y-flip: screen coords (Y-down) → FBO coords (Y-up)
         pointsArr[i].set(pt.x, height - pt.y, radius);
 
-        // Intensity: tapers head→tail, boosted by velocity
+        // Intensity: tapers head→tail, boosted by velocity, scaled by fadeFactor
         const taper = 1 - i / (TRAIL_LENGTH - 1);
         const velBoost = Math.min(pt.velocity * 0.05, 0.5);
-        intensitiesArr[i] = taper * (0.5 + velBoost);
+        intensitiesArr[i] = taper * (0.5 + velBoost) * fadeRef.current;
       } else {
         pointsArr[i].set(0, 0, 0);
         intensitiesArr[i] = 0;
