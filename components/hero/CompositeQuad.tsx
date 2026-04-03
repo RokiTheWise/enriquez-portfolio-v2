@@ -66,19 +66,23 @@ export default function CompositeQuad({
           ? IMAGE_SIZES.md
           : IMAGE_SIZES.lg;
 
-    // Responsive scale: larger on mobile so the portrait feels 'large and in charge'
-    const mobileScale = width < 768 ? 1.15 : 1.0;
+    // Responsive scale: larger on mobile for a dominant portrait
+    const isMobile = width < 768;
+    const mobileScale = isMobile ? 1.1 : 1.0;
     const scaledSize = imageSize * mobileScale;
 
     const imgW = scaledSize / width;
     const imgH = scaledSize / height;
 
-    // Grounded: bottom is 0, top is imgH
+    // On mobile, nudge portrait up so the face sits between nav (top) and footer (bottom).
+    // A small positive yOffset shifts the image upward in UV space.
+    const yOffset = isMobile ? 0.04 : 0.0;
+
     mat.uniforms.uImageBounds.value.set(
-      0.5 - imgW / 2, // left
-      0.0,            // bottom (flush with viewport bottom)
-      0.5 + imgW / 2, // right
-      imgH             // top
+      0.5 - imgW / 2,      // left
+      yOffset,              // bottom
+      0.5 + imgW / 2,      // right
+      yOffset + imgH        // top
     );
   });
 

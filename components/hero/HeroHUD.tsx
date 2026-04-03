@@ -165,10 +165,10 @@ const ExploreButton = () => {
       whileTap={{ scale: 0.95 }}
       onMouseEnter={scramble}
       onMouseLeave={stopScramble}
-      className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-3 py-1.5 md:px-10 md:py-4 font-mono text-[8px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
+      className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-5 py-2.5 md:px-10 md:py-4 font-mono text-[10px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
     >
-      <div className="relative z-10 flex items-center gap-1.5 md:gap-2">
-        <FileTextIcon size={isMobile ? 10 : 16} className="text-[#FFB800]" />
+      <div className="relative z-10 flex items-center gap-2">
+        <FileTextIcon size={isMobile ? 12 : 16} className="text-[#FFB800]" />
         <span>{text}</span>
       </div>
 
@@ -272,11 +272,11 @@ const HUDButton = ({
         onMouseLeave={handleMouseLeave}
         style={{ x: springX, y: springY }}
         className={cn(
-          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-all duration-300 py-1.5 md:py-2",
+          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-all duration-300 py-1 md:py-2",
           className,
         )}
       >
-        {/* Status dot — appears on hover with amber glow */}
+        {/* Amber status square — appears on hover/tap */}
         <motion.span
           initial={{ opacity: 0, scale: 0 }}
           animate={{
@@ -284,7 +284,7 @@ const HUDButton = ({
             scale: isHovered ? 1 : 0,
           }}
           transition={{ duration: 0.15 }}
-          className="mr-2 md:mr-3 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#FFB800] shadow-[0_0_8px_rgba(255,184,0,0.6)] flex-shrink-0"
+          className="mr-2 md:mr-3 w-1.5 h-1.5 bg-[#FFB800] shadow-[0_0_8px_rgba(255,184,0,0.6)] flex-shrink-0"
         />
 
         {/* Bracket open */}
@@ -296,10 +296,10 @@ const HUDButton = ({
           [
         </motion.span>
 
-        {/* Shift right 8px on hover */}
+        {/* Shift right 6px on hover */}
         <motion.span
           className="relative"
-          animate={{ x: isHovered ? 8 : 0 }}
+          animate={{ x: isHovered ? 6 : 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           <DecryptedText
@@ -341,7 +341,7 @@ const HUDButton = ({
 
       {/* Divider line below each nav item (except last) */}
       {!isLast && (
-        <div className="h-[1px] bg-[#FFB800]/10 w-full" />
+        <div className="h-[1px] bg-[#FFB800]/8 w-full" />
       )}
     </div>
   );
@@ -361,7 +361,7 @@ export default function HeroHUD() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none px-6 py-4 md:p-12 flex flex-col justify-between select-none overflow-hidden">
+    <div className="absolute inset-0 z-10 pointer-events-none px-5 py-4 md:p-12 flex flex-col select-none overflow-hidden">
       {/* Scanline / Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
@@ -369,41 +369,39 @@ export default function HeroHUD() {
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:40px_40px]" />
 
-      {/* ── Top Section: Identity & CTA ── */}
-      <div className="flex justify-between items-start gap-4">
+      {/* ═══ TOP ZONE: Identity + CTA ═══ */}
+      <div className="flex justify-between items-start gap-3">
         {/* Identity Block */}
-        <div className="flex flex-col gap-1 md:gap-2 max-w-[60%] md:max-w-[35%] lg:max-w-[40%]">
-          <div className="flex items-center gap-2 md:gap-3">
-            <Image
-              src="/DexDev-Logo.svg"
-              alt="DexDev Logo"
-              width={40}
-              height={40}
-              className="w-7 h-7 md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
-            />
-            <div className="flex flex-col">
-              <h1 className="font-mono text-lg md:text-3xl font-bold tracking-tighter text-black uppercase leading-none">
-                <DecryptedText
-                  text="DEXTER JETHRO ENRIQUEZ"
-                  animateOn="view"
-                  sequential
-                  speed={40}
-                />
-              </h1>
-              <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#FFB800] font-bold leading-relaxed">
-                <DecryptedText
-                  text="FULL STACK DEVELOPER"
-                  animateOn="view"
-                  sequential
-                  speed={60}
-                />
-              </div>
+        <div className="flex items-center gap-2 md:gap-3 max-w-[60%] md:max-w-[40%]">
+          <Image
+            src="/DexDev-Logo.svg"
+            alt="DexDev Logo"
+            width={40}
+            height={40}
+            className="w-7 h-7 md:w-12 md:h-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
+          />
+          <div className="flex flex-col">
+            <h1 className="font-mono text-base md:text-3xl font-bold tracking-tighter text-black uppercase leading-none">
+              <DecryptedText
+                text="DEXTER JETHRO ENRIQUEZ"
+                animateOn="view"
+                sequential
+                speed={40}
+              />
+            </h1>
+            <div className="font-mono text-[9px] md:text-xs tracking-[0.25em] md:tracking-[0.4em] text-[#FFB800] font-bold mt-0.5">
+              <DecryptedText
+                text="FULL STACK DEVELOPER"
+                animateOn="view"
+                sequential
+                speed={60}
+              />
             </div>
           </div>
         </div>
 
         {/* Right CTA */}
-        <div className="flex flex-col items-end gap-2 md:gap-6">
+        <div className="flex flex-col items-end gap-2 md:gap-6 flex-shrink-0">
           <ExploreButton />
 
           {/* Time/System — desktop only */}
@@ -420,26 +418,27 @@ export default function HeroHUD() {
         </div>
       </div>
 
-      {/* ── Middle Section: Navigation ── */}
-      {/* On mobile: pushed down with mt-auto so it sits just above the portrait's head */}
-      <div className="flex mt-auto md:mt-0 md:flex-grow items-end md:items-center justify-start mb-2 md:mb-4 px-0 md:px-6">
-        {/* Navigation Stack — tactile terminal rows */}
-        <div className="flex flex-col relative pl-3 md:pl-0 w-full max-w-[65%] md:max-w-[40%]">
-          <HUDButton label="Featured Projects" className="text-xs md:text-xl" />
-          <HUDButton label="Techstack" className="text-xs md:text-xl" />
-          <HUDButton label="About" className="text-xs md:text-xl" />
-          <HUDButton label="Beyond Coding" className="text-xs md:text-xl" />
-          <HUDButton label="Contact" className="text-xs md:text-xl" isLast />
+      {/* ═══ NAVIGATION: Directly below header on mobile, centered on desktop ═══ */}
+      <div className="mt-2 md:mt-0 md:flex-grow md:flex md:items-center md:px-6">
+        <div className="flex flex-col relative pl-3 md:pl-0 w-fit max-w-[70%] md:max-w-[40%]">
+          <HUDButton label="Featured Projects" className="text-base md:text-xl leading-tight" />
+          <HUDButton label="Techstack" className="text-base md:text-xl leading-tight" />
+          <HUDButton label="About" className="text-base md:text-xl leading-tight" />
+          <HUDButton label="Beyond Coding" className="text-base md:text-xl leading-tight" />
+          <HUDButton label="Contact" className="text-base md:text-xl leading-tight" isLast />
 
           {/* Vertical accent line */}
-          <div className="absolute -left-1 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
+          <div className="absolute -left-0.5 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
         </div>
       </div>
 
-      {/* ── Bottom Section: Horizon Line ── */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 md:gap-4 pt-3 border-t border-[#FFB800]/10">
-        {/* Availability & Location */}
-        <div className="flex flex-col gap-1 font-mono text-[8px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666]">
+      {/* ═══ SPACER: pushes footer to the bottom on mobile ═══ */}
+      <div className="flex-grow md:hidden" />
+
+      {/* ═══ BOTTOM ZONE: Footer ═══ */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-end pt-3 border-t border-[#FFB800]/10">
+        {/* Availability & Location — always left-aligned */}
+        <div className="font-mono text-[8px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666]">
           <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-[#FFB800] bg-white/10">
             <div className="flex items-center gap-1.5 md:gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_8px_rgba(204,255,0,0.5)]" />
@@ -460,8 +459,8 @@ export default function HeroHUD() {
           </div>
         </div>
 
-        {/* Socials — stacked below availability on mobile */}
-        <div className="flex flex-col items-start md:items-end gap-2 md:gap-4">
+        {/* Socials — below availability on mobile (mt-4), right-aligned on desktop */}
+        <div className="flex flex-col items-start md:items-end mt-4 md:mt-0">
           <div className="flex gap-1.5 md:gap-4 items-center">
             <SocialLink
               icon={GithubIcon}
@@ -489,7 +488,7 @@ export default function HeroHUD() {
             />
           </div>
 
-          <div className="hidden md:flex items-end gap-1 h-4 opacity-20">
+          <div className="hidden md:flex items-end gap-1 h-4 opacity-20 mt-2">
             {[0.4, 0.7, 0.3, 0.9, 0.5, 0.8, 0.2].map((h, i) => (
               <motion.div
                 key={i}
