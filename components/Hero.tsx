@@ -6,6 +6,7 @@ import { useTexture } from "@react-three/drei";
 import Particles from "./hero/Particles";
 import BrushStrokeMask from "./hero/BrushStrokeMask";
 import CompositeQuad from "./hero/CompositeQuad";
+import HeroHUD from "./hero/HeroHUD";
 import type { HeroRefs } from "./hero/types";
 import { TRAIL_LENGTH, CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
 
@@ -103,6 +104,7 @@ export default function Hero() {
           <HeroScene heroRefs={heroRefs} />
         </Suspense>
       </Canvas>
+      <HeroHUD />
     </section>
   );
 }
