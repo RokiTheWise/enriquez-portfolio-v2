@@ -30,7 +30,7 @@ export const MAX_RIBBON_HALF_WIDTH = 75; // px
 export const VEL_SCALE = 2.5;
 
 // Metaball mask
-export const FADE_FACTOR = 0.90; // aggressive evaporation
+export const FADE_FACTOR = 0.94; // lingering trail
 export const METABALL_BASE_RADIUS = 60; // px, base radius at rest
 export const METABALL_VEL_RADIUS = 100; // additional px at full velocity
 

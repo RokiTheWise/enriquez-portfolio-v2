@@ -96,7 +96,7 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
     if (entered) {
       fadeRef.current = Math.min(fadeRef.current + delta * 4, 1);
     } else {
-      fadeRef.current = Math.max(fadeRef.current - delta * 2, 0);
+      fadeRef.current = Math.max(fadeRef.current - delta / 1.5, 0); // 1.5 seconds to reach 0
     }
 
     if (entered && mouse.x > -999) {
