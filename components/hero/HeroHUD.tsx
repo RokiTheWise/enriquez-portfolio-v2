@@ -4,7 +4,7 @@ import { motion, useSpring, useMotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Archive, Mail } from "lucide-react";
+import { FileTextIcon, Mail } from "lucide-react";
 import DecryptedText from "./DecryptedText";
 import Image from "next/image";
 
@@ -121,7 +121,7 @@ const ExploreButton = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const TARGET_TEXT = isMobile ? "Archive" : "Explore Archive";
+  const TARGET_TEXT = isMobile ? "Resume" : "View Resume";
   const [text, setText] = useState(TARGET_TEXT);
 
   useEffect(() => {
@@ -168,7 +168,7 @@ const ExploreButton = () => {
       className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-4 py-2 md:px-10 md:py-4 font-mono text-[9px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
     >
       <div className="relative z-10 flex items-center gap-2">
-        <Archive size={isMobile ? 12 : 16} className="text-[#ffc300]" />
+        <FileTextIcon size={isMobile ? 12 : 16} className="text-[#FFB800]" />
         <span>{text}</span>
       </div>
 
@@ -181,19 +181,13 @@ const ExploreButton = () => {
           duration: 1.5,
           ease: "linear",
         }}
-        className="absolute inset-0 z-0 scale-125 bg-gradient-to-t from-[#ffc300]/0 from-40% via-[#ffc300]/40 to-[#ffc300]/0 to-60% opacity-0 transition-opacity group-hover:opacity-100"
+        className="absolute inset-0 z-0 scale-125 bg-gradient-to-t from-[#FFB800]/0 from-40% via-[#FFB800]/40 to-[#FFB800]/0 to-60% opacity-0 transition-opacity group-hover:opacity-100"
       />
     </motion.button>
   );
 };
 
-const SocialLink = ({
-  icon: Icon,
-  href,
-}: {
-  icon: any;
-  href: string;
-}) => {
+const SocialLink = ({ icon: Icon, href }: { icon: any; href: string }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -208,7 +202,7 @@ const SocialLink = ({
       <div
         className={cn(
           "flex items-center gap-1.5 transition-colors duration-300",
-          isHovered ? "text-[#ffc300]" : "text-black/30",
+          isHovered ? "text-[#FFB800]" : "text-[#666666]",
         )}
       >
         <span className="font-mono text-xs md:text-base opacity-50">[</span>
@@ -216,8 +210,7 @@ const SocialLink = ({
           size={isHovered ? 24 : 20}
           className={cn(
             "transition-all duration-300",
-            isHovered &&
-              "text-white drop-shadow-[0_0_12px_rgba(255,195,0,0.6)] scale-110",
+            isHovered && "drop-shadow-[0_0_12px_rgba(255,184,0,0.6)] scale-110",
           )}
         />
         <span className="font-mono text-xs md:text-base opacity-50">]</span>
@@ -228,15 +221,11 @@ const SocialLink = ({
 
 const Sparkline = () => {
   return (
-    <svg
-      width="60"
-      height="15"
-      className="opacity-50 inline-block align-baseline ml-2"
-    >
+    <svg width="60" height="15" className="inline-block align-baseline ml-2">
       <motion.path
         d="M0 10 L5 15 L10 5 L15 12 L20 8 L25 18 L30 10 L35 14 L40 4 L45 12 L50 8 L55 15 L60 10"
         fill="none"
-        stroke="currentColor"
+        stroke="#CCFF00"
         strokeWidth="1.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -301,7 +290,7 @@ const HUDButton = ({
       <motion.span
         initial={{ opacity: 0, x: -5 }}
         animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -5 }}
-        className="mr-1 md:mr-2 text-[#ffc300] font-bold"
+        className="mr-1 md:mr-2 text-[#FFB800] font-bold"
       >
         [
       </motion.span>
@@ -311,14 +300,14 @@ const HUDButton = ({
           text={label}
           animateOn="hover"
           revealDirection="center"
-          className="group-hover:text-[#ffc300] transition-colors duration-300"
-          encryptedClassName="text-[#ffc300]/50"
+          className="group-hover:text-[#FFB800] transition-colors duration-300"
+          encryptedClassName="text-[#FFB800]/50"
           {...decryptedProps}
         />
 
         {isHovered && (
           <motion.span
-            className="absolute inset-0 text-[#ffc300] opacity-50 blur-[1px] select-none pointer-events-none"
+            className="absolute inset-0 text-[#FFB800] opacity-50 blur-[1px] select-none pointer-events-none"
             animate={{
               x: [0, -2, 2, -1, 0],
               y: [0, 1, -1, 0, 0],
@@ -337,13 +326,13 @@ const HUDButton = ({
       <motion.span
         initial={{ opacity: 0, x: 5 }}
         animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 5 }}
-        className="ml-1 md:ml-2 text-[#ffc300] font-bold"
+        className="ml-1 md:ml-2 text-[#FFB800] font-bold"
       >
         ]
       </motion.span>
 
       <motion.div
-        className="absolute -bottom-1 left-0 h-[1px] bg-black group-hover:bg-[#ffc300]"
+        className="absolute -bottom-1 left-0 h-[1px] bg-black group-hover:bg-[#FFB800]"
         initial={{ width: 0 }}
         animate={{ width: isHovered ? "100%" : 0 }}
         transition={{ duration: 0.2 }}
@@ -384,18 +373,18 @@ export default function HeroHUD() {
               alt="DexDev Logo"
               width={40}
               height={40}
-              className="md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(255,195,0,0.4)]"
+              className="md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
             />
             <div className="flex flex-col">
               <h1 className="font-mono text-lg sm:text-xl md:text-3xl font-bold tracking-tighter text-black uppercase leading-tight">
                 <DecryptedText
-                  text="DEXTER JETHRO C. ENRIQUEZ"
+                  text="DEXTER JETHRO ENRIQUEZ"
                   animateOn="view"
                   sequential
                   speed={40}
                 />
               </h1>
-              <div className="font-mono text-[8px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#ffc300] font-bold opacity-80">
+              <div className="font-mono text-[8px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#FFB800] font-bold">
                 <DecryptedText
                   text="FULL STACK DEVELOPER"
                   animateOn="view"
@@ -418,7 +407,7 @@ export default function HeroHUD() {
             </div>
             <div className="flex items-center gap-1.5">
               <DecryptedText text="System:" animateOn="view" speed={100} />
-              <span className="text-[#ffc300] font-bold">Online</span>
+              <span className="text-[#FFB800] font-bold">Online</span>
             </div>
           </div>
         </div>
@@ -434,13 +423,13 @@ export default function HeroHUD() {
           <HUDButton label="Beyond Coding" className="text-xs md:text-xl" />
           <HUDButton label="Contact" className="text-xs md:text-xl" />
 
-          <div className="absolute -left-2 md:-left-6 top-0 bottom-0 w-[1px] bg-[#ffc300]/20" />
+          <div className="absolute -left-2 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
         </div>
 
         {/* System Stats Block - Hidden on small mobile */}
         <div className="hidden sm:flex flex-col items-end gap-4 pointer-events-auto max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
-          <div className="flex flex-col items-end gap-2 p-4 md:p-6 border border-[#ffc300]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black">
-            <div className="text-[#ffc300] font-bold mb-1 md:mb-2 opacity-70 tracking-widest text-[10px] md:text-[11px]">
+          <div className="flex flex-col items-end gap-2 p-4 md:p-6 border border-[#FFB800]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black">
+            <div className="text-[#FFB800] font-bold mb-1 md:mb-2 opacity-90 tracking-widest text-[10px] md:text-[11px]">
               <DecryptedText
                 text="SYSTEM_STATS // 04-2026"
                 animateOn="view"
@@ -448,17 +437,17 @@ export default function HeroHUD() {
               />
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-black/40">PROJECT_COUNT:</span>
-              <span className="font-bold text-[#ffc300]">[12]</span>
+              <span className="text-[#666666]">PROJECT_COUNT:</span>
+              <span className="font-bold text-[#FFB800]">[12]</span>
               <Sparkline />
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-black/40">CORE_TECH:</span>
-              <span className="font-bold text-[#ffc300]">[08]</span>
+              <span className="text-[#666666]">CORE_TECH:</span>
+              <span className="font-bold text-[#FFB800]">[08]</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-              <span className="text-black/40">UPTIME:</span>
+              <span className="w-1.5 h-1.5 bg-[#CCFF00] rounded-full shadow-[0_0_8px_#CCFF00]" />
+              <span className="text-[#666666]">UPTIME:</span>
               <span className="font-bold">99.9%</span>
             </div>
           </div>
@@ -466,29 +455,29 @@ export default function HeroHUD() {
       </div>
 
       {/* Bottom Section: Horizon Line */}
-      <div className="flex justify-between items-end gap-4 pt-3 border-t border-[#ffc300]/10">
+      <div className="flex justify-between items-end gap-4 pt-3 border-t border-[#FFB800]/10">
         {/* Left: Status Block */}
-        <div className="flex flex-col gap-2 font-mono text-[7px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-black/60 max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
-          <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-[#ffc300] bg-white/10">
+        <div className="flex flex-col gap-2 font-mono text-[7px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666] max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
+          <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-[#FFB800] bg-white/10">
             <div className="flex items-center gap-1.5 md:gap-2">
-              <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-              <span className="text-black font-bold uppercase">
+              <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_8px_rgba(204,255,0,0.5)]" />
+              <span className="text-[#666666] font-bold uppercase">
                 Availability:
               </span>
-              <span className="uppercase font-medium text-[#ffc300]">
+              <span className="uppercase font-medium text-[#FFB800]">
                 Open for roles
               </span>
             </div>
             <div className="flex items-center gap-1.5 md:gap-2">
-              <span className="w-1 md:w-1.5 h-1 md:h-1.5 border border-[#ffc300]/30" />
-              <span className="text-black font-bold uppercase">Loc:</span>
-              <span className="uppercase font-medium text-[#ffc300]">
+              <span className="w-1 md:w-1.5 h-1 md:h-1.5 border border-[#666666]/30" />
+              <span className="text-[#666666] font-bold uppercase">Loc:</span>
+              <span className="uppercase font-medium text-[#FFB800]">
                 Manila, Ph
               </span>
             </div>
           </div>
 
-          <div className="text-[6px] md:text-[9px] opacity-30 uppercase">
+          <div className="text-[6px] md:text-[9px] opacity-50 uppercase">
             © 2026 DEXTER JETHRO ENRIQUEZ
           </div>
         </div>
@@ -496,31 +485,37 @@ export default function HeroHUD() {
         {/* Right: Socials Stack */}
         <div className="flex flex-col items-end gap-3 md:gap-4 h-full max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
           <div className="flex gap-2 md:gap-4 justify-end items-center mb-1 md:mb-2">
-            <SocialLink icon={GithubIcon} href="https://github.com" />
-            <span className="text-[#ffc300]/20 text-[10px]">|</span>
-            <SocialLink icon={LinkedinIcon} href="https://linkedin.com" />
-            <span className="text-[#ffc300]/20 text-[10px]">|</span>
-            <SocialLink icon={InstagramIcon} href="https://instagram.com" />
-            <span className="text-[#ffc300]/20 text-[10px]">|</span>
-            <SocialLink icon={FacebookIcon} href="https://facebook.com" />
-            <span className="text-[#ffc300]/20 text-[10px]">|</span>
-            <motion.a
-              href="mailto:contact@dexter.dev"
-              className="pointer-events-auto flex items-center transition-all duration-300"
-            >
-              <div className="flex items-center gap-1.5 text-black/30 hover:text-[#ffc300] transition-colors">
-                <span className="font-mono text-xs md:text-base opacity-50">[</span>
-                <Mail size={20} className="hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,195,0,0.6)]" />
-                <span className="font-mono text-xs md:text-base opacity-50">]</span>
-              </div>
-            </motion.a>
+            <SocialLink
+              icon={GithubIcon}
+              href="https://github.com/RokiTheWise"
+            />
+            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <SocialLink
+              icon={LinkedinIcon}
+              href="https://www.linkedin.com/in/dexter-jethro-enriquez/"
+            />
+            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <SocialLink
+              icon={InstagramIcon}
+              href="https://www.instagram.com/dexjet_enriquez/"
+            />
+            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <SocialLink
+              icon={FacebookIcon}
+              href="https://www.facebook.com/dexterjethro.enriquez"
+            />
+            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <SocialLink
+              icon={Mail}
+              href="mailto:dexterjethro.enriquez@gmail.com"
+            />
           </div>
 
           <div className="flex items-end gap-0.5 md:gap-1 h-2.5 md:h-4 opacity-20">
             {[0.4, 0.7, 0.3, 0.9, 0.5, 0.8, 0.2].map((h, i) => (
               <motion.div
                 key={i}
-                className="w-0.5 md:w-1 bg-[#ffc300]"
+                className="w-0.5 md:w-1 bg-[#FFB800]"
                 animate={{
                   height: [`${h * 100}%`, `${(1 - h) * 100}%`, `${h * 100}%`],
                 }}
@@ -536,10 +531,10 @@ export default function HeroHUD() {
       </div>
 
       {/* Border Corner Accents */}
-      <div className="absolute top-3 left-3 md:top-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-t border-l md:border-t-2 md:border-l-2 border-[#ffc300]/20" />
-      <div className="absolute top-3 right-3 md:top-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-t border-r md:border-t-2 md:border-r-2 border-[#ffc300]/20" />
-      <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-b border-l md:border-b-2 md:border-l-2 border-[#ffc300]/20" />
-      <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-b border-r md:border-b-2 md:border-r-2 border-[#ffc300]/20" />
+      <div className="absolute top-3 left-3 md:top-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-t border-l md:border-t-2 md:border-l-2 border-[#FFB800]/20" />
+      <div className="absolute top-3 right-3 md:top-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-t border-r md:border-t-2 md:border-r-2 border-[#FFB800]/20" />
+      <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-b border-l md:border-b-2 md:border-l-2 border-[#FFB800]/20" />
+      <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-b border-r md:border-b-2 md:border-r-2 border-[#FFB800]/20" />
     </div>
   );
 }
