@@ -165,10 +165,10 @@ const ExploreButton = () => {
       whileTap={{ scale: 0.95 }}
       onMouseEnter={scramble}
       onMouseLeave={stopScramble}
-      className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-4 py-2 md:px-10 md:py-4 font-mono text-[9px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
+      className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-3 py-1.5 md:px-10 md:py-4 font-mono text-[8px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
     >
-      <div className="relative z-10 flex items-center gap-2">
-        <FileTextIcon size={isMobile ? 12 : 16} className="text-[#FFB800]" />
+      <div className="relative z-10 flex items-center gap-1.5 md:gap-2">
+        <FileTextIcon size={isMobile ? 10 : 16} className="text-[#FFB800]" />
         <span>{text}</span>
       </div>
 
@@ -201,11 +201,11 @@ const SocialLink = ({ icon: Icon, href }: { icon: any; href: string }) => {
     >
       <div
         className={cn(
-          "flex items-center gap-1.5 transition-colors duration-300",
+          "flex items-center gap-1 md:gap-1.5 transition-colors duration-300",
           isHovered ? "text-[#FFB800]" : "text-[#666666]",
         )}
       >
-        <span className="font-mono text-xs md:text-base opacity-50">[</span>
+        <span className="font-mono text-[10px] md:text-base opacity-50">[</span>
         <Icon
           size={isHovered ? 24 : 20}
           className={cn(
@@ -213,7 +213,7 @@ const SocialLink = ({ icon: Icon, href }: { icon: any; href: string }) => {
             isHovered && "drop-shadow-[0_0_12px_rgba(255,184,0,0.6)] scale-110",
           )}
         />
-        <span className="font-mono text-xs md:text-base opacity-50">]</span>
+        <span className="font-mono text-[10px] md:text-base opacity-50">]</span>
       </div>
     </motion.a>
   );
@@ -355,7 +355,7 @@ export default function HeroHUD() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none p-4 md:p-12 flex flex-col justify-between select-none overflow-hidden">
+    <div className="absolute inset-0 z-10 pointer-events-none px-6 py-8 md:p-12 flex flex-col justify-between select-none overflow-hidden">
       {/* Scanline / Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
@@ -366,17 +366,17 @@ export default function HeroHUD() {
       {/* Top Section: Identity & CTA */}
       <div className="flex justify-between items-start gap-4">
         {/* Identity Block */}
-        <div className="flex flex-col gap-2 max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2 max-w-[55%] md:max-w-[35%] lg:max-w-[40%]">
+          <div className="flex items-center gap-2 md:gap-3">
             <Image
               src="/DexDev-Logo.svg"
               alt="DexDev Logo"
               width={40}
               height={40}
-              className="md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
+              className="w-7 h-7 md:w-12 md:h-12 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
             />
             <div className="flex flex-col">
-              <h1 className="font-mono text-lg sm:text-xl md:text-3xl font-bold tracking-tighter text-black uppercase leading-tight">
+              <h1 className="font-mono text-xl md:text-3xl font-bold tracking-tighter text-black uppercase leading-tight">
                 <DecryptedText
                   text="DEXTER JETHRO ENRIQUEZ"
                   animateOn="view"
@@ -384,7 +384,7 @@ export default function HeroHUD() {
                   speed={40}
                 />
               </h1>
-              <div className="font-mono text-[8px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#FFB800] font-bold">
+              <div className="font-mono text-xs md:text-xs tracking-[0.3em] md:tracking-[0.4em] text-[#FFB800] font-bold">
                 <DecryptedText
                   text="FULL STACK DEVELOPER"
                   animateOn="view"
@@ -397,10 +397,35 @@ export default function HeroHUD() {
         </div>
 
         {/* Right CTA */}
-        <div className="flex flex-col items-end gap-3 md:gap-6 max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
+        <div className="flex flex-col items-end gap-2 md:gap-6 max-w-[40%] md:max-w-[35%] lg:max-w-[40%]">
           <ExploreButton />
 
-          <div className="flex flex-col items-end gap-0.5 opacity-40 font-mono text-[7px] md:text-[10px] tracking-widest uppercase">
+          {/* Telemetry: System Stats — on mobile, show here below Resume */}
+          <div className="flex md:hidden flex-col items-end gap-1.5 p-2 border border-[#FFB800]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[8px] tracking-[0.15em] text-black">
+            <div className="text-[#FFB800] font-bold opacity-90 tracking-widest text-[9px]">
+              <DecryptedText
+                text="SYSTEM_STATS // 04-2026"
+                animateOn="view"
+                sequential
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[#666666]">PROJECT_COUNT:</span>
+              <span className="font-bold text-[#FFB800]">[12]</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[#666666]">CORE_TECH:</span>
+              <span className="font-bold text-[#FFB800]">[08]</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-[#CCFF00] rounded-full shadow-[0_0_8px_#CCFF00]" />
+              <span className="text-[#666666]">UPTIME:</span>
+              <span className="font-bold">99.9%</span>
+            </div>
+          </div>
+
+          {/* Time/System on desktop */}
+          <div className="hidden md:flex flex-col items-end gap-0.5 opacity-40 font-mono text-[10px] tracking-widest uppercase">
             <div className="flex items-center gap-1.5">
               <DecryptedText text="Time:" animateOn="view" speed={100} />
               <span className="tabular-nums">{time}</span>
@@ -414,22 +439,22 @@ export default function HeroHUD() {
       </div>
 
       {/* Middle Section: Main Navigation & Stats */}
-      <div className="flex flex-grow items-center justify-between mt-4 mb-4 px-2 md:px-6">
+      <div className="flex flex-grow items-start md:items-center justify-between mt-2 md:mt-4 mb-4 px-0 md:px-6">
         {/* Navigation Stack */}
-        <div className="flex flex-col gap-4 md:gap-8 relative pl-3 md:pl-0 max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
-          <HUDButton label="Featured Projects" className="text-xs md:text-xl" />
-          <HUDButton label="Techstack" className="text-xs md:text-xl" />
-          <HUDButton label="About" className="text-xs md:text-xl" />
-          <HUDButton label="Beyond Coding" className="text-xs md:text-xl" />
-          <HUDButton label="Contact" className="text-xs md:text-xl" />
+        <div className="flex flex-col gap-2 md:gap-8 relative pl-3 md:pl-0 max-w-[40%] md:max-w-[35%] lg:max-w-[40%]">
+          <HUDButton label="Featured Projects" className="text-[10px] md:text-xl" />
+          <HUDButton label="Techstack" className="text-[10px] md:text-xl" />
+          <HUDButton label="About" className="text-[10px] md:text-xl" />
+          <HUDButton label="Beyond Coding" className="text-[10px] md:text-xl" />
+          <HUDButton label="Contact" className="text-[10px] md:text-xl" />
 
           <div className="absolute -left-2 md:-left-6 top-0 bottom-0 w-[1px] bg-[#FFB800]/20" />
         </div>
 
-        {/* System Stats Block - Hidden on small mobile */}
-        <div className="hidden sm:flex flex-col items-end gap-4 pointer-events-auto max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
-          <div className="flex flex-col items-end gap-2 p-4 md:p-6 border border-[#FFB800]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black">
-            <div className="text-[#FFB800] font-bold mb-1 md:mb-2 opacity-90 tracking-widest text-[10px] md:text-[11px]">
+        {/* System Stats Block - Desktop only (moved to top-right on mobile) */}
+        <div className="hidden md:flex flex-col items-end gap-4 pointer-events-auto max-w-[35%] lg:max-w-[40%]">
+          <div className="flex flex-col items-end gap-2 p-6 border border-[#FFB800]/10 bg-white/5 backdrop-blur-[2px] font-mono text-[10px] tracking-[0.2em] text-black">
+            <div className="text-[#FFB800] font-bold mb-2 opacity-90 tracking-widest text-[11px]">
               <DecryptedText
                 text="SYSTEM_STATS // 04-2026"
                 animateOn="view"
@@ -455,9 +480,9 @@ export default function HeroHUD() {
       </div>
 
       {/* Bottom Section: Horizon Line */}
-      <div className="flex justify-between items-end gap-4 pt-3 border-t border-[#FFB800]/10">
-        {/* Left: Status Block */}
-        <div className="flex flex-col gap-2 font-mono text-[7px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666] max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 md:gap-4 pt-3 border-t border-[#FFB800]/10">
+        {/* Row 1 (mobile) / Left (desktop): Availability & Location */}
+        <div className="flex flex-col gap-2 font-mono text-[7px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666]">
           <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-[#FFB800] bg-white/10">
             <div className="flex items-center gap-1.5 md:gap-2">
               <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_8px_rgba(204,255,0,0.5)]" />
@@ -482,40 +507,40 @@ export default function HeroHUD() {
           </div>
         </div>
 
-        {/* Right: Socials Stack */}
-        <div className="flex flex-col items-end gap-3 md:gap-4 h-full max-w-[30%] md:max-w-[35%] lg:max-w-[40%]">
-          <div className="flex gap-2 md:gap-4 justify-end items-center mb-1 md:mb-2">
+        {/* Row 2 (mobile) / Right (desktop): Socials */}
+        <div className="flex flex-col items-start md:items-end gap-2 md:gap-4">
+          <div className="flex gap-1.5 md:gap-4 items-center">
             <SocialLink
               icon={GithubIcon}
               href="https://github.com/RokiTheWise"
             />
-            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
             <SocialLink
               icon={LinkedinIcon}
               href="https://www.linkedin.com/in/dexter-jethro-enriquez/"
             />
-            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
             <SocialLink
               icon={InstagramIcon}
               href="https://www.instagram.com/dexjet_enriquez/"
             />
-            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
             <SocialLink
               icon={FacebookIcon}
               href="https://www.facebook.com/dexterjethro.enriquez"
             />
-            <span className="text-[#666666]/20 text-[10px]">|</span>
+            <span className="text-[#666666]/20 text-[8px] md:text-[10px]">|</span>
             <SocialLink
               icon={Mail}
               href="mailto:dexterjethro.enriquez@gmail.com"
             />
           </div>
 
-          <div className="flex items-end gap-0.5 md:gap-1 h-2.5 md:h-4 opacity-20">
+          <div className="hidden md:flex items-end gap-1 h-4 opacity-20">
             {[0.4, 0.7, 0.3, 0.9, 0.5, 0.8, 0.2].map((h, i) => (
               <motion.div
                 key={i}
-                className="w-0.5 md:w-1 bg-[#FFB800]"
+                className="w-1 bg-[#FFB800]"
                 animate={{
                   height: [`${h * 100}%`, `${(1 - h) * 100}%`, `${h * 100}%`],
                 }}

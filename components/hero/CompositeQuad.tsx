@@ -66,15 +66,22 @@ export default function CompositeQuad({
           ? IMAGE_SIZES.md
           : IMAGE_SIZES.lg;
 
-    const imgW = imageSize / width;
-    const imgH = imageSize / height;
-    
-    // Grounded: bottom is 0, top is imgH
+    // Responsive scale: smaller on mobile to keep face in the clear zone
+    const mobileScale = width < 768 ? 0.85 : 1.0;
+    const scaledSize = imageSize * mobileScale;
+
+    const imgW = scaledSize / width;
+    const imgH = scaledSize / height;
+
+    // On mobile, shift the image down so the face sits between top nav and bottom UI
+    const yOffset = width < 768 ? -0.05 : 0.0;
+
+    // Grounded: bottom is yOffset, top is yOffset + imgH
     mat.uniforms.uImageBounds.value.set(
-      0.5 - imgW / 2, // left
-      0.0,            // bottom (flush with viewport bottom)
-      0.5 + imgW / 2, // right
-      imgH            // top
+      0.5 - imgW / 2,      // left
+      yOffset,              // bottom (shifted down on mobile)
+      0.5 + imgW / 2,      // right
+      yOffset + imgH        // top
     );
   });
 

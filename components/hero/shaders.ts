@@ -199,9 +199,11 @@ void main() {
 
   // ── Composite: portrait over ghost (Porter-Duff "over") ──
   float outAlpha = portraitAlpha + ghost;
-  vec3 outRgb = outAlpha > 0.001
-    ? (blendedRgb * portraitAlpha + vec3(0.65) * ghost) / outAlpha
-    : vec3(0.0);
+
+  // Aggressive discard to eliminate black border artifacts on mobile
+  if (outAlpha < 0.02) discard;
+
+  vec3 outRgb = (blendedRgb * portraitAlpha + vec3(0.65) * ghost) / outAlpha;
 
   gl_FragColor = vec4(outRgb, outAlpha);
 }
