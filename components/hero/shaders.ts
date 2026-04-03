@@ -172,35 +172,32 @@ void main() {
                       * (1.0 - smoothstep(0.55, 0.7, distortedMask));
   float shimmer = edgeHighlight * 0.1;
 
-  // ── Image bounds ──
-  // Start at 0.0 so we NEVER sample outside the actual texture area.
-  // Fade over the first/last 2 % of the image to kill any edge texels.
+  // ── Image bounds (edge fade) ──
   vec2 boundsMin = uImageBounds.xy;
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
   float inBounds = smoothstep(0.0, 0.02, imgUv.x) * smoothstep(0.0, 0.02, 1.0 - imgUv.x)
                  * smoothstep(0.0, 0.02, imgUv.y) * smoothstep(0.0, 0.02, 1.0 - imgUv.y);
 
-  if (inBounds > 0.001) {
-    // ── Inside image: casual→business blend ──
-    vec2 safeUv = clamp(imgUv, 0.0, 1.0);
-    vec4 casual = texture2D(uCasualTex, safeUv);
-    vec4 business = texture2D(uBusinessTex, safeUv);
+  // ── Sample portraits ──
+  vec2 safeUv = clamp(imgUv, 0.0, 1.0);
+  vec4 casual = texture2D(uCasualTex, safeUv);
+  vec4 business = texture2D(uBusinessTex, safeUv);
 
-    // Linear interpolation: casual (default) → business (revealed by mask)
-    vec4 imgColor = mix(casual, business, metaball);
+  vec3 blendedRgb = mix(casual.rgb, business.rgb, metaball) + shimmer;
+  float portraitAlpha = casual.a * inBounds;
 
-    // Shimmer on mask edges
-    imgColor.rgb += shimmer;
+  // ── Ghost layer: continuous everywhere, fades under the portrait ──
+  // No if/else split → no visible rectangle at image boundary
+  float ghost = smoothstep(0.05, 0.3, rawMask) * 0.08 * (1.0 - portraitAlpha);
 
-    // Alpha from portrait cutout, multiplied by inBounds to
-    // smoothly erase any opaque edge texels at the rectangle border
-    gl_FragColor = vec4(imgColor.rgb, imgColor.a * inBounds);
-  } else {
-    // ── Outside image: ghost layer + shimmer ──
-    float ghost = smoothstep(0.05, 0.3, rawMask) * 0.08;
-    gl_FragColor = vec4(vec3(0.65) + shimmer, ghost);
-  }
+  // ── Composite: portrait over ghost (Porter-Duff "over") ──
+  float outAlpha = portraitAlpha + ghost;
+  vec3 outRgb = outAlpha > 0.001
+    ? (blendedRgb * portraitAlpha + vec3(0.65) * ghost) / outAlpha
+    : vec3(0.0);
+
+  gl_FragColor = vec4(outRgb, outAlpha);
 }
 `;
 
