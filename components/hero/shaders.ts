@@ -164,12 +164,12 @@ uniform sampler2D uMaskTex;
 uniform vec4 uImageBounds;
 uniform float uTime;
 uniform float uScrollWipe;
+uniform float uPortraitFade;
 
 varying vec2 vUv;
 
 void main() {
   // ── Sample raw mask, then distort UV by noise scaled by mask ──
-  // Where mask = 0 the distortion is zero → clean, flicker-free background
   float rawMask = texture2D(uMaskTex, vUv).r;
 
   vec2 distortion = vec2(
@@ -192,12 +192,8 @@ void main() {
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
 
-  // X-axis fade (left/right edges)
   float fadeX = smoothstep(0.0, 0.02, imgUv.x) * smoothstep(0.0, 0.02, 1.0 - imgUv.x);
-
-  // Y-axis fade (top edge crisp, bottom edge smooth gradient fade)
   float fadeY = smoothstep(0.0, 0.02, 1.0 - imgUv.y) * smoothstep(0.0, 0.15, imgUv.y);
-
   float inBounds = fadeX * fadeY;
 
   // ── Sample portraits ──
@@ -206,27 +202,26 @@ void main() {
   vec4 business = texture2D(uBusinessTex, safeUv);
 
   vec3 blendedRgb = mix(casual.rgb, business.rgb, metaball) + shimmer;
-  float portraitAlpha = casual.a * inBounds;
+  // Portrait dissolves as mask consumes it
+  float portraitAlpha = casual.a * inBounds * (1.0 - uPortraitFade);
 
-  // ── Ghost layer: continuous everywhere, fades under the portrait ──
-  // No if/else split → no visible rectangle at image boundary
+  // ── Ghost layer ──
   float ghost = smoothstep(0.05, 0.3, rawMask) * 0.08 * (1.0 - portraitAlpha);
 
-  // ── Composite: portrait over ghost (Porter-Duff "over") ──
+  // ── Composite: portrait over ghost ──
   float outAlpha = portraitAlpha + ghost;
   vec3 outRgb = vec3(0.0);
   if (outAlpha > 0.01) {
     outRgb = (blendedRgb * portraitAlpha + vec3(0.65) * ghost) / outAlpha;
   }
 
-  // ── Scroll wipe: expanding solid overlay driven by mask ──
+  // ── Scroll wipe: mask-driven white-out ──
   float wipeField = smoothstep(0.05, 0.4, rawMask) * uScrollWipe;
-  vec3 wipeColor = vec3(1.0); // clean white void
+  vec3 wipeColor = vec3(1.0);
 
   float finalAlpha = max(outAlpha, wipeField);
   if (finalAlpha < 0.01) discard;
 
-  // Color: existing content where it exists, wipe color elsewhere
   vec3 baseColor = outAlpha > 0.01 ? outRgb : wipeColor;
   vec3 finalRgb = mix(baseColor, wipeColor, wipeField);
 

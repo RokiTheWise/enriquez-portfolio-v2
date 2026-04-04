@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useSpring, useMotionValue } from "framer-motion";
+import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
+import type { MotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -345,7 +346,7 @@ const HUDButton = ({
   );
 };
 
-export default function HeroHUD() {
+export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -358,8 +359,12 @@ export default function HeroHUD() {
     return () => clearInterval(interval);
   }, []);
 
+  // Fade out HUD as mask expansion begins
+  const hudOpacity = useTransform(scrollYProgress, [0.02, 0.2], [1, 0]);
+
   return (
-    <div
+    <motion.div
+      style={{ opacity: hudOpacity }}
       className="absolute inset-0 z-10 pointer-events-none px-5 py-4 md:p-12 flex flex-col select-none overflow-hidden"
     >
       {/* Scanline / Grain Overlay */}
@@ -534,6 +539,6 @@ export default function HeroHUD() {
       <div className="absolute top-3 right-3 md:top-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-t border-r md:border-t-2 md:border-r-2 border-[#FFB800]/20" />
       <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-b border-l md:border-b-2 md:border-l-2 border-[#FFB800]/20" />
       <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-b border-r md:border-b-2 md:border-r-2 border-[#FFB800]/20" />
-    </div>
+    </motion.div>
   );
 }

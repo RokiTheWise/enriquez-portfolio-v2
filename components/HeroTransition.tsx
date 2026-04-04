@@ -23,8 +23,8 @@ export default function HeroTransition() {
     scrollProgressRef.current = v;
   });
 
-  // Hero container fades out at the tail end of the tunnel zoom + wipe
-  const opacity = useTransform(scrollYProgress, [0.78, 0.95], [1, 0]);
+  // Hero container fades after mask white-out is complete
+  const opacity = useTransform(scrollYProgress, [0.55, 0.75], [1, 0]);
 
   return (
     <div ref={containerRef} className="relative h-[250vh]">
@@ -33,7 +33,7 @@ export default function HeroTransition() {
           style={{ opacity }}
           className="w-full h-full will-change-[opacity]"
         >
-          <Hero scrollProgressRef={scrollProgressRef} />
+          <Hero scrollProgressRef={scrollProgressRef} scrollYProgress={scrollYProgress} />
         </motion.div>
       </div>
     </div>

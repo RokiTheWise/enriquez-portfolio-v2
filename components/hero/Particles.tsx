@@ -105,21 +105,13 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       uniforms.uMaskTex.value = maskTarget.texture;
     }
 
-    // Scroll progress
+    // Scroll progress — particles fade as mask expands
     const scrollP = heroRefs.scrollProgressRef.current;
-
-    // Particle fade: delayed to let tunnel zoom work first (0.35→0.75)
     uniforms.uScrollFade.value =
-      Math.max(0, Math.min(1, (scrollP - 0.35) / 0.4));
+      Math.max(0, Math.min(1, (scrollP - 0.1) / 0.35));
 
     const mesh = meshRef.current;
     if (!mesh) return;
-
-    // ── Z-axis tunnel zoom (particle depth = 0.1) ──
-    const particleZoom = 1.0 + scrollP * 0.4;
-    mesh.scale.setScalar(particleZoom);
-    // Very slow parallax Y drift (0.1 factor)
-    mesh.position.y = scrollP * 0.5;
 
     // Gentle rotation
     mesh.rotation.x = Math.sin(elapsed * 0.2) * 0.1;

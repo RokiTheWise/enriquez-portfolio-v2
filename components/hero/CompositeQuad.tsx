@@ -41,6 +41,7 @@ export default function CompositeQuad({
       uImageBounds: { value: new THREE.Vector4(0, 0, 1, 1) },
       uTime: { value: 0 },
       uScrollWipe: { value: 0 },
+      uPortraitFade: { value: 0 },
     }),
     [casualTex, businessTex, blackTex],
   );
@@ -61,9 +62,13 @@ export default function CompositeQuad({
     // Scroll progress
     const scrollP = heroRefs.scrollProgressRef.current;
 
-    // Scroll wipe overlay: 0.25→0.7 scroll maps to 0→1
+    // Scroll wipe overlay: 0.15→0.55 scroll maps to 0→1
     mat.uniforms.uScrollWipe.value =
-      Math.max(0, Math.min(1, (scrollP - 0.25) / 0.45));
+      Math.max(0, Math.min(1, (scrollP - 0.15) / 0.4));
+
+    // Portrait dissolves: 0.3→0.5 scroll maps to 0→1
+    mat.uniforms.uPortraitFade.value =
+      Math.max(0, Math.min(1, (scrollP - 0.3) / 0.2));
 
     // Compute image bounds in UV space [0,1]
     const { width, height } = state.size;
@@ -83,18 +88,16 @@ export default function CompositeQuad({
 
     const yOffset = isMobile ? 0.04 : 0.0;
 
-    // ── Z-axis tunnel zoom (portrait depth = 0.4) ──
-    const portraitZoom = 1.0 + scrollP * 1.2;
+    // ── Gentle zoom (+20% max) before mask consumes ──
+    const portraitZoom = 1.0 + scrollP * 0.2;
     const zW = imgW * portraitZoom;
     const zH = imgH * portraitZoom;
-    // Parallax Y drift at 0.4 factor
-    const parallaxY = scrollP * 0.12;
 
     mat.uniforms.uImageBounds.value.set(
       0.5 - zW / 2,
-      yOffset + parallaxY,
+      yOffset,
       0.5 + zW / 2,
-      yOffset + parallaxY + zH
+      yOffset + zH
     );
   });
 
