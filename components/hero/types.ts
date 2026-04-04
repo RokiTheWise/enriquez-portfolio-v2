@@ -17,6 +17,7 @@ export interface HeroRefs {
   trailRef: MutableRefObject<TrailPoint[]>;
   maskRef: MutableRefObject<WebGLRenderTarget | null>;
   hasEnteredRef: MutableRefObject<boolean>;
+  scrollProgressRef: MutableRefObject<number>;
 }
 
 /* ── Tuning constants ── */

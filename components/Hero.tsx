@@ -3,6 +3,7 @@
 import { useRef, useCallback, Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
+import type { MotionValue } from "framer-motion";
 import Particles from "./hero/Particles";
 import BrushStrokeMask from "./hero/BrushStrokeMask";
 import CompositeQuad from "./hero/CompositeQuad";
@@ -29,7 +30,12 @@ function HeroScene({ heroRefs }: { heroRefs: HeroRefs }) {
   );
 }
 
-export default function Hero() {
+interface HeroProps {
+  scrollProgressRef: React.MutableRefObject<number>;
+  scrollYProgress: MotionValue<number>;
+}
+
+export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const heroRefs: HeroRefs = useMemo(
@@ -47,8 +53,9 @@ export default function Hero() {
       },
       maskRef: { current: null },
       hasEnteredRef: { current: false },
+      scrollProgressRef,
     }),
-    [],
+    [scrollProgressRef],
   );
 
   const handleMouseMove = useCallback(
@@ -104,7 +111,7 @@ export default function Hero() {
           <HeroScene heroRefs={heroRefs} />
         </Suspense>
       </Canvas>
-      <HeroHUD />
+      <HeroHUD scrollYProgress={scrollYProgress} />
     </section>
   );
 }

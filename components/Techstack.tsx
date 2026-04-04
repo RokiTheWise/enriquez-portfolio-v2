@@ -1,127 +1,93 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useInView,
+} from "framer-motion";
 import { CharacterV1, Bracket } from "@/components/ui/text-scroll-animation";
+
+/* ── Registry data ── */
 
 interface TechItem {
   name: string;
   tag: string;
-  icon: string;
 }
 
-const CORE: TechItem[] = [
-  { name: "Python", tag: "Scripting", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/python.svg" },
-  { name: "Java", tag: "OOP", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/openjdk.svg" },
-  { name: "TypeScript", tag: "Safety", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/typescript.svg" },
-  { name: "Node.js", tag: "Runtime", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nodedotjs.svg" },
+const REGISTRY: TechItem[] = [
+  { name: "Python", tag: "CORE" },
+  { name: "Java", tag: "CORE" },
+  { name: "TypeScript", tag: "CORE" },
+  { name: "Node.js", tag: "RUNTIME" },
+  { name: "Next.js", tag: "FRAMEWORK" },
+  { name: "React", tag: "FRAMEWORK" },
+  { name: "Django", tag: "FRAMEWORK" },
+  { name: "Tailwind", tag: "STYLING" },
+  { name: "Vite", tag: "BUILD" },
+  { name: "Git", tag: "VERSION" },
+  { name: "GitHub", tag: "PLATFORM" },
+  { name: "Vercel", tag: "DEPLOY" },
+  { name: "Supabase", tag: "DATABASE" },
 ];
 
-const ECOSYSTEM: TechItem[] = [
-  { name: "Next.js", tag: "Fullstack", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nextdotjs.svg" },
-  { name: "React", tag: "Library", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/react.svg" },
-  { name: "Tailwind", tag: "Styling", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/tailwindcss.svg" },
-  { name: "Vite", tag: "Build", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vite.svg" },
-  { name: "Git", tag: "Version", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/git.svg" },
-  { name: "GitHub", tag: "Repo", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/github.svg" },
-  { name: "Vercel", tag: "Deploy", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vercel.svg" },
-  { name: "Supabase", tag: "Database", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/supabase.svg" },
-  { name: "Django", tag: "Web Framework", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/django.svg" },
-];
+/* ── Tech Module ── */
 
-function TechCard({
-  item,
-  index,
-  total,
-  scrollYProgress,
-}: {
-  item: TechItem;
-  index: number;
-  total: number;
-  scrollYProgress: any;
-}) {
-  const centerIndex = Math.floor(total / 2);
-  const dist = index - centerIndex;
-
-  const x = useTransform(scrollYProgress, [0, 0.5], [dist * 80, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [Math.abs(dist) * 40, 0]);
-  const itemOpacity = useTransform(scrollYProgress, [0, 0.35], [0, 1]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [0.7, 1]);
+function TechModule({ item, index }: { item: TechItem; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
     <motion.div
-      style={{ x, y, opacity: itemOpacity, scale }}
-      className="group relative flex flex-col items-center gap-2 p-4 md:p-5 border border-black/5 bg-white/60 backdrop-blur-sm hover:border-[#FFB800]/30 hover:bg-white/90 transition-colors duration-300 will-change-transform"
+      ref={ref}
+      initial={{ opacity: 0, x: -15, skewX: -3 }}
+      animate={
+        isInView
+          ? {
+              opacity: [0, 0.4, 0, 1],
+              x: [-15, -4, 0],
+              skewX: [-3, -1, 0],
+            }
+          : {}
+      }
+      transition={{
+        duration: 0.5,
+        delay: index * 0.04,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className="group relative border border-black/10 bg-[#f5f4f3] p-4 md:p-5 font-mono transition-all duration-300 hover:border-[#FFB800] cursor-default"
     >
-      <img
-        src={item.icon}
-        alt={item.name}
-        className="h-8 w-8 md:h-10 md:w-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-      />
-      <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-black uppercase">
-        {item.name}
-      </span>
-      <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] font-medium uppercase">
-        {item.tag}
-      </span>
+      {/* Status indicator + name */}
+      <div className="flex items-center gap-2.5 mb-1.5">
+        <span className="w-1 h-1 flex-shrink-0 bg-[#FFB800] shadow-[0_0_6px_rgba(255,184,0,0.6)]" />
+        <span className="text-xs md:text-sm font-bold tracking-wider text-black uppercase truncate">
+          {item.name}
+        </span>
+      </div>
 
-      {/* Hover corner accents */}
-      <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-[#FFB800]/0 group-hover:border-[#FFB800]/40 transition-colors duration-300" />
-      <div className="absolute bottom-1 right-1 w-2 h-2 border-b border-r border-[#FFB800]/0 group-hover:border-[#FFB800]/40 transition-colors duration-300" />
+      {/* Category tag */}
+      <div className="text-[9px] md:text-[10px] tracking-[0.2em] text-black/35 uppercase pl-3.5">
+        [ {item.tag} ]
+      </div>
+
+      {/* Hover crosshair / corner brackets */}
+      <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 border-t border-l border-[#FFB800]/0 group-hover:border-[#FFB800] transition-all duration-200" />
+      <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 border-t border-r border-[#FFB800]/0 group-hover:border-[#FFB800] transition-all duration-200" />
+      <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 border-b border-l border-[#FFB800]/0 group-hover:border-[#FFB800] transition-all duration-200" />
+      <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 border-b border-r border-[#FFB800]/0 group-hover:border-[#FFB800] transition-all duration-200" />
     </motion.div>
   );
 }
 
-function CategoryBlock({
-  label,
-  items,
-  scrollYProgress,
-}: {
-  label: string;
-  items: TechItem[];
-  scrollYProgress: any;
-}) {
-  const labelOpacity = useTransform(scrollYProgress, [0.1, 0.35], [0, 1]);
-  const labelY = useTransform(scrollYProgress, [0.1, 0.35], [20, 0]);
-
-  return (
-    <div className="flex flex-col gap-5 md:gap-6">
-      {/* Category header */}
-      <motion.div
-        style={{ opacity: labelOpacity, y: labelY }}
-        className="flex items-center gap-3 font-mono"
-      >
-        <span className="w-2 h-2 bg-[#FFB800]" />
-        <span className="text-xs md:text-sm tracking-[0.3em] font-bold text-black/50 uppercase">
-          {label}
-        </span>
-        <div className="flex-grow h-[1px] bg-[#FFB800]/15" />
-      </motion.div>
-
-      {/* Cards grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
-        {items.map((item, i) => (
-          <TechCard
-            key={item.name}
-            item={item}
-            index={i}
-            total={items.length}
-            scrollYProgress={scrollYProgress}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
+/* ── Main Section ── */
 
 export default function Techstack() {
   const headingRef = useRef<HTMLDivElement>(null);
-  const coreRef = useRef<HTMLDivElement>(null);
-  const ecoRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress: headingProgress } = useScroll({ target: headingRef });
-  const { scrollYProgress: coreProgress } = useScroll({ target: coreRef });
-  const { scrollYProgress: ecoProgress } = useScroll({ target: ecoRef });
+  const { scrollYProgress: headingProgress } = useScroll({
+    target: headingRef,
+  });
 
   const headingText = "tech stack";
   const characters = headingText.split("");
@@ -132,9 +98,9 @@ export default function Techstack() {
       {/* Block 1 — Heading scatter */}
       <div
         ref={headingRef}
-        className="relative flex h-[180vh] items-center justify-center overflow-hidden px-6"
+        className="relative flex h-[140vh] items-center justify-center overflow-hidden px-6"
       >
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-5">
           <div
             className="w-full text-center font-mono text-5xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter text-black"
             style={{ perspective: "500px" }}
@@ -160,34 +126,45 @@ export default function Techstack() {
             <span>tools I build with</span>
             <Bracket className="h-6 md:h-10 scale-x-[-1] text-[#FFB800]" />
           </motion.p>
+
+          {/* Registry subtitle */}
+          <motion.div
+            className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase"
+            style={{
+              opacity: useTransform(headingProgress, [0.35, 0.55], [0, 1]),
+            }}
+          >
+            ── System Registry v1.0 ──
+          </motion.div>
         </div>
       </div>
 
-      {/* Block 2 — Core & Languages */}
-      <div
-        ref={coreRef}
-        className="relative -mt-[80vh] flex h-[180vh] items-center justify-center overflow-hidden px-6 md:px-12"
-      >
-        <div className="w-full max-w-5xl">
-          <CategoryBlock
-            label="Core & Languages"
-            items={CORE}
-            scrollYProgress={coreProgress}
-          />
-        </div>
-      </div>
+      {/* Block 2 — Registry Grid */}
+      <div className="relative -mt-[50vh] px-6 md:px-12 pb-24">
+        <div className="mx-auto max-w-4xl">
+          {/* Section label */}
+          <div className="font-mono text-[10px] md:text-xs tracking-[0.25em] text-black/35 uppercase mb-6 flex items-center gap-3">
+            <span className="w-1.5 h-1.5 bg-[#FFB800]" />
+            <span>Registered Modules</span>
+            <div className="flex-grow h-[1px] bg-black/5" />
+            <span className="text-[#FFB800] font-bold tabular-nums">
+              {REGISTRY.length}
+            </span>
+          </div>
 
-      {/* Block 3 — Ecosystem & Tools */}
-      <div
-        ref={ecoRef}
-        className="relative -mt-[80vh] flex h-[180vh] items-center justify-center overflow-hidden px-6 md:px-12"
-      >
-        <div className="w-full max-w-5xl">
-          <CategoryBlock
-            label="Ecosystem & Tools"
-            items={ECOSYSTEM}
-            scrollYProgress={ecoProgress}
-          />
+          {/* Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+            {REGISTRY.map((item, i) => (
+              <TechModule key={item.name} item={item} index={i} />
+            ))}
+          </div>
+
+          {/* Bottom status line */}
+          <div className="mt-8 flex items-center gap-3 font-mono text-[9px] md:text-[10px] tracking-[0.15em] text-black/25 uppercase">
+            <div className="flex-grow h-[1px] bg-black/5" />
+            <span>all systems nominal</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse shadow-[0_0_6px_rgba(204,255,0,0.4)]" />
+          </div>
         </div>
       </div>
 

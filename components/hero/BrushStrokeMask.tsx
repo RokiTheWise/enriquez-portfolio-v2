@@ -65,6 +65,7 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
         uPoints: { value: pointsArr },
         uIntensities: { value: intensitiesArr },
         uTime: { value: 0 },
+        uScrollExpand: { value: 0 },
       },
       depthTest: false,
       depthWrite: false,
@@ -157,6 +158,11 @@ export default function BrushStrokeMask({ heroRefs }: BrushStrokeMaskProps) {
 
     maskMaterial.uniforms.uResolution.value.set(width, height);
     maskMaterial.uniforms.uTime.value = timeRef.current;
+
+    // Scroll-driven mask expansion: 0.15→0.7 scroll maps to 0→1
+    const scrollP = heroRefs.scrollProgressRef.current;
+    maskMaterial.uniforms.uScrollExpand.value =
+      Math.max(0, Math.min(1, (scrollP - 0.15) / 0.55));
 
     // ── Ping-pong FBO rendering ──
     const fboRead = pingRef.current === 0 ? fboA : fboB;

@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useSpring, useMotionValue } from "framer-motion";
+import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
+import type { MotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -345,7 +346,11 @@ const HUDButton = ({
   );
 };
 
-export default function HeroHUD() {
+interface HeroHUDProps {
+  scrollYProgress: MotionValue<number>;
+}
+
+export default function HeroHUD({ scrollYProgress }: HeroHUDProps) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -358,8 +363,14 @@ export default function HeroHUD() {
     return () => clearInterval(interval);
   }, []);
 
+  // Fade out HUD as user scrolls into the wipe zone
+  const hudOpacity = useTransform(scrollYProgress, [0.05, 0.25], [1, 0]);
+
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none px-5 py-4 md:p-12 flex flex-col select-none overflow-hidden">
+    <motion.div
+      style={{ opacity: hudOpacity }}
+      className="absolute inset-0 z-10 pointer-events-none px-5 py-4 md:p-12 flex flex-col select-none overflow-hidden"
+    >
       {/* Scanline / Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
@@ -535,6 +546,6 @@ export default function HeroHUD() {
       <div className="absolute top-3 right-3 md:top-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-t border-r md:border-t-2 md:border-r-2 border-[#FFB800]/20" />
       <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 w-6 h-6 md:w-12 md:h-12 border-b border-l md:border-b-2 md:border-l-2 border-[#FFB800]/20" />
       <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 w-6 h-6 md:w-12 md:h-12 border-b border-r md:border-b-2 md:border-r-2 border-[#FFB800]/20" />
-    </div>
+    </motion.div>
   );
 }

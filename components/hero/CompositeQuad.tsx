@@ -40,6 +40,7 @@ export default function CompositeQuad({
       uMaskTex: { value: blackTex },
       uImageBounds: { value: new THREE.Vector4(0, 0, 1, 1) },
       uTime: { value: 0 },
+      uScrollWipe: { value: 0 },
     }),
     [casualTex, businessTex, blackTex],
   );
@@ -56,6 +57,11 @@ export default function CompositeQuad({
     if (maskTarget) {
       mat.uniforms.uMaskTex.value = maskTarget.texture;
     }
+
+    // Scroll wipe overlay: 0.25→0.7 scroll maps to 0→1
+    const scrollP = heroRefs.scrollProgressRef.current;
+    mat.uniforms.uScrollWipe.value =
+      Math.max(0, Math.min(1, (scrollP - 0.25) / 0.45));
 
     // Compute image bounds in UV space [0,1]
     const { width, height } = state.size;

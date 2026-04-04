@@ -91,6 +91,7 @@ uniform vec2 uResolution;
 uniform vec3 uPoints[15]; // xy = pixel position (Y-up), z = radius
 uniform float uIntensities[15];
 uniform float uTime;
+uniform float uScrollExpand;
 
 varying vec2 vUv;
 
@@ -113,6 +114,19 @@ void main() {
   // Organic noise on field boundaries
   float edgeNoise = snoise(vec3(pixelPos * 0.004, uTime * 0.8));
   field += edgeNoise * 0.08 * smoothstep(0.02, 0.2, field);
+
+  // ── Scroll-driven expanding wipe from viewport center ──
+  if (uScrollExpand > 0.0) {
+    vec2 center = uResolution * 0.5;
+    float maxDist = length(uResolution * 0.5);
+    float dist = length(pixelPos - center) / maxDist;
+
+    float radius2 = uScrollExpand * 1.5;
+    float wipeNoise = snoise(vec3(pixelPos * 0.003, uTime * 0.3)) * 0.08;
+    float scrollField = 1.0 - smoothstep(radius2 - 0.2 + wipeNoise, radius2 + wipeNoise, dist);
+
+    field = max(field, scrollField);
+  }
 
   // Max of decayed previous and new field — persistent trail
   float result = max(prev, field);
@@ -149,6 +163,7 @@ uniform sampler2D uBusinessTex;
 uniform sampler2D uMaskTex;
 uniform vec4 uImageBounds;
 uniform float uTime;
+uniform float uScrollWipe;
 
 varying vec2 vUv;
 
@@ -176,13 +191,13 @@ void main() {
   vec2 boundsMin = uImageBounds.xy;
   vec2 boundsMax = uImageBounds.zw;
   vec2 imgUv = (vUv - boundsMin) / (boundsMax - boundsMin);
-  
+
   // X-axis fade (left/right edges)
   float fadeX = smoothstep(0.0, 0.02, imgUv.x) * smoothstep(0.0, 0.02, 1.0 - imgUv.x);
-  
+
   // Y-axis fade (top edge crisp, bottom edge smooth gradient fade)
   float fadeY = smoothstep(0.0, 0.02, 1.0 - imgUv.y) * smoothstep(0.0, 0.15, imgUv.y);
-  
+
   float inBounds = fadeX * fadeY;
 
   // ── Sample portraits ──
@@ -199,13 +214,23 @@ void main() {
 
   // ── Composite: portrait over ghost (Porter-Duff "over") ──
   float outAlpha = portraitAlpha + ghost;
+  vec3 outRgb = vec3(0.0);
+  if (outAlpha > 0.01) {
+    outRgb = (blendedRgb * portraitAlpha + vec3(0.65) * ghost) / outAlpha;
+  }
 
-  // Aggressive discard to eliminate black border artifacts on mobile
-  if (outAlpha < 0.02) discard;
+  // ── Scroll wipe: expanding solid overlay driven by mask ──
+  float wipeField = smoothstep(0.05, 0.4, rawMask) * uScrollWipe;
+  vec3 wipeColor = vec3(0.961, 0.957, 0.953); // #f5f4f3
 
-  vec3 outRgb = (blendedRgb * portraitAlpha + vec3(0.65) * ghost) / outAlpha;
+  float finalAlpha = max(outAlpha, wipeField);
+  if (finalAlpha < 0.01) discard;
 
-  gl_FragColor = vec4(outRgb, outAlpha);
+  // Color: existing content where it exists, wipe color elsewhere
+  vec3 baseColor = outAlpha > 0.01 ? outRgb : wipeColor;
+  vec3 finalRgb = mix(baseColor, wipeColor, wipeField);
+
+  gl_FragColor = vec4(finalRgb, finalAlpha);
 }
 `;
 
@@ -278,6 +303,7 @@ precision highp float;
 
 uniform float uTime;
 uniform sampler2D uMaskTex;
+uniform float uScrollFade;
 
 varying vec4 vRandom;
 varying vec3 vColor;
@@ -295,7 +321,8 @@ void main() {
   vec3 color = vColor + 0.2 * sin(uv.yxx + uTime + vRandom.y * 6.28);
   color = mix(color, color * 1.3, maskGlow * 0.5);
 
-  float alpha = 0.6 + maskGlow * 0.4;
+  float alpha = (0.6 + maskGlow * 0.4) * (1.0 - uScrollFade);
+  if (alpha < 0.01) discard;
 
   gl_FragColor = vec4(color, alpha);
 }

@@ -79,6 +79,7 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       uBaseSize: { value: PARTICLE_BASE_SIZE },
       uSizeRandomness: { value: PARTICLE_SIZE_RANDOMNESS },
       uMaskTex: { value: null as THREE.Texture | null },
+      uScrollFade: { value: 0 },
     };
 
     return {
@@ -103,6 +104,11 @@ export default function Particles({ heroRefs }: ParticlesProps) {
     if (maskTarget) {
       uniforms.uMaskTex.value = maskTarget.texture;
     }
+
+    // Scroll-driven particle fade: 0.15→0.55 maps to 0→1
+    const scrollP = heroRefs.scrollProgressRef.current;
+    uniforms.uScrollFade.value =
+      Math.max(0, Math.min(1, (scrollP - 0.15) / 0.4));
 
     const mesh = meshRef.current;
     if (!mesh) return;
