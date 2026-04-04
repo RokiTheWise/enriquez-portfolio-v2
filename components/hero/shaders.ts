@@ -221,7 +221,7 @@ void main() {
 
   // ── Scroll wipe: expanding solid overlay driven by mask ──
   float wipeField = smoothstep(0.05, 0.4, rawMask) * uScrollWipe;
-  vec3 wipeColor = vec3(0.961, 0.957, 0.953); // #f5f4f3
+  vec3 wipeColor = vec3(1.0); // clean white void
 
   float finalAlpha = max(outAlpha, wipeField);
   if (finalAlpha < 0.01) discard;

@@ -58,8 +58,10 @@ export default function CompositeQuad({
       mat.uniforms.uMaskTex.value = maskTarget.texture;
     }
 
-    // Scroll wipe overlay: 0.25→0.7 scroll maps to 0→1
+    // Scroll progress
     const scrollP = heroRefs.scrollProgressRef.current;
+
+    // Scroll wipe overlay: 0.25→0.7 scroll maps to 0→1
     mat.uniforms.uScrollWipe.value =
       Math.max(0, Math.min(1, (scrollP - 0.25) / 0.45));
 
@@ -72,7 +74,6 @@ export default function CompositeQuad({
           ? IMAGE_SIZES.md
           : IMAGE_SIZES.lg;
 
-    // Responsive scale: larger on mobile for a dominant portrait
     const isMobile = width < 768;
     const mobileScale = isMobile ? 1.1 : 1.0;
     const scaledSize = imageSize * mobileScale;
@@ -80,15 +81,20 @@ export default function CompositeQuad({
     const imgW = scaledSize / width;
     const imgH = scaledSize / height;
 
-    // On mobile, nudge portrait up so the face sits between nav (top) and footer (bottom).
-    // A small positive yOffset shifts the image upward in UV space.
     const yOffset = isMobile ? 0.04 : 0.0;
 
+    // ── Z-axis tunnel zoom (portrait depth = 0.4) ──
+    const portraitZoom = 1.0 + scrollP * 1.2;
+    const zW = imgW * portraitZoom;
+    const zH = imgH * portraitZoom;
+    // Parallax Y drift at 0.4 factor
+    const parallaxY = scrollP * 0.12;
+
     mat.uniforms.uImageBounds.value.set(
-      0.5 - imgW / 2,      // left
-      yOffset,              // bottom
-      0.5 + imgW / 2,      // right
-      yOffset + imgH        // top
+      0.5 - zW / 2,
+      yOffset + parallaxY,
+      0.5 + zW / 2,
+      yOffset + parallaxY + zH
     );
   });
 
