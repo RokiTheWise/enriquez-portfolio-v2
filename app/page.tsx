@@ -3,12 +3,10 @@
 import ReactLenis from "lenis/react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import HeroTransition from "@/components/HeroTransition";
-import Techstack from "@/components/Techstack";
 
 function ScrollProgressBar() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  // Fade in after hero section (~10-15% of total page scroll)
   const opacity = useTransform(scrollYProgress, [0.08, 0.14], [0, 1]);
 
   return (
@@ -24,7 +22,6 @@ export default function Home() {
     <ReactLenis root>
       <ScrollProgressBar />
       <HeroTransition />
-      <Techstack />
     </ReactLenis>
   );
 }

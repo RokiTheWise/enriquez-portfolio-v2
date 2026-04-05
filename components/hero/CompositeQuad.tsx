@@ -62,9 +62,8 @@ export default function CompositeQuad({
     // Scroll progress
     const scrollP = heroRefs.scrollProgressRef.current;
 
-    // Scroll wipe overlay: 0.15→0.55 scroll maps to 0→1
-    mat.uniforms.uScrollWipe.value =
-      Math.max(0, Math.min(1, (scrollP - 0.15) / 0.4));
+    // No white wipe — tech stack layer handles the reveal
+    mat.uniforms.uScrollWipe.value = 0;
 
     // Portrait dissolves: 0.3→0.5 scroll maps to 0→1
     mat.uniforms.uPortraitFade.value =

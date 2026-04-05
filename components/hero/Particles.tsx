@@ -105,10 +105,7 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       uniforms.uMaskTex.value = maskTarget.texture;
     }
 
-    // Scroll progress — particles fade as mask expands
-    const scrollP = heroRefs.scrollProgressRef.current;
-    uniforms.uScrollFade.value =
-      Math.max(0, Math.min(1, (scrollP - 0.1) / 0.35));
+    // Particles stay visible throughout — no scroll fade
 
     const mesh = meshRef.current;
     if (!mesh) return;

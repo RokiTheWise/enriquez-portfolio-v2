@@ -205,8 +205,8 @@ void main() {
   // Portrait dissolves as mask consumes it
   float portraitAlpha = casual.a * inBounds * (1.0 - uPortraitFade);
 
-  // ── Ghost layer ──
-  float ghost = smoothstep(0.05, 0.3, rawMask) * 0.08 * (1.0 - portraitAlpha);
+  // ── Ghost layer (also dissolves with portrait) ──
+  float ghost = smoothstep(0.05, 0.3, rawMask) * 0.08 * (1.0 - portraitAlpha) * (1.0 - uPortraitFade);
 
   // ── Composite: portrait over ghost ──
   float outAlpha = portraitAlpha + ghost;
