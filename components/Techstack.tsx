@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useMotionValueEvent } from "framer-motion";
-import type { MotionValue } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
 /* ── Data ── */
 
@@ -30,26 +29,22 @@ const REGISTRY: TechItem[] = [
 
 /* ── Tech Module ── */
 
-function TechModule({
-  item,
-  index,
-  revealed,
-}: {
-  item: TechItem;
-  index: number;
-  revealed: boolean;
-}) {
+function TechModule({ item, index }: { item: TechItem; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
+
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
       animate={
-        revealed
+        isInView
           ? { opacity: 1, scale: 1, filter: "blur(0px)" }
-          : { opacity: 0, scale: 0.95, filter: "blur(10px)" }
+          : undefined
       }
       transition={{
         duration: 0.5,
-        delay: revealed ? index * 0.05 : 0,
+        delay: index * 0.05,
         ease: [0.16, 1, 0.3, 1],
       }}
       className="group flex items-center gap-3 md:gap-4 p-4 md:p-5 cursor-default"
@@ -76,18 +71,9 @@ function TechModule({
 
 /* ── Main Section ── */
 
-interface TechstackProps {
-  scrollYProgress: MotionValue<number>;
-}
-
-export default function Techstack({ scrollYProgress }: TechstackProps) {
-  const [revealed, setRevealed] = useState(false);
-
-  // Trigger stagger when mask is ~80% expanded
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v > 0.4 && !revealed) setRevealed(true);
-    if (v < 0.35 && revealed) setRevealed(false);
-  });
+export default function Techstack() {
+  const headingRef = useRef<HTMLDivElement>(null);
+  const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
 
   // Split into rows of 4 for bottom borders
   const rows: TechItem[][] = [];
@@ -97,12 +83,14 @@ export default function Techstack({ scrollYProgress }: TechstackProps) {
 
   return (
     <section
-      className="relative w-full h-full bg-white flex flex-col items-center justify-center px-6 md:px-12"
+      id="techstack"
+      className="relative w-full bg-white px-6 md:px-12 py-24 md:py-32"
     >
       {/* Section header */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+        ref={headingRef}
+        initial={{ opacity: 0, y: 20 }}
+        animate={headingInView ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="mb-10 md:mb-14 text-center"
       >
@@ -115,7 +103,7 @@ export default function Techstack({ scrollYProgress }: TechstackProps) {
       </motion.div>
 
       {/* 4-Column Registry Grid */}
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-4xl mx-auto">
         {rows.map((row, rowIdx) => (
           <div
             key={rowIdx}
@@ -126,7 +114,6 @@ export default function Techstack({ scrollYProgress }: TechstackProps) {
                 key={item.name}
                 item={item}
                 index={rowIdx * 4 + colIdx}
-                revealed={revealed}
               />
             ))}
           </div>
