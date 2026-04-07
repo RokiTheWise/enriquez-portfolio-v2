@@ -346,7 +346,11 @@ const HUDButton = ({
   );
 };
 
-export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
+export default function HeroHUD({
+  scrollYProgress,
+}: {
+  scrollYProgress: MotionValue<number>;
+}) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -361,8 +365,12 @@ export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionVa
 
   // ── Scroll-driven exit: fade + slide + visibility + pointer-events ──
   const hudOpacity = useTransform(scrollYProgress, [0.02, 0.2], [1, 0]);
-  const hudVisibility = useTransform(hudOpacity, (v) => v <= 0.01 ? "hidden" as const : "visible" as const);
-  const hudPointerEvents = useTransform(hudOpacity, (v) => v <= 0.01 ? "none" as const : "auto" as const);
+  const hudVisibility = useTransform(hudOpacity, (v) =>
+    v <= 0.01 ? ("hidden" as const) : ("visible" as const),
+  );
+  const hudPointerEvents = useTransform(hudOpacity, (v) =>
+    v <= 0.01 ? ("none" as const) : ("auto" as const),
+  );
 
   // Left elements (identity, nav, footer-left) slide out left
   const slideLeft = useTransform(scrollYProgress, [0.02, 0.2], [0, -50]);
@@ -381,7 +389,10 @@ export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionVa
       {/* ═══ TOP ZONE: Identity + CTA ═══ */}
       <div className="flex justify-between items-start gap-3">
         {/* Identity Block — slides left */}
-        <motion.div style={{ x: slideLeft, pointerEvents: hudPointerEvents }} className="flex items-center gap-2 md:gap-3 max-w-[60%] md:max-w-[40%]">
+        <motion.div
+          style={{ x: slideLeft, pointerEvents: hudPointerEvents }}
+          className="flex items-center gap-2 md:gap-3 max-w-[60%] md:max-w-[40%]"
+        >
           <Image
             src="/DexDev-Logo.svg"
             alt="DexDev Logo"
@@ -410,7 +421,10 @@ export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionVa
         </motion.div>
 
         {/* Right CTA — slides right */}
-        <motion.div style={{ x: slideRight, pointerEvents: hudPointerEvents }} className="flex flex-col items-end gap-2 md:gap-6 flex-shrink-0">
+        <motion.div
+          style={{ x: slideRight, pointerEvents: hudPointerEvents }}
+          className="flex flex-col items-end gap-2 md:gap-6 flex-shrink-0"
+        >
           <ExploreButton />
 
           {/* Time/System — desktop only */}
@@ -428,8 +442,15 @@ export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionVa
       </div>
 
       {/* ═══ NAVIGATION: Directly below header on mobile, centered on desktop ═══ */}
-      <motion.div style={{ x: slideLeft, pointerEvents: hudPointerEvents }} className="mt-2 md:mt-0 md:flex-grow md:flex md:items-center md:px-6">
+      <motion.div
+        style={{ x: slideLeft, pointerEvents: hudPointerEvents }}
+        className="mt-2 md:mt-0 md:flex-grow md:flex md:items-center md:px-6"
+      >
         <div className="flex flex-col relative pl-3 md:pl-0 w-fit max-w-[70%] md:max-w-[40%]">
+          <HUDButton
+            label="About"
+            className="text-base md:text-xl leading-tight"
+          />
           <HUDButton
             label="Techstack"
             href="#techstack"
@@ -439,10 +460,7 @@ export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionVa
             label="Featured Projects"
             className="text-base md:text-xl leading-tight"
           />
-          <HUDButton
-            label="About"
-            className="text-base md:text-xl leading-tight"
-          />
+
           <HUDButton
             label="Beyond Coding"
             className="text-base md:text-xl leading-tight"
@@ -462,7 +480,10 @@ export default function HeroHUD({ scrollYProgress }: { scrollYProgress: MotionVa
       <div className="flex-grow md:hidden" />
 
       {/* ═══ BOTTOM ZONE: Footer — slides left ═══ */}
-      <motion.div style={{ x: slideLeft, pointerEvents: hudPointerEvents }} className="flex flex-col md:flex-row md:justify-between md:items-end pt-3 border-t border-[#FFB800]/10">
+      <motion.div
+        style={{ x: slideLeft, pointerEvents: hudPointerEvents }}
+        className="flex flex-col md:flex-row md:justify-between md:items-end pt-3 border-t border-[#FFB800]/10"
+      >
         {/* Availability & Location — always left-aligned */}
         <div className="font-mono text-[8px] md:text-[10px] tracking-[0.1em] md:tracking-[0.15em] text-[#666666]">
           <div className="flex flex-col gap-1 md:gap-1.5 p-2 md:p-3 border-l-2 border-[#FFB800] bg-white/10">
