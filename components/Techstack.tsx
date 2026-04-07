@@ -36,15 +36,11 @@ function TechModule({ item, index }: { item: TechItem; index: number }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-      animate={
-        isInView
-          ? { opacity: 1, scale: 1, filter: "blur(0px)" }
-          : undefined
-      }
+      initial={{ opacity: 0, y: 15 }}
+      animate={isInView ? { opacity: 1, y: 0 } : undefined}
       transition={{
         duration: 0.5,
-        delay: index * 0.05,
+        delay: index * 0.04,
         ease: [0.16, 1, 0.3, 1],
       }}
       className="group flex items-center gap-3 md:gap-4 p-4 md:p-5 cursor-default"

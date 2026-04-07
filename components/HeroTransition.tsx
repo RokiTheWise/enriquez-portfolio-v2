@@ -23,17 +23,17 @@ export default function HeroTransition() {
     scrollProgressRef.current = v;
   });
 
-  // Hero fades out as liquid wipe consumes it
-  const heroOpacity = useTransform(scrollYProgress, [0.5, 0.85], [1, 0]);
-  const heroVisibility = useTransform(heroOpacity, (v) =>
-    v <= 0.01 ? ("hidden" as const) : ("visible" as const),
+  // Hero stays visible while particles self-fade via shader (0.85→1.0),
+  // then gets removed entirely at scroll completion.
+  const heroVisibility = useTransform(scrollYProgress, (v) =>
+    v >= 0.99 ? ("hidden" as const) : ("visible" as const),
   );
 
   return (
     <div ref={containerRef} className="relative h-[200vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         <motion.div
-          style={{ opacity: heroOpacity, visibility: heroVisibility }}
+          style={{ visibility: heroVisibility }}
           className="absolute inset-0"
         >
           <Hero

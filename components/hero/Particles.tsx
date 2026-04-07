@@ -105,7 +105,9 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       uniforms.uMaskTex.value = maskTarget.texture;
     }
 
-    // Particles stay visible throughout — no scroll fade
+    // Elegant particle exit: fade opacity from 0.85 → 1.0 scroll
+    const scroll = heroRefs.scrollProgressRef.current;
+    uniforms.uScrollFade.value = Math.max(0, Math.min(1, (scroll - 0.85) / 0.15));
 
     const mesh = meshRef.current;
     if (!mesh) return;
