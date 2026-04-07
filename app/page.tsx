@@ -3,12 +3,13 @@
 import ReactLenis from "lenis/react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import HeroTransition from "@/components/HeroTransition";
+import About from "@/components/About";
 import Techstack from "@/components/Techstack";
 
 const NAV_ITEMS = [
+  { label: "About", href: "#about" },
   { label: "Tech Stack", href: "#techstack" },
   { label: "Projects", href: "#projects" },
-  { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -68,6 +69,7 @@ export default function Home() {
       <ScrollProgressBar />
       <NavBar />
       <HeroTransition />
+      <About />
       <Techstack />
     </ReactLenis>
   );
