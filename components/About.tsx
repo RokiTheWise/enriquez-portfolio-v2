@@ -1,130 +1,188 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-/* ── Detail row data ── */
-
-interface Detail {
-  label: string;
-  value: string;
-  accent?: boolean; // amber highlight on value
-}
-
-const DETAILS: Detail[] = [
-  { label: "Year Level", value: "2nd Year College" },
-  { label: "Performance", value: "3.72 QPI", accent: true },
-  { label: "Status", value: "Open for Internships", accent: true },
-  {
-    label: "Education",
-    value: "BS Computer Science \u00b7 Ateneo de Manila University",
-  },
-  {
-    label: "Scholarships",
-    value:
-      "Jose P. Rizal & EO-Ayala Scholar \u00b7 Full University & Corporate Merit",
-  },
-  {
-    label: "Leadership",
-    value: "SOSE Sanggunian (HR) \u00b7 Laro Loyola (Secretariat)",
-  },
-  { label: "Languages", value: "English, Tagalog \u00b7 French (Learning)" },
-  { label: "Location", value: "Quezon City, Metro Manila, PH" },
-];
-
-/* ── Shared spring ease ── */
-const ease = [0.16, 1, 0.3, 1] as const;
-
-/* ── Detail row component ── */
-
-function DetailRow({
-  detail,
-  index,
-  isInView,
-}: {
-  detail: Detail;
-  index: number;
-  isInView: boolean;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      animate={isInView ? { opacity: 1, x: 0 } : undefined}
-      transition={{ duration: 0.6, delay: 0.15 + index * 0.06, ease }}
-      className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-0 py-3 md:py-3.5 border-b border-black/[0.06] last:border-b-0"
-    >
-      <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black/30 uppercase md:w-36 flex-shrink-0">
-        {detail.label}
-      </span>
-      <span
-        className={`font-mono text-xs md:text-sm tracking-wide leading-relaxed ${
-          detail.accent
-            ? "text-[#FFB800] font-semibold"
-            : "text-black/70"
-        }`}
-      >
-        {detail.value}
-      </span>
-    </motion.div>
-  );
-}
-
-/* ── Main Section ── */
+gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const bioRef = useRef<HTMLDivElement>(null);
+  const metricsRef = useRef<HTMLDivElement>(null);
+  const academicRef = useRef<HTMLDivElement>(null);
+  const achievementRef = useRef<HTMLDivElement>(null);
+  const interestsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const ctx = gsap.context(() => {
+      const vw = window.innerWidth;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "+=120%",
+          pin: true,
+          scrub: 0.6,
+          anticipatePin: 1,
+        },
+      });
+
+      // Heading — fades in first
+      tl.fromTo(
+        headingRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.25 },
+        0,
+      );
+
+      // Bio — center, scale up + fade
+      tl.fromTo(
+        bioRef.current,
+        { opacity: 0, scale: 0.88 },
+        { opacity: 1, scale: 1, duration: 0.5 },
+        0.08,
+      );
+
+      // Left cards — slide from left (different speeds = parallax)
+      tl.fromTo(
+        metricsRef.current,
+        { x: -vw * 0.6, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.5 },
+        0.12,
+      );
+      tl.fromTo(
+        interestsRef.current,
+        { x: -vw * 0.8, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.6 },
+        0.18,
+      );
+
+      // Right cards — slide from right (different speeds)
+      tl.fromTo(
+        academicRef.current,
+        { x: vw * 0.6, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.5 },
+        0.14,
+      );
+      tl.fromTo(
+        achievementRef.current,
+        { x: vw * 0.8, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.6 },
+        0.22,
+      );
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
-      id="about"
       ref={sectionRef}
-      className="relative w-full bg-white px-6 md:px-12 py-24 md:py-32 overflow-hidden"
+      id="about"
+      className="relative h-screen bg-white overflow-hidden"
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="h-full flex flex-col justify-center px-6 md:px-12 max-w-6xl mx-auto">
         {/* ── Heading ── */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={isInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ duration: 0.7, ease }}
-          className="mb-4 md:mb-6"
-        >
+        <div ref={headingRef} className="mb-8 md:mb-10 opacity-0">
           <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
             About
           </h2>
-        </motion.div>
+          <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
+            Profile Overview
+          </div>
+        </div>
 
-        {/* ── Paragraph ── */}
-        <motion.p
-          initial={{ opacity: 0, x: -30 }}
-          animate={isInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ duration: 0.7, delay: 0.08, ease }}
-          className="font-mono text-sm md:text-base leading-relaxed text-black/50 max-w-2xl mb-12 md:mb-16"
-        >
-          I came to Computer Science because I wanted to build things that
-          matter. That became a consistent thread of building software for
-          communities, tools that reduce friction, products that reach people
-          rather than just users.
-        </motion.p>
+        {/* ── Bento Grid ── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {/* Bio — center, 2×2 on desktop */}
+          <div
+            ref={bioRef}
+            className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 border border-black/[0.08] p-6 md:p-8 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+          >
+            <div className="group-hover:-translate-y-1 transition-transform duration-300">
+              <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
+                I came to Computer Science because I wanted to build things that
+                matter. That became a consistent thread of building software for
+                communities, tools that reduce friction, products that reach
+                people rather than just users.
+              </p>
+            </div>
+          </div>
 
-        {/* ── Accent line ── */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={isInView ? { scaleX: 1 } : undefined}
-          transition={{ duration: 0.8, delay: 0.1, ease }}
-          className="h-[1px] bg-black/[0.08] origin-left mb-1"
-        />
+          {/* Metrics — top-left */}
+          <div
+            ref={metricsRef}
+            className="md:col-start-1 md:row-start-1 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center items-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+          >
+            <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
+              <span className="font-mono text-4xl md:text-5xl font-bold tracking-tighter text-black">
+                3.72
+              </span>
+              <span className="block font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-1">
+                Cumulative QPI
+              </span>
+            </div>
+          </div>
 
-        {/* ── Detail registry ── */}
-        <div>
-          {DETAILS.map((detail, i) => (
-            <DetailRow
-              key={detail.label}
-              detail={detail}
-              index={i}
-              isInView={isInView}
-            />
-          ))}
+          {/* Interests — bottom-left */}
+          <div
+            ref={interestsRef}
+            className="md:col-start-1 md:row-start-2 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+          >
+            <div className="group-hover:-translate-y-1 transition-transform duration-300">
+              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] uppercase font-semibold">
+                Interests
+              </span>
+              <p className="font-mono text-xs md:text-sm text-black/60 mt-2 leading-relaxed">
+                Civic Tech, Basketball, Philippine History
+              </p>
+            </div>
+          </div>
+
+          {/* Academic — top-right */}
+          <div
+            ref={academicRef}
+            className="md:col-start-4 md:row-start-1 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+          >
+            <div className="group-hover:-translate-y-1 transition-transform duration-300">
+              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] uppercase font-semibold">
+                Education
+              </span>
+              <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
+                BS Computer Science
+              </p>
+              <p className="font-mono text-[10px] md:text-xs text-black/40 mt-0.5">
+                Ateneo de Manila University
+              </p>
+              <p className="font-mono text-[10px] md:text-xs text-black/30 mt-0.5">
+                2nd Year
+              </p>
+            </div>
+          </div>
+
+          {/* Achievement — bottom-right */}
+          <div
+            ref={achievementRef}
+            className="md:col-start-4 md:row-start-2 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+          >
+            <div className="group-hover:-translate-y-1 transition-transform duration-300">
+              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] uppercase font-semibold">
+                Scholarships
+              </span>
+              <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
+                Jose P. Rizal & EO-Ayala Scholar
+              </p>
+              <p className="font-mono text-[10px] md:text-xs text-black/40 mt-0.5">
+                Full University & Corporate Merit
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
