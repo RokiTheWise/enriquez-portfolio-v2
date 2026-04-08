@@ -23,14 +23,13 @@ export default function HeroTransition() {
     scrollProgressRef.current = v;
   });
 
-  // Hero stays visible while particles self-fade via shader (0.85→1.0),
-  // then gets removed entirely at scroll completion.
+  // Particles self-fade 0.50→0.80 via shader; hide wrapper once done.
   const heroVisibility = useTransform(scrollYProgress, (v) =>
-    v >= 0.99 ? ("hidden" as const) : ("visible" as const),
+    v >= 0.84 ? ("hidden" as const) : ("visible" as const),
   );
 
   return (
-    <div ref={containerRef} className="relative h-[200vh]">
+    <div ref={containerRef} className="relative h-[150vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         <motion.div
           style={{ visibility: heroVisibility }}

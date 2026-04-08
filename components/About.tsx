@@ -22,6 +22,14 @@ export default function About() {
     const ctx = gsap.context(() => {
       const vw = window.innerWidth;
 
+      const allCards = [
+        bioRef.current,
+        metricsRef.current,
+        interestsRef.current,
+        academicRef.current,
+        achievementRef.current,
+      ].filter(Boolean);
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -33,11 +41,13 @@ export default function About() {
         },
       });
 
+      /* ── Phase 1: Assembly (0 → 0.55) ── */
+
       // Heading — fades in first
       tl.fromTo(
         headingRef.current,
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.25 },
+        { opacity: 1, y: 0, duration: 0.18 },
         0,
       );
 
@@ -45,36 +55,51 @@ export default function About() {
       tl.fromTo(
         bioRef.current,
         { opacity: 0, scale: 0.88 },
-        { opacity: 1, scale: 1, duration: 0.5 },
-        0.08,
+        { opacity: 1, scale: 1, duration: 0.35 },
+        0.06,
       );
 
       // Left cards — slide from left (different speeds = parallax)
       tl.fromTo(
         metricsRef.current,
         { x: -vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5 },
-        0.12,
+        { x: 0, opacity: 1, duration: 0.35 },
+        0.10,
       );
       tl.fromTo(
         interestsRef.current,
         { x: -vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6 },
-        0.18,
+        { x: 0, opacity: 1, duration: 0.40 },
+        0.14,
       );
 
       // Right cards — slide from right (different speeds)
       tl.fromTo(
         academicRef.current,
         { x: vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5 },
-        0.14,
+        { x: 0, opacity: 1, duration: 0.35 },
+        0.12,
       );
       tl.fromTo(
         achievementRef.current,
         { x: vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6 },
-        0.22,
+        { x: 0, opacity: 1, duration: 0.40 },
+        0.18,
+      );
+
+      /* ── Phase 2: Hold (0.55 → 0.72) — cards stay assembled ── */
+      // (implicit — no tweens in this range, grid is locked in place)
+
+      /* ── Phase 3: Exit (0.72 → 1.0) — fade out + slide up ── */
+      tl.to(
+        headingRef.current,
+        { opacity: 0, y: -20, duration: 0.15 },
+        0.72,
+      );
+      tl.to(
+        allCards,
+        { opacity: 0, y: -30, duration: 0.22, stagger: 0.02 },
+        0.74,
       );
     }, section);
 
@@ -100,7 +125,7 @@ export default function About() {
 
         {/* ── Bento Grid ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {/* Bio — center, 2×2 on desktop */}
+          {/* Bio — center, 2x2 on desktop */}
           <div
             ref={bioRef}
             className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 border border-black/[0.08] p-6 md:p-8 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
