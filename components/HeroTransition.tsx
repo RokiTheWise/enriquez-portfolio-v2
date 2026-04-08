@@ -23,9 +23,10 @@ export default function HeroTransition() {
     scrollProgressRef.current = v;
   });
 
-  // Particles self-fade 0.50→0.80 via shader; hide wrapper once done.
+  // Keep hero white canvas visible until container almost ends so About
+  // entrance paints seamlessly on top (later DOM sibling = higher z).
   const heroVisibility = useTransform(scrollYProgress, (v) =>
-    v >= 0.84 ? ("hidden" as const) : ("visible" as const),
+    v >= 0.98 ? ("hidden" as const) : ("visible" as const),
   );
 
   return (

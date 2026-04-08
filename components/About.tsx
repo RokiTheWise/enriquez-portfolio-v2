@@ -30,77 +30,99 @@ export default function About() {
         achievementRef.current,
       ].filter(Boolean);
 
-      const tl = gsap.timeline({
+      /* ═══════════════════════════════════════════════════════════
+         Phase 1 — ENTRANCE (no pin)
+         Plays while the section scrolls from viewport-bottom → top.
+         Cards assemble during the natural scroll, so there is ZERO
+         dead white space after the hero.
+         ═══════════════════════════════════════════════════════════ */
+      const entranceTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.5,
+        },
+      });
+
+      // Heading
+      entranceTl.fromTo(
+        headingRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.3 },
+        0,
+      );
+
+      // Bio — center, scale up + fade
+      entranceTl.fromTo(
+        bioRef.current,
+        { opacity: 0, scale: 0.88 },
+        { opacity: 1, scale: 1, duration: 0.6 },
+        0.1,
+      );
+
+      // Left cards — parallax from left
+      entranceTl.fromTo(
+        metricsRef.current,
+        { x: -vw * 0.6, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.55 },
+        0.15,
+      );
+      entranceTl.fromTo(
+        interestsRef.current,
+        { x: -vw * 0.8, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.6 },
+        0.22,
+      );
+
+      // Right cards — parallax from right
+      entranceTl.fromTo(
+        academicRef.current,
+        { x: vw * 0.6, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.55 },
+        0.18,
+      );
+      entranceTl.fromTo(
+        achievementRef.current,
+        { x: vw * 0.8, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.6 },
+        0.25,
+      );
+
+      /* ═══════════════════════════════════════════════════════════
+         Phase 2 — PIN + HOLD + EXIT
+         Once the section reaches the top it pins. The first ~70 %
+         of pin-scroll is a hold (no tweens → cards stay assembled).
+         The last 30 % is the exit animation. Tech Stack can only
+         appear after the pin releases.
+         ═══════════════════════════════════════════════════════════ */
+      const pinTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=120%",
+          end: "+=150%",
           pin: true,
           scrub: 0.6,
           anticipatePin: 1,
         },
       });
 
-      /* ── Phase 1: Assembly (0 → 0.55) ── */
+      // 0 → 0.70  — hold (no tweens, grid is locked)
 
-      // Heading — fades in first
-      tl.fromTo(
+      // 0.70 → 1.0 — exit
+      pinTl.to(
         headingRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.18 },
-        0,
+        { opacity: 0, y: -20, duration: 0.12 },
+        0.70,
       );
-
-      // Bio — center, scale up + fade
-      tl.fromTo(
-        bioRef.current,
-        { opacity: 0, scale: 0.88 },
-        { opacity: 1, scale: 1, duration: 0.35 },
-        0.06,
-      );
-
-      // Left cards — slide from left (different speeds = parallax)
-      tl.fromTo(
-        metricsRef.current,
-        { x: -vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.35 },
-        0.10,
-      );
-      tl.fromTo(
-        interestsRef.current,
-        { x: -vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.40 },
-        0.14,
-      );
-
-      // Right cards — slide from right (different speeds)
-      tl.fromTo(
-        academicRef.current,
-        { x: vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.35 },
-        0.12,
-      );
-      tl.fromTo(
-        achievementRef.current,
-        { x: vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.40 },
-        0.18,
-      );
-
-      /* ── Phase 2: Hold (0.55 → 0.72) — cards stay assembled ── */
-      // (implicit — no tweens in this range, grid is locked in place)
-
-      /* ── Phase 3: Exit (0.72 → 1.0) — fade out + slide up ── */
-      tl.to(
-        headingRef.current,
-        { opacity: 0, y: -20, duration: 0.15 },
+      pinTl.to(
+        allCards,
+        { opacity: 0, y: -30, duration: 0.20, stagger: 0.02 },
         0.72,
       );
-      tl.to(
-        allCards,
-        { opacity: 0, y: -30, duration: 0.22, stagger: 0.02 },
-        0.74,
-      );
+
+      // Force timeline length to 1.0 so hold/exit proportions are exact
+      pinTl.addLabel("end", 1.0);
     }, section);
 
     return () => ctx.revert();
