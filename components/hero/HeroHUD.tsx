@@ -166,6 +166,7 @@ const ExploreButton = () => {
       whileTap={{ scale: 0.95 }}
       onMouseEnter={scramble}
       onMouseLeave={stopScramble}
+      onClick={() => window.open("/Enriquez_DexterJethro_Resume.pdf", "_blank")}
       className="pointer-events-auto relative group overflow-hidden border border-black bg-black px-5 py-2.5 md:px-10 md:py-4 font-mono text-[10px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase text-white transition-colors"
     >
       <div className="relative z-10 flex items-center gap-2">
