@@ -200,8 +200,9 @@ export default function About() {
      (scale, border) don't conflict with GSAP inline styles. */
   const card =
     "border border-white/10 backdrop-blur-md bg-black/[0.02] " +
-    "hover:border-[#FFB800] hover:scale-[1.02] " +
-    "transition-all duration-300 group h-full";
+    "hover:border-[#FFB800] hover:scale-[1.02] hover:-translate-y-[5px] " +
+    "hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] " +
+    "transition-all duration-300 group h-full rounded-xl";
 
   return (
     <section
@@ -221,14 +222,14 @@ export default function About() {
         </div>
 
         {/* ── Bento Grid ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
 
           {/* ── Bio — center 2×2 ── */}
           <div
             ref={bioRef}
             className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 opacity-0"
           >
-            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
+            <div className={`${card} p-10 md:p-12 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
                   I came to Computer Science because I wanted to build things that
@@ -246,7 +247,7 @@ export default function About() {
             className="md:col-start-1 md:row-start-1 opacity-0"
           >
             <div
-              className={`${card} p-7 md:p-8 flex flex-col justify-center items-center`}
+              className={`${card} p-8 md:p-10 flex flex-col justify-center items-center`}
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
                 {/* Ring + number */}
@@ -268,7 +269,7 @@ export default function About() {
             ref={interestsRef}
             className="md:col-start-1 md:row-start-2 opacity-0"
           >
-            <div className={`${card} p-7 md:p-8 flex flex-col justify-center`}>
+            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Interests
@@ -285,7 +286,7 @@ export default function About() {
             ref={academicRef}
             className="md:col-start-4 md:row-start-1 opacity-0"
           >
-            <div className={`${card} p-7 md:p-8 flex flex-col justify-center`}>
+            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Education
@@ -325,7 +326,7 @@ export default function About() {
             ref={achievementRef}
             className="md:col-start-4 md:row-start-2 opacity-0"
           >
-            <div className={`${card} p-7 md:p-8 flex flex-col justify-center`}>
+            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Scholarships

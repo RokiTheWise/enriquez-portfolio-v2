@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import HeroTransition from "@/components/HeroTransition";
 import About from "@/components/About";
 import Techstack from "@/components/Techstack";
+import FeaturedProjects from "@/components/FeaturedProjects";
 
 const NAV_ITEMS = [
   { label: "About", href: "#about" },
@@ -29,9 +30,12 @@ function ScrollProgressBar() {
 function NavBar() {
   // Pixel-based scroll — immune to GSAP pin-spacer height changes.
   // Hero HUD fades at scrollP 0.02→0.20 within a 150vh container (50vh scroll),
-  // so HUD is gone by ~100px. Navbar fades in at 100→300px and stays forever.
+  // so HUD is gone by ~100px. Navbar slides in at 100→300px and stays forever.
   const { scrollY } = useScroll();
   const navOpacity = useTransform(scrollY, [100, 300], [0, 1]);
+  const navY = useTransform(scrollY, [100, 300], [-20, 0]);
+  const navBlur = useTransform(scrollY, [100, 300], [12, 0]);
+  const navFilter = useTransform(navBlur, (v) => `blur(${v}px)`);
   const navPointerEvents = useTransform(navOpacity, (v) =>
     v > 0.01 ? ("auto" as const) : ("none" as const),
   );
@@ -39,7 +43,7 @@ function NavBar() {
   return (
     <motion.header
       className="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-sm border-b border-black/[0.08]"
-      style={{ opacity: navOpacity, pointerEvents: navPointerEvents }}
+      style={{ opacity: navOpacity, y: navY, filter: navFilter, pointerEvents: navPointerEvents }}
     >
       <nav className="flex items-center justify-between px-6 md:px-12 h-12">
         <a
@@ -73,6 +77,7 @@ export default function Home() {
       <HeroTransition />
       <About />
       <Techstack />
+      <FeaturedProjects />
     </ReactLenis>
   );
 }
