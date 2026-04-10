@@ -69,6 +69,17 @@ function QPIRing() {
         strokeDashoffset={C}
         transform="rotate(-90 60 60)"
       />
+      {/* Centered number */}
+      <text
+        x="60"
+        y="60"
+        textAnchor="middle"
+        dominantBaseline="central"
+        className="font-mono text-[34px] font-bold tracking-tighter"
+        fill="black"
+      >
+        3.72
+      </text>
     </svg>
   );
 }
@@ -177,14 +188,10 @@ export default function About() {
       // 0 → 0.70  — hold (no tweens, grid is locked)
 
       // 0.70 → 1.0 — exit
-      pinTl.to(
-        headingRef.current,
-        { opacity: 0, y: -20, duration: 0.12 },
-        0.70,
-      );
+      pinTl.to(headingRef.current, { opacity: 0, y: -20, duration: 0.12 }, 0.7);
       pinTl.to(
         allCards,
-        { opacity: 0, y: -30, duration: 0.20, stagger: 0.02 },
+        { opacity: 0, y: -30, duration: 0.2, stagger: 0.02 },
         0.72,
       );
 
@@ -223,19 +230,26 @@ export default function About() {
 
         {/* ── Bento Grid ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-
           {/* ── Bio — center 2×2 ── */}
           <div
             ref={bioRef}
             className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 opacity-0"
           >
-            <div className={`${card} p-10 md:p-12 flex flex-col justify-center`}>
+            <div
+              className={`${card} p-10 md:p-12 flex flex-col justify-center`}
+            >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
-                  I came to Computer Science because I wanted to build things that
-                  matter. That became a consistent thread of building software for
-                  communities, tools that reduce friction, products that reach
-                  people rather than just users.
+                  I came to Computer Science because I wanted to build things
+                  that matter. That became a consistent thread of building
+                  software for communities, tools that reduce friction, products
+                  that reach people rather than just users.
+                </p>
+                <br></br>
+                <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
+                  Outside of building, I lead, organize, and keep learning.
+                  Currently picking up French. Always looking for the next
+                  problem worth solving.
                 </p>
               </div>
             </div>
@@ -251,11 +265,8 @@ export default function About() {
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
                 {/* Ring + number */}
-                <div className="relative w-28 h-28 md:w-32 md:h-32 flex items-center justify-center mx-auto">
+                <div className="relative w-28 h-28 md:w-32 md:h-32 mx-auto">
                   <QPIRing />
-                  <span className="relative z-10 font-mono text-5xl md:text-6xl font-bold tracking-tighter text-black">
-                    3.72
-                  </span>
                 </div>
                 <span className="block font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-3">
                   Cumulative QPI
@@ -275,7 +286,7 @@ export default function About() {
                   Interests
                 </span>
                 <p className="font-mono text-xs md:text-sm text-black/60 mt-2 leading-relaxed">
-                  Civic Tech, Basketball, Philippine History
+                  Civic Tech, Basketball, Formula One, and the Oxford comma.
                 </p>
               </div>
             </div>
@@ -340,7 +351,6 @@ export default function About() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
