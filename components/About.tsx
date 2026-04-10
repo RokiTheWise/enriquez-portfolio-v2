@@ -6,6 +6,75 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ═══════════════════════════════════════════════════════════
+   QPI Performance Ring — SVG circle that animates 0→93%
+   when the card scrolls into view.
+   ═══════════════════════════════════════════════════════════ */
+function QPIRing() {
+  const ringRef = useRef<SVGCircleElement>(null);
+  const R = 52;
+  const C = 2 * Math.PI * R; // ≈ 326.7
+  const pct = 0.93;
+
+  useEffect(() => {
+    const el = ringRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { strokeDashoffset: C },
+        {
+          strokeDashoffset: C * (1 - pct),
+          duration: 1.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        },
+      );
+    });
+
+    return () => ctx.revert();
+  }, [C, pct]);
+
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full"
+      viewBox="0 0 120 120"
+      fill="none"
+    >
+      {/* Track ring */}
+      <circle
+        cx="60"
+        cy="60"
+        r={R}
+        stroke="rgba(0,0,0,0.05)"
+        strokeWidth="3"
+        fill="none"
+      />
+      {/* Animated progress ring */}
+      <circle
+        ref={ringRef}
+        cx="60"
+        cy="60"
+        r={R}
+        stroke="#FFB800"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        strokeDasharray={C}
+        strokeDashoffset={C}
+        transform="rotate(-90 60 60)"
+      />
+    </svg>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -31,10 +100,9 @@ export default function About() {
       ].filter(Boolean);
 
       /* ═══════════════════════════════════════════════════════════
-         Phase 1 — ENTRANCE (no pin)
-         Plays while the section scrolls from viewport-bottom → top.
-         Cards assemble during the natural scroll, so there is ZERO
-         dead white space after the hero.
+         Phase 1 — ENTRANCE  (no pin)
+         Cards snap into grid positions from the sides with a
+         spring-like back.out ease for a mechanical "snap" feel.
          ═══════════════════════════════════════════════════════════ */
       const entranceTl = gsap.timeline({
         scrollTrigger: {
@@ -53,39 +121,39 @@ export default function About() {
         0,
       );
 
-      // Bio — center, scale up + fade
+      // Bio — center, scale up + fade with snap
       entranceTl.fromTo(
         bioRef.current,
         { opacity: 0, scale: 0.88 },
-        { opacity: 1, scale: 1, duration: 0.6 },
+        { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2)" },
         0.1,
       );
 
-      // Left cards — parallax from left
+      // Left cards — spring-snap from left
       entranceTl.fromTo(
         metricsRef.current,
         { x: -vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.55 },
+        { x: 0, opacity: 1, duration: 0.55, ease: "back.out(2.5)" },
         0.15,
       );
       entranceTl.fromTo(
         interestsRef.current,
         { x: -vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6 },
+        { x: 0, opacity: 1, duration: 0.6, ease: "back.out(2.5)" },
         0.22,
       );
 
-      // Right cards — parallax from right
+      // Right cards — spring-snap from right
       entranceTl.fromTo(
         academicRef.current,
         { x: vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.55 },
+        { x: 0, opacity: 1, duration: 0.55, ease: "back.out(2.5)" },
         0.18,
       );
       entranceTl.fromTo(
         achievementRef.current,
         { x: vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6 },
+        { x: 0, opacity: 1, duration: 0.6, ease: "back.out(2.5)" },
         0.25,
       );
 
@@ -93,8 +161,7 @@ export default function About() {
          Phase 2 — PIN + HOLD + EXIT
          Once the section reaches the top it pins. The first ~70 %
          of pin-scroll is a hold (no tweens → cards stay assembled).
-         The last 30 % is the exit animation. Tech Stack can only
-         appear after the pin releases.
+         The last 30 % is the exit animation.
          ═══════════════════════════════════════════════════════════ */
       const pinTl = gsap.timeline({
         scrollTrigger: {
@@ -128,6 +195,14 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
+  /* ── Shared card shell ──
+     Separated from the GSAP wrapper so hover transforms
+     (scale, border) don't conflict with GSAP inline styles. */
+  const card =
+    "border border-white/10 backdrop-blur-md bg-black/[0.02] " +
+    "hover:border-[#FFB800] hover:scale-[1.02] " +
+    "transition-all duration-300 group h-full";
+
   return (
     <section
       ref={sectionRef}
@@ -147,89 +222,124 @@ export default function About() {
 
         {/* ── Bento Grid ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {/* Bio — center, 2x2 on desktop */}
+
+          {/* ── Bio — center 2×2 ── */}
           <div
             ref={bioRef}
-            className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 border border-black/[0.08] p-6 md:p-8 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+            className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 opacity-0"
           >
-            <div className="group-hover:-translate-y-1 transition-transform duration-300">
-              <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
-                I came to Computer Science because I wanted to build things that
-                matter. That became a consistent thread of building software for
-                communities, tools that reduce friction, products that reach
-                people rather than just users.
-              </p>
+            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
+              <div className="group-hover:-translate-y-1 transition-transform duration-300">
+                <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
+                  I came to Computer Science because I wanted to build things that
+                  matter. That became a consistent thread of building software for
+                  communities, tools that reduce friction, products that reach
+                  people rather than just users.
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Metrics — top-left */}
+          {/* ── QPI — top-left  (with performance ring) ── */}
           <div
             ref={metricsRef}
-            className="md:col-start-1 md:row-start-1 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center items-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+            className="md:col-start-1 md:row-start-1 opacity-0"
           >
-            <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
-              <span className="font-mono text-4xl md:text-5xl font-bold tracking-tighter text-black">
-                3.72
-              </span>
-              <span className="block font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-1">
-                Cumulative QPI
-              </span>
+            <div
+              className={`${card} p-7 md:p-8 flex flex-col justify-center items-center`}
+            >
+              <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
+                {/* Ring + number */}
+                <div className="relative w-28 h-28 md:w-32 md:h-32 flex items-center justify-center mx-auto">
+                  <QPIRing />
+                  <span className="relative z-10 font-mono text-5xl md:text-6xl font-bold tracking-tighter text-black">
+                    3.72
+                  </span>
+                </div>
+                <span className="block font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-3">
+                  Cumulative QPI
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Interests — bottom-left */}
+          {/* ── Interests — bottom-left ── */}
           <div
             ref={interestsRef}
-            className="md:col-start-1 md:row-start-2 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+            className="md:col-start-1 md:row-start-2 opacity-0"
           >
-            <div className="group-hover:-translate-y-1 transition-transform duration-300">
-              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] uppercase font-semibold">
-                Interests
-              </span>
-              <p className="font-mono text-xs md:text-sm text-black/60 mt-2 leading-relaxed">
-                Civic Tech, Basketball, Philippine History
-              </p>
+            <div className={`${card} p-7 md:p-8 flex flex-col justify-center`}>
+              <div className="group-hover:-translate-y-1 transition-transform duration-300">
+                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                  Interests
+                </span>
+                <p className="font-mono text-xs md:text-sm text-black/60 mt-2 leading-relaxed">
+                  Civic Tech, Basketball, Philippine History
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Academic — top-right */}
+          {/* ── Education — top-right ── */}
           <div
             ref={academicRef}
-            className="md:col-start-4 md:row-start-1 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+            className="md:col-start-4 md:row-start-1 opacity-0"
           >
-            <div className="group-hover:-translate-y-1 transition-transform duration-300">
-              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] uppercase font-semibold">
-                Education
-              </span>
-              <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
-                BS Computer Science
-              </p>
-              <p className="font-mono text-[10px] md:text-xs text-black/40 mt-0.5">
-                Ateneo de Manila University
-              </p>
-              <p className="font-mono text-[10px] md:text-xs text-black/30 mt-0.5">
-                2nd Year
-              </p>
+            <div className={`${card} p-7 md:p-8 flex flex-col justify-center`}>
+              <div className="group-hover:-translate-y-1 transition-transform duration-300">
+                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                  Education
+                </span>
+                <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
+                  BS Computer Science
+                </p>
+                <p className="font-mono text-[10px] md:text-xs text-black/25 mt-0.5">
+                  Ateneo de Manila University
+                </p>
+
+                {/* Structured labels */}
+                <div className="flex gap-4 mt-3">
+                  <div>
+                    <span className="font-mono text-[8px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                      Year Level
+                    </span>
+                    <p className="font-mono text-[10px] md:text-xs text-black/50 mt-0.5">
+                      2nd Year
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-mono text-[8px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                      Status
+                    </span>
+                    <p className="font-mono text-[10px] md:text-xs text-black/50 mt-0.5">
+                      Enrolled
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Achievement — bottom-right */}
+          {/* ── Scholarships — bottom-right ── */}
           <div
             ref={achievementRef}
-            className="md:col-start-4 md:row-start-2 border border-black/[0.08] p-5 md:p-6 flex flex-col justify-center hover:border-[#FFB800] transition-colors duration-300 group opacity-0"
+            className="md:col-start-4 md:row-start-2 opacity-0"
           >
-            <div className="group-hover:-translate-y-1 transition-transform duration-300">
-              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-[#FFB800] uppercase font-semibold">
-                Scholarships
-              </span>
-              <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
-                Jose P. Rizal & EO-Ayala Scholar
-              </p>
-              <p className="font-mono text-[10px] md:text-xs text-black/40 mt-0.5">
-                Full University & Corporate Merit
-              </p>
+            <div className={`${card} p-7 md:p-8 flex flex-col justify-center`}>
+              <div className="group-hover:-translate-y-1 transition-transform duration-300">
+                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                  Scholarships
+                </span>
+                <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
+                  Jose P. Rizal & EO-Ayala Scholar
+                </p>
+                <p className="font-mono text-[10px] md:text-xs text-black/25 mt-0.5">
+                  Full University & Corporate Merit
+                </p>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
