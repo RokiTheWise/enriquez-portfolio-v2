@@ -1,7 +1,21 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+/*
+ * Horizontal scroll approach: CSS sticky + Framer Motion.
+ *
+ * - A tall outer wrapper provides the vertical scroll runway
+ *   (height = SLIDE_COUNT * 100vh).
+ * - Inside it, a `sticky top-0` container locks to the viewport.
+ * - Framer Motion's useScroll tracks progress through the wrapper (0→1).
+ * - useTransform maps that progress to a negative translateX on the track.
+ *
+ * No GSAP, no pin-spacers, works natively with Lenis.
+ */
+
+const SLIDE_COUNT = 3;
 
 /* ═══════════════════════════════════════════
    Project Data
@@ -90,27 +104,18 @@ function ViewportBrackets({ color }: { color: string }) {
 }
 
 /* ═══════════════════════════════════════════
-   Project Card
+   Project Slide (full-viewport panel)
    ═══════════════════════════════════════════ */
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
+function ProjectSlide({ project }: { project: Project }) {
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="relative py-20 md:py-28"
-    >
-      {/* Large background index */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+    <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center">
+      {/* z-0 : Enormous outlined background index */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <span
           className="font-mono font-bold leading-none"
           style={{
-            fontSize: "clamp(200px, 40vh, 500px)",
+            fontSize: "40vh",
             WebkitTextStroke: "1px rgba(0,0,0,0.03)",
             color: "transparent",
           }}
@@ -120,7 +125,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center gap-10 md:gap-16 max-w-6xl mx-auto">
+      <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-14 max-w-6xl w-full px-8 md:px-16">
         {/* Technical Viewport (image) */}
         <div className="relative w-full md:w-[55%] aspect-[16/10] flex-shrink-0">
           <ViewportBrackets color={project.accentColor} />
@@ -188,7 +193,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.description}
           </p>
 
-          {/* Tech Registry — matches Techstack monochromatic style */}
+          {/* Tech Registry */}
           <div className="flex flex-col gap-2 mt-1">
             <span className="font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase">
               Tech Registry
@@ -226,49 +231,105 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
         </div>
       </div>
-
-      {/* Bottom rule between projects */}
-      <div className="max-w-6xl mx-auto mt-20 md:mt-28 h-[1px] bg-black/[0.04]" />
-    </motion.div>
+    </div>
   );
 }
 
 /* ═══════════════════════════════════════════
-   FeaturedProjects — Vertical Scroll
+   FeaturedProjects — Horizontal Scroll Gallery
+
+   Uses CSS sticky + Framer Motion (no GSAP).
+   The tall wrapper provides vertical scroll runway.
+   The sticky container locks to the viewport.
+   useScroll progress drives the horizontal translateX.
    ═══════════════════════════════════════════ */
 
 export default function FeaturedProjects() {
-  const headingRef = useRef<HTMLDivElement>(null);
-  const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Track vertical scroll progress through the tall wrapper (0 → 1)
+  const { scrollYProgress } = useScroll({
+    target: wrapperRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Map scroll progress → horizontal translate
+  // At progress 0 the track is at x=0 (showing slide 1).
+  // At progress 1 the track has shifted left by (SLIDE_COUNT - 1) viewports.
+  const x = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0vw", `${-(SLIDE_COUNT - 1) * 100}vw`],
+  );
 
   return (
-    <section id="projects" className="relative w-full bg-white px-6 md:px-12 py-24 md:py-32">
-      {/* Section header */}
-      <motion.div
-        ref={headingRef}
-        initial={{ opacity: 0, y: 20 }}
-        animate={headingInView ? { opacity: 1, y: 0 } : undefined}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="mb-4 md:mb-8 max-w-6xl mx-auto"
+    <section id="projects">
+      {/*
+        Tall wrapper — provides the vertical scroll runway.
+        height = SLIDE_COUNT * 100vh so each "page" of scroll
+        reveals the next horizontal slide.
+      */}
+      <div
+        ref={wrapperRef}
+        className="relative bg-white"
+        style={{ height: `${SLIDE_COUNT * 100}vh` }}
       >
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-2 h-[1px] bg-[#FFB800]" />
-          <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFB800]/60 uppercase">
-            Section 03
-          </span>
-        </div>
-        <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
-          Featured Projects
-        </h2>
-        <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
-          Deployment Archive // Selected Work
-        </div>
-      </motion.div>
+        {/* Sticky container — locks to viewport while wrapper scrolls */}
+        <div className="sticky top-0 h-screen overflow-hidden">
+          {/* HUD Overlay: Section header */}
+          <div className="absolute top-8 md:top-12 left-6 md:left-12 z-30 pointer-events-none">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-2 h-[1px] bg-[#FFB800]" />
+              <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFB800]/60 uppercase">
+                Section 03
+              </span>
+            </div>
+            <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase">
+              Featured Projects
+            </h2>
+            <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/20 uppercase">
+              Deployment Archive // Selected Work
+            </div>
+          </div>
 
-      {/* Project cards — stacked vertically */}
-      {PROJECTS.map((project, i) => (
-        <ProjectCard key={project.title} project={project} index={i} />
-      ))}
+          {/* HUD Overlay: Progress pips */}
+          <div className="absolute bottom-8 md:bottom-12 left-6 md:left-12 z-30 pointer-events-none">
+            <div className="flex items-center gap-4">
+              {PROJECTS.map((p, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span
+                    className="font-mono text-[8px] tracking-[0.2em] uppercase"
+                    style={{ color: `${p.accentColor}60` }}
+                  >
+                    {p.index}
+                  </span>
+                  <div
+                    className="w-8 md:w-12 h-[1px]"
+                    style={{ background: `${p.accentColor}30` }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* HUD Overlay: Scroll hint */}
+          <div className="absolute bottom-8 md:bottom-12 right-6 md:right-12 z-30 pointer-events-none">
+            <span className="font-mono text-[8px] tracking-[0.25em] text-black/[0.12] uppercase flex items-center gap-2">
+              Scroll &rarr;
+            </span>
+          </div>
+
+          {/* Horizontal track — translated by scroll progress */}
+          <motion.div
+            className="flex h-full will-change-transform"
+            style={{ x }}
+          >
+            {PROJECTS.map((project) => (
+              <ProjectSlide key={project.title} project={project} />
+            ))}
+          </motion.div>
+        </div>
+      </div>
     </section>
   );
 }
