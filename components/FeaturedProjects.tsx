@@ -15,7 +15,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
  * No GSAP, no pin-spacers, works natively with Lenis.
  */
 
-const SLIDE_COUNT = 3;
+const SLIDE_COUNT = 4; // 3 projects + 1 "View All" CTA panel
 
 /* ═══════════════════════════════════════════
    Project Data
@@ -327,6 +327,55 @@ export default function FeaturedProjects() {
             {PROJECTS.map((project) => (
               <ProjectSlide key={project.title} project={project} />
             ))}
+
+            {/* 4th panel — View All Projects CTA */}
+            <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center">
+              {/* Background index */}
+              <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+                <span
+                  className="font-mono font-bold leading-none"
+                  style={{
+                    fontSize: "40vh",
+                    WebkitTextStroke: "1px rgba(0,0,0,0.03)",
+                    color: "transparent",
+                  }}
+                >
+                  //
+                </span>
+              </div>
+
+              <div className="relative z-10 flex flex-col items-center gap-8 text-center px-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-[1px] bg-[#FFB800]/30" />
+                  <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFB800]/60 uppercase">
+                    Full Database
+                  </span>
+                  <div className="w-8 h-[1px] bg-[#FFB800]/30" />
+                </div>
+
+                <h3 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase leading-[0.95]">
+                  Project Archive
+                </h3>
+
+                <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/40 max-w-sm">
+                  A complete log of deployed systems, experiments, and academic coursework.
+                </p>
+
+                <a
+                  href="/archive"
+                  className="group font-mono text-xs md:text-sm tracking-[0.15em] uppercase text-black/50 hover:text-[#FFB800] transition-colors duration-300 flex items-center gap-3 border border-black/[0.08] hover:border-[#FFB800]/40 px-8 py-4 mt-4"
+                >
+                  <span>View All Projects</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+                    &rarr;
+                  </span>
+                </a>
+
+                <span className="font-mono text-[8px] tracking-[0.25em] text-black/15 uppercase mt-4">
+                  {PROJECTS.length} featured // 6 total entries
+                </span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
