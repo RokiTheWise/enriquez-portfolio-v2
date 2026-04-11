@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 /*
@@ -29,53 +30,57 @@ interface Project {
   heroImage: string;
   registry: { name: string; tag: string }[];
   accentColor: string;
+  liveUrl: string;
 }
 
 const PROJECTS: Project[] = [
   {
     index: "01",
-    title: "Ace & Co. Accounting",
-    classification: "PROFESSIONAL_WORK",
+    title: "Aklatang Galera",
+    classification: "CIVIC_TECH",
     description:
-      "A full-service accounting platform with integrated client portals and automated scheduling. Streamlines document exchange, deadline tracking, and real-time financial reporting for small-to-mid enterprises.",
-    heroImage: "/projects/ace-and-co.png",
+      "A bilingual civic portal centralizing 100+ educational, livelihood, and government resources for Puerto Galera. Features Semantic Scholar\u2013powered research, 34+ scholarly databases, and a curated public services hub. Lighthouse 100 on desktop, 98 mobile.",
+    heroImage: "/Aklatang-Galera.png",
     registry: [
-      { name: "React", tag: "FRAMEWORK" },
-      { name: "Django", tag: "BACKEND" },
-      { name: "Python", tag: "CORE" },
+      { name: "Next.js", tag: "FRAMEWORK" },
+      { name: "React", tag: "UI" },
+      { name: "TypeScript", tag: "CORE" },
       { name: "Tailwind", tag: "STYLING" },
     ],
-    accentColor: "#FFB800",
+    accentColor: "#CCFF00",
+    liveUrl: "https://aklatang-galera.djenriquez.dev",
   },
   {
     index: "02",
     title: "LogiSketch",
-    classification: "DIGITAL_LOGIC_CORE",
+    classification: "DIGITAL_LOGIC_SYNTHESIS",
     description:
-      "A digital logic circuit designer and Boolean logic synthesis tool. Renders gate-level schematics on a Canvas API surface with real-time truth-table generation and expression minimization via Quine\u2013McCluskey.",
-    heroImage: "/projects/logisketch.png",
+      "A reactive Boolean logic synthesis tool featuring a recursive descent parser, Quine\u2013McCluskey minimization for optimal SOP reduction, and a custom schematic routing engine generating NAND/NOR circuits with vertical bus alignment.",
+    heroImage: "/LogiSketch.png",
     registry: [
-      { name: "React", tag: "FRAMEWORK" },
+      { name: "Next.js", tag: "FRAMEWORK" },
+      { name: "React", tag: "UI" },
       { name: "TypeScript", tag: "CORE" },
-      { name: "Canvas API", tag: "RENDER" },
-      { name: "Vite", tag: "BUILD" },
+      { name: "React Flow", tag: "RENDER" },
     ],
     accentColor: "#00D4FF",
+    liveUrl: "https://logisketch.djenriquez.dev",
   },
   {
     index: "03",
-    title: "Aklatang Galera",
-    classification: "CIVIC_TECH",
+    title: "ACE & Company",
+    classification: "CORPORATE_WEB",
     description:
-      "A community knowledge portal and digital library system for local government units. Provides full-text search, role-based document access, and offline-first synchronization for underserved barangay libraries.",
-    heroImage: "/projects/aklatang-galera.png",
+      "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Achieves perfect 100 Lighthouse scores in Performance, SEO, and Best Practices with dynamic sitemap, Open Graph, and fluid Framer Motion animations.",
+    heroImage: "/ACE.png",
     registry: [
       { name: "Next.js", tag: "FRAMEWORK" },
-      { name: "TypeScript", tag: "CORE" },
-      { name: "Supabase", tag: "DATABASE" },
+      { name: "React", tag: "UI" },
       { name: "Tailwind", tag: "STYLING" },
+      { name: "Framer Motion", tag: "ANIMATION" },
     ],
-    accentColor: "#CCFF00",
+    accentColor: "#FFB800",
+    liveUrl: "https://aceandco.org",
   },
 ];
 
@@ -131,26 +136,13 @@ function ProjectSlide({ project }: { project: Project }) {
           <ViewportBrackets color={project.accentColor} />
 
           <div className="absolute inset-[8px] border border-black/[0.06] overflow-hidden bg-black/[0.015]">
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(135deg, ${project.accentColor}06 0%, ${project.accentColor}10 50%, ${project.accentColor}04 100%)`,
-              }}
+            <Image
+              src={project.heroImage}
+              alt={project.title}
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 768px) 100vw, 55vw"
             />
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-              <span
-                className="font-mono text-6xl md:text-8xl font-bold leading-none"
-                style={{
-                  WebkitTextStroke: `1px ${project.accentColor}20`,
-                  color: "transparent",
-                }}
-              >
-                {project.index}
-              </span>
-              <span className="font-mono text-[8px] tracking-[0.3em] text-black/15 uppercase">
-                [ viewport ]
-              </span>
-            </div>
             <div
               className="absolute bottom-0 left-0 right-0 h-[1px]"
               style={{ background: project.accentColor }}
@@ -219,15 +211,15 @@ function ProjectSlide({ project }: { project: Project }) {
 
           {/* CTAs */}
           <div className="mt-2 flex items-center gap-4">
-            <button className="group/btn font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/30 hover:text-[#FFB800] transition-colors duration-300 flex items-center gap-2">
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/btn font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/30 hover:text-[#FFB800] transition-colors duration-300 flex items-center gap-2"
+            >
               <span>View Deployment</span>
               <span className="inline-block transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
-            </button>
-            <span className="w-[1px] h-3 bg-black/[0.08]" />
-            <button className="group/btn font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/30 hover:text-[#FFB800] transition-colors duration-300 flex items-center gap-2">
-              <span>Source</span>
-              <span className="inline-block transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
