@@ -6,12 +6,22 @@ import HeroTransition from "@/components/HeroTransition";
 import About from "@/components/About";
 import Techstack from "@/components/Techstack";
 import FeaturedProjects from "@/components/FeaturedProjects";
+import StaggeredMenu from "@/components/StaggeredMenu";
 
-const NAV_ITEMS = [
-  { label: "About", href: "#about" },
-  { label: "Tech Stack", href: "#techstack" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
+const MENU_ITEMS = [
+  { label: "Home", ariaLabel: "Go to top", link: "#" },
+  { label: "About", ariaLabel: "About section", link: "#about" },
+  { label: "Tech Stack", ariaLabel: "Tech stack section", link: "#techstack" },
+  { label: "Projects", ariaLabel: "Featured projects", link: "#projects" },
+  { label: "Contact", ariaLabel: "Get in touch", link: "#contact" },
+];
+
+const SOCIAL_ITEMS = [
+  { label: "GitHub", link: "https://github.com/RokiTheWise" },
+  { label: "LinkedIn", link: "https://www.linkedin.com/in/dexter-jethro-enriquez/" },
+  { label: "Instagram", link: "https://www.instagram.com/dexjet_enriquez/" },
+  { label: "Facebook", link: "https://www.facebook.com/dexterjethro.enriquez" },
+  { label: "Email", link: "mailto:dexterjethro.enriquez@gmail.com" },
 ];
 
 function ScrollProgressBar() {
@@ -27,45 +37,32 @@ function ScrollProgressBar() {
   );
 }
 
-function NavBar() {
-  // Pixel-based scroll — immune to GSAP pin-spacer height changes.
-  // Hero HUD fades at scrollP 0.02→0.20 within a 150vh container (50vh scroll),
-  // so HUD is gone by ~100px. Navbar slides in at 100→300px and stays forever.
+function NavMenu() {
   const { scrollY } = useScroll();
   const navOpacity = useTransform(scrollY, [100, 300], [0, 1]);
-  const navY = useTransform(scrollY, [100, 300], [-20, 0]);
-  const navBlur = useTransform(scrollY, [100, 300], [12, 0]);
-  const navFilter = useTransform(navBlur, (v) => `blur(${v}px)`);
   const navPointerEvents = useTransform(navOpacity, (v) =>
     v > 0.01 ? ("auto" as const) : ("none" as const),
   );
 
   return (
-    <motion.header
-      className="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-sm border-b border-black/[0.08]"
-      style={{ opacity: navOpacity, y: navY, filter: navFilter, pointerEvents: navPointerEvents }}
-    >
-      <nav className="flex items-center justify-between px-6 md:px-12 h-12">
-        <a
-          href="#"
-          className="font-mono text-[11px] md:text-sm font-semibold tracking-tight text-black uppercase"
-        >
-          Dexter Jethro Enriquez
-        </a>
-        <ul className="hidden md:flex items-center gap-8">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className="font-mono text-[11px] tracking-[0.12em] text-black/50 uppercase hover:text-black transition-colors duration-200"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </motion.header>
+    <motion.div style={{ opacity: navOpacity, pointerEvents: navPointerEvents }}>
+      <StaggeredMenu
+        position="right"
+        items={MENU_ITEMS}
+        socialItems={SOCIAL_ITEMS}
+        displaySocials
+        displayItemNumbering
+        logoUrl="/DexDev-Logo.svg"
+        logoText="Dexter Jethro Enriquez"
+        resumeUrl="/Enriquez_DexterJethro_Resume.pdf"
+        menuButtonColor="#000"
+        openMenuButtonColor="#000"
+        changeMenuColorOnOpen={false}
+        colors={["#FFF3D6", "#FFB800"]}
+        accentColor="#FFB800"
+        isFixed
+      />
+    </motion.div>
   );
 }
 
@@ -73,7 +70,7 @@ export default function Home() {
   return (
     <ReactLenis root>
       <ScrollProgressBar />
-      <NavBar />
+      <NavMenu />
       <HeroTransition />
       <About />
       <Techstack />
