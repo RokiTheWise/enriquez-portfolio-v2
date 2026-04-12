@@ -117,7 +117,7 @@ function ViewportBrackets({ color }: { color: string }) {
 
 function ProjectSlide({ project }: { project: Project }) {
   return (
-    <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center">
+    <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-52 pb-20">
       {/* z-0 : Enormous outlined background index */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <span
@@ -283,7 +283,7 @@ export default function FeaturedProjects() {
         {/* Sticky container — locks to viewport while wrapper scrolls */}
         <div className="sticky top-0 h-screen overflow-hidden">
           {/* HUD Overlay: Section header */}
-          <div className="absolute top-8 md:top-12 left-6 md:left-12 z-30 pointer-events-none">
+          <div className="absolute top-24 left-6 md:left-12 z-30 pointer-events-none">
             <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase">
               Featured Projects
             </h2>
@@ -329,7 +329,7 @@ export default function FeaturedProjects() {
             ))}
 
             {/* 4th panel — View All Projects CTA */}
-            <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center">
+            <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-52 pb-20">
               {/* Background index */}
               <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
                 <span

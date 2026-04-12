@@ -279,7 +279,7 @@ export default function About() {
         glowColor={GLOW_COLOR}
       />
 
-      <div className="h-full flex flex-col pt-14 md:pt-0 md:justify-center px-4 md:px-12 max-w-6xl mx-auto">
+      <div className="h-full flex flex-col pt-24 md:pt-0 md:justify-center px-4 md:px-12 max-w-6xl mx-auto">
         {/* ── Heading ── */}
         <div ref={headingRef} className="mb-3 md:mb-10 opacity-0">
           <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-tighter text-black uppercase">
