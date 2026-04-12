@@ -11,75 +11,51 @@ import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 
 function ActivityCard({
   index,
-  label,
   highlight,
   accentColor,
+  image,
 }: {
   index: string;
-  label: string;
   highlight: string;
   accentColor: string;
+  image: string;
 }) {
   const arm = 20;
   return (
-    <div className="relative flex h-full w-full flex-col justify-between border border-black/[0.06] bg-white p-6 md:p-8">
+    <div className="relative flex h-full w-full flex-col border border-black/[0.06] bg-white overflow-hidden">
       {/* Corner brackets */}
-      <svg className="absolute top-0 left-0" width={arm} height={arm}>
-        <path
-          d={`M0 ${arm} L0 0 L${arm} 0`}
-          fill="none"
-          stroke={accentColor}
-          strokeWidth="1"
-        />
+      <svg className="absolute top-0 left-0 z-10" width={arm} height={arm}>
+        <path d={`M0 ${arm} L0 0 L${arm} 0`} fill="none" stroke={accentColor} strokeWidth="1" />
       </svg>
-      <svg className="absolute top-0 right-0" width={arm} height={arm}>
-        <path
-          d={`M0 0 L${arm} 0 L${arm} ${arm}`}
-          fill="none"
-          stroke={accentColor}
-          strokeWidth="1"
-        />
+      <svg className="absolute top-0 right-0 z-10" width={arm} height={arm}>
+        <path d={`M0 0 L${arm} 0 L${arm} ${arm}`} fill="none" stroke={accentColor} strokeWidth="1" />
       </svg>
-      <svg className="absolute bottom-0 left-0" width={arm} height={arm}>
-        <path
-          d={`M0 0 L0 ${arm} L${arm} ${arm}`}
-          fill="none"
-          stroke={accentColor}
-          strokeWidth="1"
-        />
+      <svg className="absolute bottom-0 left-0 z-10" width={arm} height={arm}>
+        <path d={`M0 0 L0 ${arm} L${arm} ${arm}`} fill="none" stroke={accentColor} strokeWidth="1" />
       </svg>
-      <svg className="absolute bottom-0 right-0" width={arm} height={arm}>
-        <path
-          d={`M0 ${arm} L${arm} ${arm} L${arm} 0`}
-          fill="none"
-          stroke={accentColor}
-          strokeWidth="1"
-        />
+      <svg className="absolute bottom-0 right-0 z-10" width={arm} height={arm}>
+        <path d={`M0 ${arm} L${arm} ${arm} L${arm} 0`} fill="none" stroke={accentColor} strokeWidth="1" />
       </svg>
 
-      {/* Top: index + label */}
-      <div>
+      {/* Image */}
+      <div className="relative flex-1">
+        <img
+          src={image}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Bottom accent line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: accentColor }} />
+      </div>
+
+      {/* Bottom: index + highlight */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-white">
         <span
           className="font-mono text-[10px] tracking-[0.2em] font-bold uppercase"
           style={{ color: accentColor }}
         >
           {index}
         </span>
-        <div className="mt-1 font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase">
-          [ Activity Log ]
-        </div>
-      </div>
-
-      {/* Center: large highlight text */}
-      <div className="flex-1 flex items-center justify-center py-4">
-        <h4 className="font-mono text-xl md:text-2xl font-bold tracking-tighter text-black uppercase text-center leading-tight">
-          {label}
-        </h4>
-      </div>
-
-      {/* Bottom: highlight stat */}
-      <div className="flex items-center gap-2 border-t border-black/[0.06] pt-3">
-        <div className="w-1.5 h-1.5" style={{ background: accentColor }} />
         <span className="font-mono text-[9px] tracking-[0.15em] text-black/30 uppercase">
           {highlight}
         </span>
@@ -102,6 +78,7 @@ const ACTIVITIES = [
       label: "Public Communication",
       highlight: "Speaker & Emcee",
       accentColor: "#FFB800",
+      image: "/publicspeaking.jpeg",
     },
   },
   {
@@ -113,6 +90,7 @@ const ACTIVITIES = [
       label: "Technical Writing",
       highlight: "Editor-in-Chief // Division Champion",
       accentColor: "#CCFF00",
+      image: "/writing.jpeg",
     },
   },
   {
@@ -124,6 +102,7 @@ const ACTIVITIES = [
       label: "Research",
       highlight: "Published Study // Marine Biodiversity",
       accentColor: "#00D4FF",
+      image: "/Research.jpeg",
     },
   },
   {
@@ -135,6 +114,7 @@ const ACTIVITIES = [
       label: "Civic Leadership",
       highlight: "Student Body President",
       accentColor: "#FF6B6B",
+      image: "/studentleader.JPG",
     },
   },
   {
@@ -146,6 +126,7 @@ const ACTIVITIES = [
       label: "Youth Advocacy",
       highlight: "Peer Educator // Kabarkada Founder",
       accentColor: "#A78BFA",
+      image: "/youthadvocacy.jpeg",
     },
   },
   {
@@ -157,6 +138,7 @@ const ACTIVITIES = [
       label: "Sports & Competition",
       highlight: "Varsity Chess // Multi-sport",
       accentColor: "#34D399",
+      image: "/chess.jpg",
     },
   },
 ];
@@ -167,9 +149,9 @@ const content = ACTIVITIES.map((a) => ({
   content: (
     <ActivityCard
       index={a.card.index}
-      label={a.card.label}
       highlight={a.card.highlight}
       accentColor={a.card.accentColor}
+      image={a.card.image}
     />
   ),
 }));
