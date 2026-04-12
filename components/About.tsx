@@ -3,6 +3,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ParticleCard, GlobalSpotlight } from "./MagicBento";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -86,6 +87,8 @@ function QPIRing() {
 
 /* ═══════════════════════════════════════════════════════════ */
 
+const GLOW_COLOR = "255, 184, 0"; // #FFB800 in RGB
+
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
@@ -94,6 +97,7 @@ export default function About() {
   const academicRef = useRef<HTMLDivElement>(null);
   const achievementRef = useRef<HTMLDivElement>(null);
   const interestsRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -203,20 +207,73 @@ export default function About() {
   }, []);
 
   /* ── Shared card shell ──
-     Separated from the GSAP wrapper so hover transforms
-     (scale, border) don't conflict with GSAP inline styles. */
+     ParticleCard handles hover transforms (tilt, magnetism),
+     so CSS hover transforms are removed to avoid conflicts. */
   const card =
-    "border border-white/10 backdrop-blur-md bg-black/[0.02] " +
-    "hover:border-[#FFB800] hover:scale-[1.02] hover:-translate-y-[5px] " +
-    "hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] " +
+    "card card--border-glow border border-black/[0.04] backdrop-blur-md bg-black/[0.02] " +
     "transition-all duration-300 group h-full rounded-xl";
+
+  const particleProps = {
+    glowColor: GLOW_COLOR,
+    enableTilt: true,
+    enableMagnetism: true,
+    clickEffect: true,
+    particleCount: 8,
+  } as const;
 
   return (
     <section
       ref={sectionRef}
       id="about"
-      className="relative h-screen bg-white overflow-hidden"
+      className="bento-section relative h-screen bg-white overflow-hidden"
     >
+      <style>{`
+        .bento-section {
+          --glow-x: 50%;
+          --glow-y: 50%;
+          --glow-intensity: 0;
+          --glow-radius: 200px;
+          --glow-color: ${GLOW_COLOR};
+        }
+        .card--border-glow::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          padding: 4px;
+          background: radial-gradient(
+            var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+            rgba(${GLOW_COLOR}, calc(var(--glow-intensity) * 0.6)) 0%,
+            rgba(${GLOW_COLOR}, calc(var(--glow-intensity) * 0.3)) 30%,
+            transparent 60%
+          );
+          border-radius: inherit;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: exclude;
+          pointer-events: none;
+          z-index: 1;
+        }
+        .card--border-glow:hover {
+          box-shadow: 0 4px 20px rgba(255, 184, 0, 0.12), 0 0 30px rgba(${GLOW_COLOR}, 0.08);
+        }
+        .particle::before {
+          content: '';
+          position: absolute;
+          top: -2px; left: -2px; right: -2px; bottom: -2px;
+          background: rgba(${GLOW_COLOR}, 0.2);
+          border-radius: 50%;
+          z-index: -1;
+        }
+      `}</style>
+
+      <GlobalSpotlight
+        gridRef={gridRef}
+        enabled
+        spotlightRadius={350}
+        glowColor={GLOW_COLOR}
+      />
+
       <div className="h-full flex flex-col pt-14 md:pt-0 md:justify-center px-4 md:px-12 max-w-6xl mx-auto">
         {/* ── Heading ── */}
         <div ref={headingRef} className="mb-3 md:mb-10 opacity-0">
@@ -229,14 +286,18 @@ export default function About() {
         </div>
 
         {/* ── Bento Grid ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-6">
+        <div
+          ref={gridRef}
+          className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-6"
+        >
           {/* ── Bio — center 2×2 ── */}
           <div
             ref={bioRef}
             className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 opacity-0"
           >
-            <div
+            <ParticleCard
               className={`${card} p-4 md:p-12 flex flex-col justify-center`}
+              {...particleProps}
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <p className="font-mono text-xs md:text-base leading-relaxed text-black/50">
@@ -251,19 +312,19 @@ export default function About() {
                   problem worth solving.
                 </p>
               </div>
-            </div>
+            </ParticleCard>
           </div>
 
-          {/* ── QPI — top-left  (with performance ring) ── */}
+          {/* ── QPI — top-left (with performance ring) ── */}
           <div
             ref={metricsRef}
             className="md:col-start-1 md:row-start-1 opacity-0"
           >
-            <div
+            <ParticleCard
               className={`${card} p-4 md:p-10 flex flex-col justify-center items-center`}
+              {...particleProps}
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
-                {/* Ring + number */}
                 <div className="relative w-20 h-20 md:w-32 md:h-32 mx-auto">
                   <QPIRing />
                 </div>
@@ -271,7 +332,7 @@ export default function About() {
                   Cumulative QPI
                 </span>
               </div>
-            </div>
+            </ParticleCard>
           </div>
 
           {/* ── Interests — bottom-left ── */}
@@ -279,7 +340,10 @@ export default function About() {
             ref={interestsRef}
             className="md:col-start-1 md:row-start-2 opacity-0"
           >
-            <div className={`${card} p-4 md:p-10 flex flex-col justify-center`}>
+            <ParticleCard
+              className={`${card} p-4 md:p-10 flex flex-col justify-center`}
+              {...particleProps}
+            >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <span className="font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Interests
@@ -288,7 +352,7 @@ export default function About() {
                   Civic Tech, Basketball, Formula One, and the Oxford comma.
                 </p>
               </div>
-            </div>
+            </ParticleCard>
           </div>
 
           {/* ── Education — top-right ── */}
@@ -296,7 +360,10 @@ export default function About() {
             ref={academicRef}
             className="md:col-start-4 md:row-start-1 opacity-0"
           >
-            <div className={`${card} p-4 md:p-10 flex flex-col justify-center`}>
+            <ParticleCard
+              className={`${card} p-4 md:p-10 flex flex-col justify-center`}
+              {...particleProps}
+            >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <span className="font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Education
@@ -307,8 +374,6 @@ export default function About() {
                 <p className="font-mono text-[9px] md:text-xs text-black/25 mt-0.5">
                   Ateneo de Manila University
                 </p>
-
-                {/* Structured labels */}
                 <div className="flex gap-3 md:gap-4 mt-2 md:mt-3">
                   <div>
                     <span className="font-mono text-[7px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
@@ -328,7 +393,7 @@ export default function About() {
                   </div>
                 </div>
               </div>
-            </div>
+            </ParticleCard>
           </div>
 
           {/* ── Scholarships — bottom-right ── */}
@@ -336,7 +401,10 @@ export default function About() {
             ref={achievementRef}
             className="md:col-start-4 md:row-start-2 opacity-0"
           >
-            <div className={`${card} p-4 md:p-10 flex flex-col justify-center`}>
+            <ParticleCard
+              className={`${card} p-4 md:p-10 flex flex-col justify-center`}
+              {...particleProps}
+            >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
                 <span className="font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Scholarships
@@ -348,7 +416,7 @@ export default function About() {
                   Full University & Corporate Merit
                 </p>
               </div>
-            </div>
+            </ParticleCard>
           </div>
         </div>
       </div>
