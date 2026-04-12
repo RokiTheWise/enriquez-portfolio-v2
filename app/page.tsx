@@ -6,6 +6,7 @@ import HeroTransition from "@/components/HeroTransition";
 import About from "@/components/About";
 import Techstack from "@/components/Techstack";
 import FeaturedProjects from "@/components/FeaturedProjects";
+import BeyondTheCode from "@/components/BeyondTheCode";
 import StaggeredMenu from "@/components/StaggeredMenu";
 
 const MENU_ITEMS = [
@@ -13,6 +14,7 @@ const MENU_ITEMS = [
   { label: "About", ariaLabel: "About section", link: "#about" },
   { label: "Tech Stack", ariaLabel: "Tech stack section", link: "#techstack" },
   { label: "Projects", ariaLabel: "Featured projects", link: "#projects" },
+  { label: "Beyond", ariaLabel: "Beyond the code", link: "#beyond" },
   { label: "Contact", ariaLabel: "Get in touch", link: "#contact" },
 ];
 
@@ -75,6 +77,7 @@ export default function Home() {
       <About />
       <Techstack />
       <FeaturedProjects />
+      <BeyondTheCode />
     </ReactLenis>
   );
 }

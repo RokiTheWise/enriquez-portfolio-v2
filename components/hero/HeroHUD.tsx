@@ -466,6 +466,7 @@ export default function HeroHUD({
 
           <HUDButton
             label="Beyond Coding"
+            href="#beyond"
             className="text-base md:text-xl leading-tight"
           />
           <HUDButton
