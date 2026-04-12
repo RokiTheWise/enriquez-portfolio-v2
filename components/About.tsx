@@ -217,36 +217,35 @@ export default function About() {
       id="about"
       className="relative h-screen bg-white overflow-hidden"
     >
-      <div className="h-full flex flex-col justify-center px-6 md:px-12 max-w-6xl mx-auto">
+      <div className="h-full flex flex-col pt-14 md:pt-0 md:justify-center px-4 md:px-12 max-w-6xl mx-auto">
         {/* ── Heading ── */}
-        <div ref={headingRef} className="mb-8 md:mb-10 opacity-0">
-          <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
+        <div ref={headingRef} className="mb-3 md:mb-10 opacity-0">
+          <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-tighter text-black uppercase">
             About
           </h2>
-          <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
+          <div className="mt-1 md:mt-2 font-mono text-[9px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
             Profile Overview
           </div>
         </div>
 
         {/* ── Bento Grid ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-6">
           {/* ── Bio — center 2×2 ── */}
           <div
             ref={bioRef}
             className="col-span-2 md:col-start-2 md:col-end-4 md:row-span-2 opacity-0"
           >
             <div
-              className={`${card} p-10 md:p-12 flex flex-col justify-center`}
+              className={`${card} p-4 md:p-12 flex flex-col justify-center`}
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
-                <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
+                <p className="font-mono text-xs md:text-base leading-relaxed text-black/50">
                   I came to Computer Science because I wanted to build things
                   that matter. That became a consistent thread of building
                   software for communities, tools that reduce friction, products
                   that reach people rather than just users.
                 </p>
-                <br></br>
-                <p className="font-mono text-sm md:text-base leading-relaxed text-black/50">
+                <p className="font-mono text-xs md:text-base leading-relaxed text-black/50 mt-2 md:mt-4">
                   Outside of building, I lead, organize, and keep learning.
                   Currently picking up French. Always looking for the next
                   problem worth solving.
@@ -261,14 +260,14 @@ export default function About() {
             className="md:col-start-1 md:row-start-1 opacity-0"
           >
             <div
-              className={`${card} p-8 md:p-10 flex flex-col justify-center items-center`}
+              className={`${card} p-4 md:p-10 flex flex-col justify-center items-center`}
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300 text-center">
                 {/* Ring + number */}
-                <div className="relative w-28 h-28 md:w-32 md:h-32 mx-auto">
+                <div className="relative w-20 h-20 md:w-32 md:h-32 mx-auto">
                   <QPIRing />
                 </div>
-                <span className="block font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-3">
+                <span className="block font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-2 md:mt-3">
                   Cumulative QPI
                 </span>
               </div>
@@ -280,12 +279,12 @@ export default function About() {
             ref={interestsRef}
             className="md:col-start-1 md:row-start-2 opacity-0"
           >
-            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
+            <div className={`${card} p-4 md:p-10 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
-                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                <span className="font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Interests
                 </span>
-                <p className="font-mono text-xs md:text-sm text-black/60 mt-2 leading-relaxed">
+                <p className="font-mono text-[10px] md:text-sm text-black/60 mt-1.5 md:mt-2 leading-relaxed">
                   Civic Tech, Basketball, Formula One, and the Oxford comma.
                 </p>
               </div>
@@ -297,33 +296,33 @@ export default function About() {
             ref={academicRef}
             className="md:col-start-4 md:row-start-1 opacity-0"
           >
-            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
+            <div className={`${card} p-4 md:p-10 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
-                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                <span className="font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Education
                 </span>
-                <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
+                <p className="font-mono text-[10px] md:text-sm font-bold text-black/80 mt-1.5 md:mt-2">
                   BS Computer Science
                 </p>
-                <p className="font-mono text-[10px] md:text-xs text-black/25 mt-0.5">
+                <p className="font-mono text-[9px] md:text-xs text-black/25 mt-0.5">
                   Ateneo de Manila University
                 </p>
 
                 {/* Structured labels */}
-                <div className="flex gap-4 mt-3">
+                <div className="flex gap-3 md:gap-4 mt-2 md:mt-3">
                   <div>
-                    <span className="font-mono text-[8px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                    <span className="font-mono text-[7px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                       Year Level
                     </span>
-                    <p className="font-mono text-[10px] md:text-xs text-black/50 mt-0.5">
+                    <p className="font-mono text-[9px] md:text-xs text-black/50 mt-0.5">
                       2nd Year
                     </p>
                   </div>
                   <div>
-                    <span className="font-mono text-[8px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                    <span className="font-mono text-[7px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                       Status
                     </span>
-                    <p className="font-mono text-[10px] md:text-xs text-black/50 mt-0.5">
+                    <p className="font-mono text-[9px] md:text-xs text-black/50 mt-0.5">
                       Enrolled
                     </p>
                   </div>
@@ -337,15 +336,15 @@ export default function About() {
             ref={achievementRef}
             className="md:col-start-4 md:row-start-2 opacity-0"
           >
-            <div className={`${card} p-8 md:p-10 flex flex-col justify-center`}>
+            <div className={`${card} p-4 md:p-10 flex flex-col justify-center`}>
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
-                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
+                <span className="font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                   Scholarships
                 </span>
-                <p className="font-mono text-xs md:text-sm font-bold text-black/80 mt-2">
+                <p className="font-mono text-[10px] md:text-sm font-bold text-black/80 mt-1.5 md:mt-2">
                   Jose P. Rizal & EO-Ayala Scholar
                 </p>
-                <p className="font-mono text-[10px] md:text-xs text-black/25 mt-0.5">
+                <p className="font-mono text-[9px] md:text-xs text-black/25 mt-0.5">
                   Full University & Corporate Merit
                 </p>
               </div>
