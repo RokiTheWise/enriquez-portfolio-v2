@@ -450,6 +450,7 @@ export default function HeroHUD({
         <div className="flex flex-col relative pl-3 md:pl-0 w-fit max-w-[70%] md:max-w-[40%]">
           <HUDButton
             label="About"
+            href="#about"
             className="text-base md:text-xl leading-tight"
           />
           <HUDButton
@@ -459,6 +460,7 @@ export default function HeroHUD({
           />
           <HUDButton
             label="Featured Projects"
+            href="#projects"
             className="text-base md:text-xl leading-tight"
           />
 
