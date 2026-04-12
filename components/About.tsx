@@ -210,8 +210,9 @@ export default function About() {
      ParticleCard handles hover transforms (tilt, magnetism),
      so CSS hover transforms are removed to avoid conflicts. */
   const card =
-    "card card--border-glow border border-black/[0.04] backdrop-blur-md bg-black/[0.02] " +
-    "transition-all duration-300 group h-full rounded-xl";
+    "card card--border-glow border border-black/[0.04] backdrop-blur-md bg-white " +
+    "shadow-[0_2px_5px_rgba(0,0,0,0.05),0_10px_20px_rgba(0,0,0,0.04),0_20px_40px_rgba(0,0,0,0.04)] " +
+    "transition-all duration-300 group h-full rounded-2xl";
 
   const particleProps = {
     glowColor: GLOW_COLOR,
@@ -255,7 +256,11 @@ export default function About() {
           z-index: 1;
         }
         .card--border-glow:hover {
-          box-shadow: 0 4px 20px rgba(255, 184, 0, 0.12), 0 0 30px rgba(${GLOW_COLOR}, 0.08);
+          box-shadow:
+            0 2px 5px rgba(0, 0, 0, 0.05),
+            0 10px 20px rgba(0, 0, 0, 0.04),
+            0 20px 40px rgba(0, 0, 0, 0.04),
+            0 0 30px rgba(${GLOW_COLOR}, 0.1);
         }
         .particle::before {
           content: '';
