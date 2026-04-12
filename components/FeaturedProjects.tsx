@@ -31,6 +31,7 @@ interface Project {
   registry: { name: string; tag: string }[];
   accentColor: string;
   liveUrl: string;
+  githubUrl?: string;
 }
 
 const PROJECTS: Project[] = [
@@ -49,6 +50,7 @@ const PROJECTS: Project[] = [
     ],
     accentColor: "#CCFF00",
     liveUrl: "https://aklatang-galera.djenriquez.dev",
+    githubUrl: "https://github.com/RokiTheWise/aklatang-galera",
   },
   {
     index: "02",
@@ -65,6 +67,7 @@ const PROJECTS: Project[] = [
     ],
     accentColor: "#00D4FF",
     liveUrl: "https://logisketch.djenriquez.dev",
+    githubUrl: "https://github.com/RokiTheWise/CircuitBuilder",
   },
   {
     index: "03",
@@ -210,16 +213,27 @@ function ProjectSlide({ project }: { project: Project }) {
           </div>
 
           {/* CTAs */}
-          <div className="mt-2 flex items-center gap-4">
+          <div className="mt-2 flex items-center gap-3">
             <a
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group/btn font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-black/30 hover:text-[#FFB800] transition-colors duration-300 flex items-center gap-2"
+              className="group/btn inline-flex items-center gap-2 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black bg-black text-white px-5 py-2.5 no-underline transition-colors duration-200 hover:bg-transparent hover:text-black"
             >
               <span>View Deployment</span>
               <span className="inline-block transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
             </a>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/src inline-flex items-center gap-2 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black text-black px-5 py-2.5 no-underline transition-colors duration-200 hover:bg-black hover:text-white"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="flex-shrink-0"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>Source Code</span>
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -270,12 +284,6 @@ export default function FeaturedProjects() {
         <div className="sticky top-0 h-screen overflow-hidden">
           {/* HUD Overlay: Section header */}
           <div className="absolute top-8 md:top-12 left-6 md:left-12 z-30 pointer-events-none">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-2 h-[1px] bg-[#FFB800]" />
-              <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFB800]/60 uppercase">
-                Section 03
-              </span>
-            </div>
             <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase">
               Featured Projects
             </h2>
@@ -355,7 +363,7 @@ export default function FeaturedProjects() {
 
                 <a
                   href="/archive"
-                  className="group font-mono text-xs md:text-sm tracking-[0.15em] uppercase text-black/50 hover:text-[#FFB800] transition-colors duration-300 flex items-center gap-3 border border-black/[0.08] hover:border-[#FFB800]/40 px-8 py-4 mt-4"
+                  className="group inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-semibold border border-black bg-black text-white px-8 py-4 mt-4 no-underline transition-colors duration-200 hover:bg-transparent hover:text-black"
                 >
                   <span>View All Projects</span>
                   <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
