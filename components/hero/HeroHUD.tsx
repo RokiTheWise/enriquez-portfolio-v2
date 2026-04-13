@@ -7,6 +7,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { FileTextIcon, Mail } from "lucide-react";
 import DecryptedText from "./DecryptedText";
+import TextType from "../TextType";
 import Image from "next/image";
 
 function cn(...inputs: ClassValue[]) {
@@ -110,6 +111,16 @@ const FacebookIcon = ({
 const CYCLES_PER_LETTER = 2;
 const SHUFFLE_TIME = 50;
 const CHARS = "!@#$%^&*():{};|,.<>/?";
+
+const HERO_TITLES = [
+  "FULL STACK DEVELOPER",
+  "A VISIONARY BUILDER",
+  "A DRIVEN LEADER",
+  "A CREATIVE THINKER",
+  "A PROBLEM SOLVER",
+  "A LIFELONG LEARNER",
+  "AN AMBITIOUS ENGINEER",
+];
 
 const ExploreButton = () => {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -410,14 +421,16 @@ export default function HeroHUD({
                 speed={40}
               />
             </h1>
-            <div className="font-mono text-[9px] md:text-xs tracking-[0.25em] md:tracking-[0.4em] text-[#FFB800] font-bold mt-0.5">
-              <DecryptedText
-                text="FULL STACK DEVELOPER"
-                animateOn="view"
-                sequential
-                speed={60}
-              />
-            </div>
+            <TextType
+              text={HERO_TITLES}
+              typingSpeed={40}
+              deletingSpeed={25}
+              pauseDuration={2000}
+              showCursor
+              cursorCharacter="▎"
+              cursorBlinkDuration={0.5}
+              className="font-mono text-[9px] md:text-xs tracking-[0.25em] md:tracking-[0.4em] text-[#FFB800] font-bold mt-0.5"
+            />
           </div>
         </motion.div>
 
