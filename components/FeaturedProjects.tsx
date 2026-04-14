@@ -117,7 +117,7 @@ function ViewportBrackets({ color }: { color: string }) {
 
 function ProjectSlide({ project }: { project: Project }) {
   return (
-    <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-52 pb-20">
+    <div className="relative w-screen h-screen flex-shrink-0 flex items-start md:items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20">
       {/* z-0 : Enormous outlined background index */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <span
@@ -133,9 +133,9 @@ function ProjectSlide({ project }: { project: Project }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-14 max-w-6xl w-full px-8 md:px-16">
+      <div className="relative z-10 flex flex-col md:flex-row items-center gap-4 md:gap-14 max-w-6xl w-full px-8 md:px-16">
         {/* Technical Viewport (image) */}
-        <div className="relative w-full md:w-[55%] aspect-[16/10] flex-shrink-0">
+        <div className="relative w-full md:w-[55%] aspect-[16/8] md:aspect-[16/10] flex-shrink-0">
           <ViewportBrackets color={project.accentColor} />
 
           <div className="absolute inset-[8px] border border-black/[0.06] overflow-hidden bg-black/[0.015]">
@@ -152,13 +152,13 @@ function ProjectSlide({ project }: { project: Project }) {
             />
           </div>
 
-          <span className="absolute -bottom-6 left-0 font-mono text-[7px] tracking-[0.25em] text-black/15 uppercase">
+          <span className="absolute -bottom-6 left-0 font-mono text-[7px] tracking-[0.25em] text-black/15 uppercase hidden md:inline">
             fig_{project.index}_preview.render
           </span>
         </div>
 
         {/* Diagnostic Data Card */}
-        <div className="w-full md:w-[45%] flex flex-col gap-4 md:gap-5">
+        <div className="w-full md:w-[45%] flex flex-col gap-2 md:gap-5">
           {/* Classification */}
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5" style={{ background: project.accentColor }} />
@@ -189,7 +189,7 @@ function ProjectSlide({ project }: { project: Project }) {
           </p>
 
           {/* Tech Registry */}
-          <div className="flex flex-col gap-2 mt-1">
+          <div className="flex flex-col gap-2 mt-0 md:mt-1">
             <span className="font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase">
               Tech Registry
             </span>
@@ -197,7 +197,7 @@ function ProjectSlide({ project }: { project: Project }) {
               {project.registry.map((r, i) => (
                 <div
                   key={r.name}
-                  className={`group flex items-center gap-3 px-4 py-2.5 border-b border-black/[0.06] cursor-default ${
+                  className={`group flex items-center gap-3 px-4 py-1.5 md:py-2.5 border-b border-black/[0.06] cursor-default ${
                     i < 2 ? "border-r border-r-black/[0.06]" : ""
                   }`}
                 >
@@ -213,7 +213,7 @@ function ProjectSlide({ project }: { project: Project }) {
           </div>
 
           {/* CTAs */}
-          <div className="mt-2 flex items-center gap-3">
+          <div className="mt-1 md:mt-2 flex items-center gap-3">
             <a
               href={project.liveUrl}
               target="_blank"
@@ -329,7 +329,7 @@ export default function FeaturedProjects() {
             ))}
 
             {/* 4th panel — View All Projects CTA */}
-            <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-52 pb-20">
+            <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20">
               {/* Background index */}
               <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
                 <span
