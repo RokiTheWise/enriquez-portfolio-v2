@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import LogoLoop from "./LogoLoop";
 
 /* ── Data ── */
 
@@ -13,7 +14,7 @@ interface TechItem {
 
 const REGISTRY: TechItem[] = [
   { name: "Python", tag: "CORE", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/python.svg" },
-  { name: "Java", tag: "CORE", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/openjdk.svg" },
+  { name: "Java", tag: "CORE", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/coffeescript.svg" },
   { name: "TypeScript", tag: "CORE", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/typescript.svg" },
   { name: "Node.js", tag: "RUNTIME", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nodedotjs.svg" },
   { name: "Next.js", tag: "FRAMEWORK", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nextdotjs.svg" },
@@ -26,6 +27,12 @@ const REGISTRY: TechItem[] = [
   { name: "Vercel", tag: "DEPLOY", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vercel.svg" },
   { name: "Supabase", tag: "DATABASE", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/supabase.svg" },
 ];
+
+const loopLogos = REGISTRY.map((item) => ({
+  src: item.icon,
+  alt: item.name,
+  title: item.name,
+}));
 
 /* ── Tech Module ── */
 
@@ -80,15 +87,29 @@ export default function Techstack() {
   return (
     <section
       id="techstack"
-      className="relative w-full bg-white px-6 md:px-12 py-24 md:py-32"
+      className="relative w-full bg-white py-24 md:py-32"
     >
+      {/* Top LogoLoop */}
+      <div className="relative overflow-hidden h-10 md:h-12 mb-10 md:mb-14 [&_img]:opacity-[0.12]">
+        <LogoLoop
+          logos={loopLogos}
+          speed={50}
+          direction="left"
+          logoHeight={24}
+          gap={56}
+          fadeOut
+          fadeOutColor="#ffffff"
+          ariaLabel="Tech stack technologies"
+        />
+      </div>
+
       {/* Section header */}
       <motion.div
         ref={headingRef}
         initial={{ opacity: 0, y: 20 }}
         animate={headingInView ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="mb-10 md:mb-14 text-center"
+        className="mb-10 md:mb-14 text-center px-6 md:px-12"
       >
         <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
           Tech Stack
@@ -99,7 +120,7 @@ export default function Techstack() {
       </motion.div>
 
       {/* 4-Column Registry Grid */}
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto px-6 md:px-12">
         {rows.map((row, rowIdx) => (
           <div
             key={rowIdx}
@@ -114,6 +135,20 @@ export default function Techstack() {
             ))}
           </div>
         ))}
+      </div>
+
+      {/* Bottom LogoLoop */}
+      <div className="relative overflow-hidden h-10 md:h-12 mt-10 md:mt-14 [&_img]:opacity-[0.12]">
+        <LogoLoop
+          logos={loopLogos}
+          speed={50}
+          direction="right"
+          logoHeight={24}
+          gap={56}
+          fadeOut
+          fadeOutColor="#ffffff"
+          ariaLabel="Tech stack technologies"
+        />
       </div>
     </section>
   );
