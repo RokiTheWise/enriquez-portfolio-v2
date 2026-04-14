@@ -35,7 +35,7 @@ interface ParticlesProps {
 
 export default function Particles({ heroRefs }: ParticlesProps) {
   const meshRef = useRef<THREE.Points>(null);
-  const timer = useMemo(() => new THREE.Timer(), []);
+  const clock = useMemo(() => new THREE.Clock(), []);
 
   const { geometry, uniforms, offsets, velocities, randoms } = useMemo(() => {
     const count = PARTICLE_COUNT;
@@ -92,10 +92,8 @@ export default function Particles({ heroRefs }: ParticlesProps) {
   }, []);
 
   useFrame((state) => {
-    // THREE.Timer for precise, non-deprecated timing
-    timer.update();
-    const dt = Math.min(timer.getDelta(), 0.05); // cap at 50ms
-    const elapsed = timer.getElapsed();
+    const dt = Math.min(clock.getDelta(), 0.05); // cap at 50ms
+    const elapsed = clock.getElapsedTime();
 
     uniforms.uTime.value = elapsed * PARTICLE_SPEED;
 
