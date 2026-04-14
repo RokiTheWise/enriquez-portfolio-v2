@@ -48,7 +48,17 @@ export const StickyScroll = ({
   }, [content.length]);
 
   return (
-    <div className="relative flex justify-between gap-8 md:gap-16 px-4 md:px-0">
+    <div className="relative flex flex-col lg:flex-row lg:justify-between gap-0 lg:gap-16 px-4 md:px-0">
+      {/* Mobile: top-sticky visual panel */}
+      <div
+        className={cn(
+          "sticky top-48 z-10 aspect-[3/2] w-full overflow-hidden self-start mb-6 lg:hidden",
+          contentClassName,
+        )}
+      >
+        {content[activeCard].content ?? null}
+      </div>
+
       {/* Left: scrolling text entries */}
       <div className="relative flex items-start">
         <div className="max-w-lg">
@@ -98,7 +108,7 @@ export const StickyScroll = ({
         </div>
       </div>
 
-      {/* Right: sticky visual panel */}
+      {/* Desktop: right-sticky visual panel */}
       <div
         className={cn(
           "sticky top-52 hidden h-72 w-80 flex-shrink-0 overflow-hidden self-start lg:block",
