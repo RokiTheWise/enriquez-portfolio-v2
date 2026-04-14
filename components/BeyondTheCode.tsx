@@ -14,11 +14,13 @@ function ActivityCard({
   highlight,
   accentColor,
   image,
+  objectPosition,
 }: {
   index: string;
   highlight: string;
   accentColor: string;
   image: string;
+  objectPosition?: string;
 }) {
   const arm = 20;
   return (
@@ -43,6 +45,7 @@ function ActivityCard({
           src={image}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
+          style={objectPosition ? { objectPosition } : undefined}
         />
         {/* Bottom accent line */}
         <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: accentColor }} />
@@ -103,6 +106,7 @@ const ACTIVITIES = [
       highlight: "Published Study // Marine Biodiversity",
       accentColor: "#00D4FF",
       image: "/Research.jpeg",
+      objectPosition: "top",
     },
   },
   {
@@ -152,6 +156,7 @@ const content = ACTIVITIES.map((a) => ({
       highlight={a.card.highlight}
       accentColor={a.card.accentColor}
       image={a.card.image}
+      objectPosition={a.card.objectPosition}
     />
   ),
 }));
