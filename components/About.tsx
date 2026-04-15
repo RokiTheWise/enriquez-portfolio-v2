@@ -212,7 +212,7 @@ export default function About() {
   const card =
     "card card--border-glow border border-black/[0.04] backdrop-blur-md bg-white " +
     "shadow-[0_2px_5px_rgba(0,0,0,0.05),0_10px_20px_rgba(0,0,0,0.04),0_20px_40px_rgba(0,0,0,0.04)] " +
-    "transition-all duration-300 group h-full rounded-2xl";
+    "transition-[box-shadow,border-color,background-color,opacity] duration-300 group h-full rounded-2xl";
 
   const particleProps = {
     glowColor: GLOW_COLOR,

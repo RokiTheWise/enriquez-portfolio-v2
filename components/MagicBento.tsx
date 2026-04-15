@@ -205,16 +205,22 @@ const ParticleCard: React.FC<{
 
     const element = cardRef.current;
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = (e: MouseEvent) => {
       isHoveredRef.current = true;
       animateParticles();
 
       if (enableTilt) {
-        gsap.to(element, {
-          rotateX: 5,
-          rotateY: 5,
-          duration: 0.3,
-          ease: 'power2.out',
+        const rect = element.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -10;
+        const rotateY = ((x - centerX) / centerX) * 10;
+
+        gsap.set(element, {
+          rotateX,
+          rotateY,
           transformPerspective: 1000
         });
       }
