@@ -7,6 +7,7 @@ import About from "@/components/About";
 import Techstack from "@/components/Techstack";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import BeyondTheCode from "@/components/BeyondTheCode";
+import Contact from "@/components/Contact";
 import StaggeredMenu from "@/components/StaggeredMenu";
 
 const MENU_ITEMS = [
@@ -20,7 +21,10 @@ const MENU_ITEMS = [
 
 const SOCIAL_ITEMS = [
   { label: "GitHub", link: "https://github.com/RokiTheWise" },
-  { label: "LinkedIn", link: "https://www.linkedin.com/in/dexter-jethro-enriquez/" },
+  {
+    label: "LinkedIn",
+    link: "https://www.linkedin.com/in/dexter-jethro-enriquez/",
+  },
   { label: "Instagram", link: "https://www.instagram.com/dexjet_enriquez/" },
   { label: "Facebook", link: "https://www.facebook.com/dexterjethro.enriquez" },
   { label: "Email", link: "mailto:dexterjethro.enriquez@gmail.com" },
@@ -47,7 +51,9 @@ function NavMenu() {
   );
 
   return (
-    <motion.div style={{ opacity: navOpacity, pointerEvents: navPointerEvents }}>
+    <motion.div
+      style={{ opacity: navOpacity, pointerEvents: navPointerEvents }}
+    >
       <StaggeredMenu
         position="right"
         items={MENU_ITEMS}
@@ -78,6 +84,7 @@ export default function Home() {
       <Techstack />
       <FeaturedProjects />
       <BeyondTheCode />
+      <Contact />
     </ReactLenis>
   );
 }
