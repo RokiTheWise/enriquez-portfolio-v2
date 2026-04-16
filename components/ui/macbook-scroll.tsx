@@ -30,11 +30,13 @@ export const MacbookScroll = ({
   showGradient,
   title,
   badge,
+  screenContent,
 }: {
   src?: string;
   showGradient?: boolean;
   title?: string | React.ReactNode;
   badge?: React.ReactNode;
+  screenContent?: React.ReactNode;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -60,7 +62,12 @@ export const MacbookScroll = ({
     [0, 0.3],
     [0.6, isMobile ? 1 : 1.5],
   );
-  const translate = useTransform(scrollYProgress, [0, 1], [0, 1500]);
+  // Pause translate during zoom-through phase (0.3–0.55) so macbook holds still
+  const translate = useTransform(
+    scrollYProgress,
+    screenContent ? [0, 0.3, 0.55, 1] : [0, 1],
+    screenContent ? [0, 0, 0, 1500] : [0, 1500],
+  );
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
   const textTransform = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
@@ -90,9 +97,11 @@ export const MacbookScroll = ({
         scaleY={scaleY}
         rotate={rotate}
         translate={translate}
+        screenContent={screenContent}
       />
       {/* Base area */}
       <div className="relative -z-10 h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-gray-200 dark:bg-[#272729]">
+
         {/* above keyboard bar */}
         <div className="relative h-10 w-full">
           <div className="absolute inset-x-0 mx-auto h-4 w-[80%] bg-[#050505]" />
@@ -125,12 +134,14 @@ export const Lid = ({
   rotate,
   translate,
   src,
+  screenContent,
 }: {
   scaleX: MotionValue<number>;
   scaleY: MotionValue<number>;
   rotate: MotionValue<number>;
   translate: MotionValue<number>;
   src?: string;
+  screenContent?: React.ReactNode;
 }) => {
   return (
     <div className="relative [perspective:800px]">
@@ -165,11 +176,17 @@ export const Lid = ({
         className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2"
       >
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
-        <img
-          src={src as string}
-          alt="aceternity logo"
-          className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
-        />
+        {screenContent ? (
+          <div className="absolute inset-0 rounded-lg overflow-hidden">
+            {screenContent}
+          </div>
+        ) : (
+          <img
+            src={src as string}
+            alt="aceternity logo"
+            className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
+          />
+        )}
       </motion.div>
     </div>
   );
