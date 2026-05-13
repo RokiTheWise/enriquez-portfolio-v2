@@ -1,11 +1,10 @@
 "use client";
 
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { particleVertex, particleFragment } from "@/components/hero/shaders";
 
-/* Tuning — deliberately calmer than the hero */
 const COUNT = 220;
 const SPREAD = 5;
 const SPEED = 0.15;
@@ -19,24 +18,14 @@ const hexToRgb = (hex: string): [number, number, number] => {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 };
 
-/* Blank 1×1 texture satisfies uMaskTex sampler without driving any glow */
-const blankTexture = new THREE.DataTexture(
-  new Uint8Array([0, 0, 0, 255]),
-  1,
-  1,
-  THREE.RGBAFormat,
-);
-blankTexture.needsUpdate = true;
-
 function ParticleMesh() {
   const meshRef = useRef<THREE.Points>(null);
-  const clock = useMemo(() => new THREE.Clock(), []);
 
-  const { geometry, uniforms } = useMemo(() => {
+  const { geometry, uniforms, blankTexture } = useMemo(() => {
     const positions = new Float32Array(COUNT * 3);
     const randoms = new Float32Array(COUNT * 4);
     const colors = new Float32Array(COUNT * 3);
-    const offsets = new Float32Array(COUNT * 2); // always zero — no CPU physics
+    const offsets = new Float32Array(COUNT * 2);
 
     for (let i = 0; i < COUNT; i++) {
       let x: number, y: number, z: number, len: number;
@@ -62,19 +51,34 @@ function ParticleMesh() {
     geo.setAttribute("aColor", new THREE.BufferAttribute(colors, 3));
     geo.setAttribute("aOffset", new THREE.BufferAttribute(offsets, 2));
 
+    const tex = new THREE.DataTexture(
+      new Uint8Array([0, 0, 0, 255]),
+      1,
+      1,
+      THREE.RGBAFormat,
+    );
+    tex.needsUpdate = true;
+
     const u = {
       uTime: { value: 0 },
       uSpread: { value: SPREAD },
       uBaseSize: { value: BASE_SIZE },
       uSizeRandomness: { value: SIZE_RANDOMNESS },
-      uMaskTex: { value: blankTexture },
+      uMaskTex: { value: tex },
       uScrollFade: { value: 0 },
     };
 
-    return { geometry: geo, uniforms: u };
+    return { geometry: geo, uniforms: u, blankTexture: tex };
   }, []);
 
-  useFrame(() => {
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      blankTexture.dispose();
+    };
+  }, [geometry, blankTexture]);
+
+  useFrame(({ clock }) => {
     const elapsed = clock.getElapsedTime();
     uniforms.uTime.value = elapsed * SPEED;
     if (meshRef.current) {
@@ -99,7 +103,7 @@ function ParticleMesh() {
 
 export default function ContactParticles() {
   return (
-    <div className="absolute inset-0 pointer-events-none" aria-hidden>
+    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
       <Canvas
         gl={{ antialias: false, alpha: true, stencil: false }}
         camera={{ fov: 15, near: 0.1, far: 100, position: [0, 0, 20] }}
