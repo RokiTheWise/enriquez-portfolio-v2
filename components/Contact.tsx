@@ -8,6 +8,7 @@ import {
   useTransform,
   useMotionTemplate,
 } from "framer-motion";
+import ContactParticles from "./contact/ContactParticles";
 
 /* ── Social Data ── */
 
@@ -117,6 +118,7 @@ export default function Contact() {
             className="absolute inset-0"
           >
             <div className="relative w-full h-full bg-white flex items-center px-8 md:px-16 lg:px-24 gap-8 md:gap-16">
+              <ContactParticles />
               <CornerBrackets />
 
               {/* HUD readout — top right */}
