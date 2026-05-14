@@ -108,7 +108,8 @@ export default function ContactParticles() {
         gl={{ antialias: false, alpha: true, stencil: false }}
         camera={{ fov: 15, near: 0.1, far: 100, position: [0, 0, 20] }}
         dpr={[1, 1.5]}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", pointerEvents: "none" }}
+        events={undefined}
       >
         <Suspense fallback={null}>
           <ParticleMesh />
