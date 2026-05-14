@@ -103,12 +103,12 @@ function ParticleMesh() {
 
 export default function ContactParticles() {
   return (
-    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div className="absolute inset-0" style={{ pointerEvents: "none", zIndex: 0 }} aria-hidden="true">
       <Canvas
         gl={{ antialias: false, alpha: true, stencil: false }}
         camera={{ fov: 15, near: 0.1, far: 100, position: [0, 0, 20] }}
         dpr={[1, 1.5]}
-        style={{ width: "100%", height: "100%", pointerEvents: "none" }}
+        style={{ width: "100%", height: "100%", pointerEvents: "none", display: "block" }}
         events={undefined}
       >
         <Suspense fallback={null}>

@@ -127,7 +127,7 @@ export default function Contact() {
               </span>
 
               {/* Illustration — left column */}
-              <div className="hidden md:flex flex-col items-center justify-center flex-shrink-0 w-[38%] h-full relative">
+              <div className="hidden md:flex flex-col items-center justify-center flex-shrink-0 w-[38%] h-full relative z-10">
                 {/* Amber accent line along the right edge */}
                 <div className="absolute top-[15%] bottom-[15%] right-0 w-px bg-gradient-to-b from-transparent via-[#FFB800]/40 to-transparent" />
                 <Image
@@ -141,7 +141,7 @@ export default function Contact() {
               </div>
 
               {/* Content — right column */}
-              <div className="flex flex-col flex-1 min-w-0">
+              <div className="flex flex-col flex-1 min-w-0 relative z-10">
                 {/* Tag */}
                 <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/40 uppercase mb-5">
                   [ Signal // Open ]
