@@ -3,14 +3,40 @@
 import { useRef, useMemo, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { particleVertex, particleFragment } from "@/components/hero/shaders";
+import { particleVertex } from "@/components/hero/shaders";
 
-const COUNT = 220;
+/* Higher-opacity variant for white background — same logic, alpha boosted */
+const contactParticleFragment = /* glsl */ `
+precision highp float;
+
+uniform float uTime;
+uniform sampler2D uMaskTex;
+uniform float uScrollFade;
+
+varying vec4 vRandom;
+varying vec3 vColor;
+varying vec2 vScreenUv;
+
+void main() {
+  vec2 uv = gl_PointCoord.xy;
+  float d = length(uv - vec2(0.5));
+  if (d > 0.5) discard;
+
+  vec3 color = vColor + 0.15 * sin(uv.yxx + uTime + vRandom.y * 6.28);
+
+  float alpha = 0.55 + 0.2 * vRandom.x;
+  if (alpha < 0.01) discard;
+
+  gl_FragColor = vec4(color, alpha);
+}
+`;
+
+const COUNT = 200;
 const SPREAD = 5;
 const SPEED = 0.15;
-const BASE_SIZE = 120;
+const BASE_SIZE = 160;
 const SIZE_RANDOMNESS = 1;
-const COLORS = ["#db8b00", "#000000", "#ffffff"];
+const COLORS = ["#db8b00", "#c47d00", "#1a1a1a", "#555555"];
 
 const hexToRgb = (hex: string): [number, number, number] => {
   const h = hex.replace(/^#/, "");
@@ -91,7 +117,7 @@ function ParticleMesh() {
     <points ref={meshRef} geometry={geometry} renderOrder={0}>
       <shaderMaterial
         vertexShader={particleVertex}
-        fragmentShader={particleFragment}
+        fragmentShader={contactParticleFragment}
         uniforms={uniforms}
         transparent
         depthTest={false}
