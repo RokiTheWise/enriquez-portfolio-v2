@@ -72,21 +72,23 @@ export const StickyScroll = ({
               ref={setEntryRef(index)}
               className="my-16 first:mt-8 last:mb-8"
             >
-              {/* Index pip */}
-              <div className="flex items-center gap-2 mb-3">
-                <div
-                  className="w-1.5 h-1.5 transition-colors duration-300"
-                  style={{
-                    background:
-                      activeCard === index
-                        ? "#FFB800"
-                        : "rgba(0,0,0,0.08)",
-                  }}
-                />
-                <span className="font-mono text-[9px] tracking-[0.3em] text-black/25 uppercase">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              </div>
+              {/* Index pip — hidden for blank buffer cards */}
+              {(item.title || item.description) && (
+                <div className="flex items-center gap-2 mb-3">
+                  <div
+                    className="w-1.5 h-1.5 transition-colors duration-300"
+                    style={{
+                      background:
+                        activeCard === index
+                          ? "#FFB800"
+                          : "rgba(0,0,0,0.08)",
+                    }}
+                  />
+                  <span className="font-mono text-[9px] tracking-[0.3em] text-black/25 uppercase">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+              )}
 
               <motion.h3
                 animate={{
