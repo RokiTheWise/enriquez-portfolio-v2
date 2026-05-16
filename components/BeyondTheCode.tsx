@@ -204,13 +204,13 @@ export function BeyondTheCodeContent() {
 
   return (
     <div className="relative w-full h-full px-6 md:px-12 py-24 md:py-32 bg-white">
-      {/* Section header */}
+      {/* Section header — no sticky here; parent is overflow-hidden so sticky won't work */}
       <motion.div
         ref={headingRef}
         initial={{ opacity: 0, y: 20 }}
         animate={headingInView ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky top-24 z-20 bg-white pb-6 mb-4 md:mb-8 max-w-5xl mx-auto"
+        className="z-20 bg-white pb-6 mb-4 md:mb-8 max-w-5xl mx-auto"
       >
         <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
           Beyond the Code

@@ -63,7 +63,7 @@ function CornerBrackets() {
 }
 
 export default function ContactContent({
-  pointerEvents = "none",
+  pointerEvents = "auto",
 }: {
   pointerEvents?: "auto" | "none";
 }) {

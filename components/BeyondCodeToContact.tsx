@@ -77,24 +77,25 @@ export default function BeyondCodeToContact() {
       <div ref={wrapperRef} className="relative h-[750vh]">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-          {/* Layer 1: BeyondTheCode — always visible, no clip */}
+          {/* Layer 1: BeyondTheCode — overflow-hidden keeps IntersectionObserver
+              firing against the real viewport (not an inner scrollbar) */}
           <div className="absolute inset-0 z-10 overflow-hidden">
             <BeyondTheCodeContent />
           </div>
 
-          {/* Layer 2: Black iris closing over BeyondTheCode */}
+          {/* Layer 2: Black iris — expands 0→150% during Phase 2, covering BeyondTheCode */}
           <motion.div
             style={{ clipPath: closeClipPath }}
             className="absolute inset-0 z-20 bg-black pointer-events-none"
           />
 
-          {/* Layer 3: Contact content — revealed by opening iris */}
+          {/* Layer 3: Contact content — clip expands 0→150% during Phase 4 */}
           <motion.div
             style={{ clipPath: openClipPath }}
             className="absolute inset-0 z-30"
           >
             <motion.div style={{ pointerEvents }} className="w-full h-full">
-              <ContactContent pointerEvents="auto" />
+              <ContactContent />
             </motion.div>
           </motion.div>
 
