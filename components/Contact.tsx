@@ -1,15 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionTemplate,
-} from "framer-motion";
 import ContactParticles from "./contact/ContactParticles";
-
-/* ── Social Data ── */
 
 const SOCIALS = [
   {
@@ -71,157 +62,71 @@ function CornerBrackets() {
   );
 }
 
-/* ── Contact Section — Iris / Aperture Wipe ── */
-
-export default function Contact() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: wrapperRef,
-    offset: ["start start", "end end"],
-  });
-
-  const radius = useTransform(scrollYProgress, [0, 0.55], [0, 150]);
-  const clipPath = useMotionTemplate`circle(${radius}% at 50% 50%)`;
-
-  const ringScale = useTransform(scrollYProgress, [0, 0.55], [0, 2.4]);
-  const ringOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.05, 0.45, 0.58],
-    [0, 0.55, 0.4, 0],
-  );
-
-  const labelOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.04, 0.18],
-    [0, 0.85, 0],
-  );
-  const crosshairOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.04, 0.22],
-    [0, 0.6, 0],
-  );
-
-  const pointerEvents = useTransform(scrollYProgress, (v) =>
-    v > 0.5 ? ("auto" as const) : ("none" as const),
-  );
-
+export default function ContactContent({
+  pointerEvents = "none",
+}: {
+  pointerEvents?: "auto" | "none";
+}) {
   return (
-    <section id="contact" className="relative bg-black">
-      <div ref={wrapperRef} className="relative h-[200vh]">
-        <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-
-          {/* Closed-aperture HUD */}
-          <motion.div
-            style={{ opacity: labelOpacity }}
-            className="absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-3 pointer-events-none"
-          >
-            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-[#FFB800]/80 uppercase">
-              [ Aperture // Opening ]
-            </span>
-          </motion.div>
-
-          {/* Crosshair */}
-          <motion.svg
-            style={{ opacity: crosshairOpacity }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none"
-            width="56" height="56" viewBox="0 0 56 56" fill="none"
-          >
-            <circle cx="28" cy="28" r="10" stroke="#FFB800" strokeOpacity="0.5" strokeWidth="1" />
-            <line x1="28" y1="0" x2="28" y2="18" stroke="#FFB800" strokeOpacity="0.5" strokeWidth="1" />
-            <line x1="28" y1="38" x2="28" y2="56" stroke="#FFB800" strokeOpacity="0.5" strokeWidth="1" />
-            <line x1="0" y1="28" x2="18" y2="28" stroke="#FFB800" strokeOpacity="0.5" strokeWidth="1" />
-            <line x1="38" y1="28" x2="56" y2="28" stroke="#FFB800" strokeOpacity="0.5" strokeWidth="1" />
-          </motion.svg>
-
-          {/* Accent rim */}
-          <motion.div
-            style={{ scale: ringScale, opacity: ringOpacity }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none w-[100vmax] h-[100vmax] rounded-full border border-[#FFB800]/50"
-          />
-
-          {/* Contact content — iris-clipped */}
-          <motion.div
-            style={{ clipPath, pointerEvents }}
-            className="absolute inset-0"
-          >
-            <div className="relative w-full h-full bg-white overflow-hidden">
-              {/* Particles layer */}
-              <ContactParticles />
-
-              {/* Corner brackets */}
-              <CornerBrackets />
-
-              {/* Centered content */}
-              <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 text-center">
-
-                {/* Status badge */}
-                <div className="inline-flex items-center gap-2 mb-5">
-                  <span className="relative flex h-1.5 w-1.5 shrink-0">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFB800] opacity-60" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#FFB800]" />
-                  </span>
-                  <span className="font-mono text-[8px] tracking-[0.35em] text-[#FFB800] uppercase">
-                    Signal: Online
-                  </span>
-                </div>
-
-                {/* Two-tone headline — each line centered independently */}
-                <h2 className="font-mono font-bold uppercase mb-6 flex flex-col items-center" style={{ lineHeight: 0.92, letterSpacing: "-0.03em" }}>
-                  <span className="text-[clamp(3rem,8vw,6rem)] text-black">Get In</span>
-                  <span className="text-[clamp(3rem,8vw,6rem)] text-[#FFB800]">Touch</span>
-                </h2>
-
-                {/* Amber rule */}
-                <div className="w-10 h-px bg-[#FFB800]/60 mb-6" />
-
-                {/* Subtext — wider, looser */}
-                <p className="font-mono text-xs md:text-sm text-black/50 leading-[2] max-w-lg mb-10 tracking-wide text-center">
-                  Have a project in mind, want to collaborate,
-                  or just want to say hello?
-                  My inbox is always open.
-                </p>
-
-                {/* CTA + Socials row */}
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  {/* Main CTA */}
-                  <a
-                    href="mailto:dexterjethro.enriquez@gmail.com"
-                    className="inline-flex items-center gap-3 bg-[#FFB800] px-8 py-4 font-mono text-xs font-bold tracking-[0.18em] text-black uppercase transition-all duration-200 hover:bg-black hover:text-[#FFB800]"
-                  >
-                    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    Send a Message
-                  </a>
-
-                  {/* Divider */}
-                  <div className="w-px h-8 bg-black/10" />
-
-                  {/* Icon social buttons */}
-                  {SOCIALS.map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={s.label}
-                      className="inline-flex items-center justify-center w-12 h-12 border border-black/10 text-black/40 transition-all duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5"
-                    >
-                      {s.icon}
-                    </a>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <span className="absolute bottom-5 font-mono text-[8px] tracking-[0.2em] text-black/20 uppercase">
-                  &copy; {new Date().getFullYear()} Dexter Jethro Enriquez
-                </span>
-              </div>
-            </div>
-          </motion.div>
+    <div className="relative w-full h-full bg-white overflow-hidden" style={{ pointerEvents }}>
+      <ContactParticles />
+      <CornerBrackets />
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 text-center">
+        <div className="inline-flex items-center gap-2 mb-5">
+          <span className="relative flex h-1.5 w-1.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFB800] opacity-60" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#FFB800]" />
+          </span>
+          <span className="font-mono text-[8px] tracking-[0.35em] text-[#FFB800] uppercase">
+            Signal: Online
+          </span>
         </div>
+
+        <h2
+          className="font-mono font-bold uppercase mb-6 flex flex-col items-center"
+          style={{ lineHeight: 0.92, letterSpacing: "-0.03em" }}
+        >
+          <span className="text-[clamp(3rem,8vw,6rem)] text-black">Get In</span>
+          <span className="text-[clamp(3rem,8vw,6rem)] text-[#FFB800]">Touch</span>
+        </h2>
+
+        <div className="w-10 h-px bg-[#FFB800]/60 mb-6" />
+
+        <p className="font-mono text-xs md:text-sm text-black/50 leading-[2] max-w-lg mb-10 tracking-wide text-center">
+          Have a project in mind, want to collaborate,
+          or just want to say hello?
+          My inbox is always open.
+        </p>
+
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="mailto:dexterjethro.enriquez@gmail.com"
+            className="inline-flex items-center gap-3 bg-[#FFB800] px-8 py-4 font-mono text-xs font-bold tracking-[0.18em] text-black uppercase transition-all duration-200 hover:bg-black hover:text-[#FFB800]"
+          >
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Send a Message
+          </a>
+          <div className="w-px h-8 bg-black/10" />
+          {SOCIALS.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={s.label}
+              className="inline-flex items-center justify-center w-12 h-12 border border-black/10 text-black/40 transition-all duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5"
+            >
+              {s.icon}
+            </a>
+          ))}
+        </div>
+
+        <span className="absolute bottom-5 font-mono text-[8px] tracking-[0.2em] text-black/20 uppercase">
+          &copy; {new Date().getFullYear()} Dexter Jethro Enriquez
+        </span>
       </div>
-    </section>
+    </div>
   );
 }
