@@ -197,3 +197,33 @@ export default function BeyondTheCode() {
     </section>
   );
 }
+
+export function BeyondTheCodeContent() {
+  const headingRef = useRef<HTMLDivElement>(null);
+  const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
+
+  return (
+    <div className="relative w-full h-full px-6 md:px-12 py-24 md:py-32 bg-white">
+      {/* Section header */}
+      <motion.div
+        ref={headingRef}
+        initial={{ opacity: 0, y: 20 }}
+        animate={headingInView ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="sticky top-24 z-20 bg-white pb-6 mb-4 md:mb-8 max-w-5xl mx-auto"
+      >
+        <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
+          Beyond the Code
+        </h2>
+        <div className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
+          Activity Log // Off-screen
+        </div>
+      </motion.div>
+
+      {/* Sticky Scroll */}
+      <div className="max-w-5xl mx-auto">
+        <StickyScroll content={content} />
+      </div>
+    </div>
+  );
+}
