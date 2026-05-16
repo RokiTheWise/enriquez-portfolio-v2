@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export const StickyScroll = ({
   content,
   contentClassName,
+  scrollRoot,
 }: {
   content: {
     title: string;
@@ -13,6 +14,7 @@ export const StickyScroll = ({
     content?: React.ReactNode;
   }[];
   contentClassName?: string;
+  scrollRoot?: React.RefObject<HTMLElement | null>;
 }) => {
   const [activeCard, setActiveCard] = useState(0);
   const entryRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -26,6 +28,7 @@ export const StickyScroll = ({
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
+    const root = scrollRoot?.current ?? null;
 
     entryRefs.current.forEach((el, index) => {
       if (!el) return;
@@ -36,7 +39,8 @@ export const StickyScroll = ({
           }
         },
         {
-          // Narrow band around the vertical center of the viewport
+          root,
+          // Narrow band around the vertical center of the scroll container
           rootMargin: "-45% 0px -45% 0px",
         },
       );
@@ -45,7 +49,7 @@ export const StickyScroll = ({
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, [content.length]);
+  }, [content.length, scrollRoot]);
 
   return (
     <div className="relative flex flex-col lg:flex-row lg:justify-between gap-0 lg:gap-16 px-4 md:px-0">

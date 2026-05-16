@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 
@@ -147,19 +147,23 @@ const ACTIVITIES = [
   },
 ];
 
-const content = ACTIVITIES.map((a) => ({
-  title: a.title,
-  description: a.description,
-  content: (
-    <ActivityCard
-      index={a.card.index}
-      highlight={a.card.highlight}
-      accentColor={a.card.accentColor}
-      image={a.card.image}
-      objectPosition={a.card.objectPosition}
-    />
-  ),
-}));
+const content = [
+  ...ACTIVITIES.map((a) => ({
+    title: a.title,
+    description: a.description,
+    content: (
+      <ActivityCard
+        index={a.card.index}
+        highlight={a.card.highlight}
+        accentColor={a.card.accentColor}
+        image={a.card.image}
+        objectPosition={a.card.objectPosition}
+      />
+    ),
+  })),
+  // Blank buffer card — when this centers, the iris starts closing
+  { title: "", description: "", content: <div className="w-full h-full" /> },
+];
 
 /* ═══════════════════════════════════════════
    Section Component
@@ -198,19 +202,23 @@ export default function BeyondTheCode() {
   );
 }
 
-export function BeyondTheCodeContent() {
+export function BeyondTheCodeContent({
+  scrollRoot,
+}: {
+  scrollRoot?: React.RefObject<HTMLElement | null>;
+}) {
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
 
   return (
-    <div className="relative w-full h-full px-6 md:px-12 py-24 md:py-32 bg-white">
-      {/* Section header — no sticky here; parent is overflow-hidden so sticky won't work */}
+    <div className="relative w-full px-6 md:px-12 py-24 md:py-32 bg-white">
+      {/* Section header — sticky inside the inner scroll container */}
       <motion.div
         ref={headingRef}
         initial={{ opacity: 0, y: 20 }}
         animate={headingInView ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="z-20 bg-white pb-6 mb-4 md:mb-8 max-w-5xl mx-auto"
+        className="sticky top-24 z-20 bg-white pb-6 mb-4 md:mb-8 max-w-5xl mx-auto"
       >
         <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
           Beyond the Code
@@ -222,8 +230,9 @@ export function BeyondTheCodeContent() {
 
       {/* Sticky Scroll */}
       <div className="max-w-5xl mx-auto">
-        <StickyScroll content={content} />
+        <StickyScroll content={content} scrollRoot={scrollRoot} />
       </div>
+
     </div>
   );
 }
