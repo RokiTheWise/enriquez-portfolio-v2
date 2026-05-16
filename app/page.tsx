@@ -6,8 +6,7 @@ import HeroTransition from "@/components/HeroTransition";
 import About from "@/components/About";
 import Techstack from "@/components/Techstack";
 import FeaturedProjects from "@/components/FeaturedProjects";
-import BeyondTheCode from "@/components/BeyondTheCode";
-import Contact from "@/components/Contact";
+import BeyondCodeToContact from "@/components/BeyondCodeToContact";
 import StaggeredMenu from "@/components/StaggeredMenu";
 
 const MENU_ITEMS = [
@@ -83,8 +82,7 @@ export default function Home() {
       <About />
       <Techstack />
       <FeaturedProjects />
-      <BeyondTheCode />
-      <Contact />
+      <BeyondCodeToContact />
     </ReactLenis>
   );
 }
