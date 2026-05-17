@@ -147,23 +147,26 @@ const ACTIVITIES = [
   },
 ];
 
-const content = [
-  ...ACTIVITIES.map((a) => ({
-    title: a.title,
-    description: a.description,
-    content: (
-      <ActivityCard
-        index={a.card.index}
-        highlight={a.card.highlight}
-        accentColor={a.card.accentColor}
-        image={a.card.image}
-        objectPosition={a.card.objectPosition}
-      />
-    ),
-  })),
-  // Blank buffer card — when this centers, the iris starts closing
-  { title: "", description: "", content: <div className="w-full h-full" /> },
-];
+const content = ACTIVITIES.map((a, i) => ({
+  title: a.title,
+  description: a.description,
+  content: (
+    <ActivityCard
+      index={a.card.index}
+      highlight={a.card.highlight}
+      accentColor={a.card.accentColor}
+      image={a.card.image}
+      objectPosition={a.card.objectPosition}
+    />
+  ),
+  // Mobile: card 06 (the last) needs DOM scroll runway BELOW it so it can
+  // scroll up into the IntersectionObserver's center band before inner
+  // scrollTop clamps. Use pb (not mb) — last:mb-8 in the base classes would
+  // override mb. Desktop layout fits naturally, so no spacer needed.
+  ...(i === ACTIVITIES.length - 1
+    ? { spacerClassName: "pb-[80vh] lg:pb-0" }
+    : {}),
+}));
 
 /* ═══════════════════════════════════════════
    Section Component

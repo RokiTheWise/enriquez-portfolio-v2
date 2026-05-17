@@ -101,7 +101,12 @@ export default function BeyondCodeToContact() {
 
   return (
     <section id="beyond" className="relative bg-black">
-      <div ref={wrapperRef} className="relative h-[900vh]">
+      {/*
+        Wrapper height: 900vh desktop (desktop-tuned). Mobile gets 1200vh —
+        the single-column layout plus card 06's 80vh spacer needs more outer
+        scroll budget for the 0.25 ratio to traverse all the inner content.
+      */}
+      <div ref={wrapperRef} className="relative h-[1200vh] lg:h-[900vh]">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
 
           {/*
@@ -116,7 +121,16 @@ export default function BeyondCodeToContact() {
             <div
               ref={innerScrollRef}
               className="w-full h-full overflow-y-scroll overflow-x-hidden"
-              style={{ scrollbarWidth: "none" }}
+              style={{
+                scrollbarWidth: "none",
+                // touch-action: pan-y lets the browser route vertical touch
+                // pans to the PAGE (not this inner overflow container). We
+                // drive inner.scrollTop programmatically from page scroll, so
+                // the inner shouldn't consume touches itself. Without this,
+                // mobile users get stuck once inner.scrollTop hits its clamp.
+                touchAction: "pan-y",
+                overscrollBehavior: "none",
+              }}
             >
               <BeyondTheCodeContent scrollRoot={innerScrollRef} />
             </div>

@@ -12,6 +12,7 @@ export const StickyScroll = ({
     title: string;
     description: string;
     content?: React.ReactNode;
+    spacerClassName?: string;
   }[];
   contentClassName?: string;
   scrollRoot?: React.RefObject<HTMLElement | null>;
@@ -70,7 +71,10 @@ export const StickyScroll = ({
             <div
               key={item.title + index}
               ref={setEntryRef(index)}
-              className="my-16 first:mt-8 last:mb-8"
+              className={cn(
+                "my-16 first:mt-8 last:mb-8",
+                item.spacerClassName,
+              )}
             >
               {/* Index pip — hidden for blank buffer cards */}
               {(item.title || item.description) && (
