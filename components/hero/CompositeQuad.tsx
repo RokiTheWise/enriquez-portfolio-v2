@@ -5,45 +5,30 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { compositeVertex, compositeFragment } from "./shaders";
 import type { HeroRefs } from "./types";
-import { IMAGE_SIZES } from "./types";
+import { IMAGE_SIZES, PORTRAIT_HOLD, PORTRAIT_CROSSFADE } from "./types";
 
 interface CompositeQuadProps {
-  casualTex: THREE.Texture;
-  businessTex: THREE.Texture;
+  textures: THREE.Texture[];
   heroRefs: HeroRefs;
 }
 
-export default function CompositeQuad({
-  casualTex,
-  businessTex,
-  heroRefs,
-}: CompositeQuadProps) {
+// Smooth ease-in-out: slow at the start and end of the crossfade, fast in the middle.
+const easeInOut = (t: number) => t * t * (3 - 2 * t);
+
+export default function CompositeQuad({ textures, heroRefs }: CompositeQuadProps) {
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const elapsedRef = useRef(0);
-
-  // 1×1 black texture prevents first-frame flash (Three.js defaults null samplers to white)
-  const blackTex = useMemo(() => {
-    const t = new THREE.DataTexture(
-      new Uint8Array([0, 0, 0, 255]),
-      1,
-      1,
-      THREE.RGBAFormat,
-    );
-    t.needsUpdate = true;
-    return t;
-  }, []);
+  const indexRef = useRef(0);
 
   const uniforms = useMemo(
     () => ({
-      uCasualTex: { value: casualTex },
-      uBusinessTex: { value: businessTex },
-      uMaskTex: { value: blackTex },
+      uCurrentTex: { value: textures[0] },
+      uNextTex: { value: textures[1 % textures.length] },
       uImageBounds: { value: new THREE.Vector4(0, 0, 1, 1) },
-      uTime: { value: 0 },
-      uScrollWipe: { value: 0 },
+      uFade: { value: 0 },
       uPortraitFade: { value: 0 },
     }),
-    [casualTex, businessTex, blackTex],
+    [textures],
   );
 
   useFrame((state, delta) => {
@@ -51,32 +36,37 @@ export default function CompositeQuad({
     if (!mat) return;
 
     elapsedRef.current += delta;
-    mat.uniforms.uTime.value = elapsedRef.current;
 
-    // Update mask texture from FBO
-    const maskTarget = heroRefs.maskRef.current;
-    if (maskTarget) {
-      mat.uniforms.uMaskTex.value = maskTarget.texture;
+    // ── Portrait cycle ──
+    const cycleDuration = PORTRAIT_HOLD + PORTRAIT_CROSSFADE;
+    const cyclesElapsed = elapsedRef.current / cycleDuration;
+    const cycleIndex = Math.floor(cyclesElapsed);
+    const t = cyclesElapsed - cycleIndex; // 0..1 within current cycle
+
+    if (cycleIndex !== indexRef.current) {
+      indexRef.current = cycleIndex;
+      const cur = cycleIndex % textures.length;
+      const nxt = (cycleIndex + 1) % textures.length;
+      mat.uniforms.uCurrentTex.value = textures[cur];
+      mat.uniforms.uNextTex.value = textures[nxt];
     }
 
-    // Scroll progress
+    // Hold, then ease-in-out crossfade
+    const holdRatio = PORTRAIT_HOLD / cycleDuration;
+    const fadeRaw = t < holdRatio ? 0 : (t - holdRatio) / (1 - holdRatio);
+    mat.uniforms.uFade.value = easeInOut(Math.min(1, Math.max(0, fadeRaw)));
+
+    // ── Scroll-driven dissolve ──
     const scrollP = heroRefs.scrollProgressRef.current;
+    mat.uniforms.uPortraitFade.value = Math.max(
+      0,
+      Math.min(1, (scrollP - 0.3) / 0.2),
+    );
 
-    // No white wipe — tech stack layer handles the reveal
-    mat.uniforms.uScrollWipe.value = 0;
-
-    // Portrait dissolves: 0.3→0.5 scroll maps to 0→1
-    mat.uniforms.uPortraitFade.value =
-      Math.max(0, Math.min(1, (scrollP - 0.3) / 0.2));
-
-    // Compute image bounds in UV space [0,1]
+    // ── Image bounds in UV space ──
     const { width, height } = state.size;
     const imageSize =
-      width < 640
-        ? IMAGE_SIZES.sm
-        : width < 768
-          ? IMAGE_SIZES.md
-          : IMAGE_SIZES.lg;
+      width < 640 ? IMAGE_SIZES.sm : width < 768 ? IMAGE_SIZES.md : IMAGE_SIZES.lg;
 
     const isMobile = width < 768;
     const mobileScale = isMobile ? 1.1 : 1.0;
@@ -84,10 +74,9 @@ export default function CompositeQuad({
 
     const imgW = scaledSize / width;
     const imgH = scaledSize / height;
-
     const yOffset = isMobile ? 0.04 : 0.0;
 
-    // ── Gentle zoom (+20% max) before mask consumes ──
+    // Gentle scroll zoom (+20% max)
     const portraitZoom = 1.0 + scrollP * 0.2;
     const zW = imgW * portraitZoom;
     const zH = imgH * portraitZoom;
@@ -96,7 +85,7 @@ export default function CompositeQuad({
       0.5 - zW / 2,
       yOffset,
       0.5 + zW / 2,
-      yOffset + zH
+      yOffset + zH,
     );
   });
 

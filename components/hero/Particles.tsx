@@ -12,14 +12,12 @@ import {
   PARTICLE_BASE_SIZE,
   PARTICLE_SIZE_RANDOMNESS,
   PARTICLE_COLORS,
-  TRAIL_LENGTH,
   CAMERA_FOV,
   CAMERA_DISTANCE,
   DAMPING,
   RETURN_FORCE,
   REPULSION_STRENGTH,
-  REPULSION_RADIUS_SCALE,
-  REPULSION_MIN_WORLD_RADIUS,
+  REPULSION_RADIUS_WORLD,
   BOW_WAVE_STRENGTH,
 } from "./types";
 
@@ -37,17 +35,27 @@ export default function Particles({ heroRefs }: ParticlesProps) {
   const meshRef = useRef<THREE.Points>(null);
   const clock = useMemo(() => new THREE.Clock(), []);
 
+  // Cursor position in world space, with smoothed velocity for the bow wave.
+  const cursorRef = useRef({
+    x: 0,
+    y: 0,
+    px: 0,
+    py: 0,
+    vx: 0,
+    vy: 0,
+    active: false,
+  });
+
   const { geometry, uniforms, offsets, velocities, randoms } = useMemo(() => {
     const count = PARTICLE_COUNT;
     const positions = new Float32Array(count * 3);
     const randomsArr = new Float32Array(count * 4);
     const colors = new Float32Array(count * 3);
-    const offsetArr = new Float32Array(count * 2); // xy displacement
-    const velArr = new Float32Array(count * 2); // xy velocity
+    const offsetArr = new Float32Array(count * 2);
+    const velArr = new Float32Array(count * 2);
     const palette = PARTICLE_COLORS;
 
     for (let i = 0; i < count; i++) {
-      // Sphere distribution (rejection sampling)
       let x: number, y: number, z: number, len: number;
       do {
         x = Math.random() * 2 - 1;
@@ -61,9 +69,7 @@ export default function Particles({ heroRefs }: ParticlesProps) {
         [Math.random(), Math.random(), Math.random(), Math.random()],
         i * 4,
       );
-      const col = hexToRgb(
-        palette[Math.floor(Math.random() * palette.length)],
-      );
+      const col = hexToRgb(palette[Math.floor(Math.random() * palette.length)]);
       colors.set(col, i * 3);
     }
 
@@ -78,7 +84,6 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       uSpread: { value: PARTICLE_SPREAD },
       uBaseSize: { value: PARTICLE_BASE_SIZE },
       uSizeRandomness: { value: PARTICLE_SIZE_RANDOMNESS },
-      uMaskTex: { value: null as THREE.Texture | null },
       uScrollFade: { value: 0 },
     };
 
@@ -92,67 +97,57 @@ export default function Particles({ heroRefs }: ParticlesProps) {
   }, []);
 
   useFrame((state) => {
-    const dt = Math.min(clock.getDelta(), 0.05); // cap at 50ms
+    const dt = Math.min(clock.getDelta(), 0.05);
     const elapsed = clock.getElapsedTime();
 
     uniforms.uTime.value = elapsed * PARTICLE_SPEED;
 
-    // Update mask texture for GPU opacity sampling
-    const maskTarget = heroRefs.maskRef.current;
-    if (maskTarget) {
-      uniforms.uMaskTex.value = maskTarget.texture;
-    }
-
-    // Elegant particle exit: fade right after portrait dissolves (0.50→0.80)
     const scroll = heroRefs.scrollProgressRef.current;
-    uniforms.uScrollFade.value = Math.max(0, Math.min(1, (scroll - 0.50) / 0.30));
+    uniforms.uScrollFade.value = Math.max(0, Math.min(1, (scroll - 0.5) / 0.3));
 
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    // Gentle rotation
     mesh.rotation.x = Math.sin(elapsed * 0.2) * 0.1;
     mesh.rotation.y = Math.cos(elapsed * 0.5) * 0.15;
     mesh.rotation.z += 0.01 * PARTICLE_SPEED * dt * 60;
 
-    // ── CPU-side viscous fluid physics ──
-    const trail = heroRefs.trailRef.current;
+    // ── Convert cursor pixel coords to world space ──
     const camera = state.camera as THREE.PerspectiveCamera;
     const vFOV = (CAMERA_FOV * Math.PI) / 180;
     const halfH = Math.tan(vFOV / 2) * CAMERA_DISTANCE;
     const halfW = halfH * camera.aspect;
     const { width, height } = state.size;
 
-    // Convert trail points to world space
-    const trailWorld: {
-      x: number;
-      y: number;
-      radius: number;
-      vx: number;
-      vy: number;
-    }[] = [];
-    for (let i = 0; i < TRAIL_LENGTH; i++) {
-      const pt = trail[i];
-      if (pt && pt.x > -999) {
-        const wx = ((pt.x / width) * 2 - 1) * halfW;
-        const wy = -((pt.y / height) * 2 - 1) * halfH;
-        const baseRadius =
-          (pt.width / Math.min(width, height)) *
-          2 *
-          halfH *
-          REPULSION_RADIUS_SCALE;
-        const radius = Math.max(REPULSION_MIN_WORLD_RADIUS, baseRadius);
-        const vx = ((pt.x - pt.prevX) / width) * 2 * halfW;
-        const vy = -((pt.y - pt.prevY) / height) * 2 * halfH;
-        trailWorld.push({ x: wx, y: wy, radius, vx, vy });
+    const mouse = heroRefs.mouseRef.current;
+    const cur = cursorRef.current;
+
+    if (mouse.active) {
+      const wx = (mouse.x / width) * 2 * halfW - halfW;
+      const wy = -((mouse.y / height) * 2 * halfH - halfH);
+      if (!cur.active) {
+        cur.x = wx;
+        cur.y = wy;
+        cur.px = wx;
+        cur.py = wy;
+        cur.active = true;
       }
+      cur.px = cur.x;
+      cur.py = cur.y;
+      cur.x = wx;
+      cur.y = wy;
+      cur.vx = cur.x - cur.px;
+      cur.vy = cur.y - cur.py;
+    } else {
+      cur.active = false;
     }
 
-    const dtScale = dt * 60; // normalize to 60fps
+    const radius = REPULSION_RADIUS_WORLD;
+    const dtScale = dt * 60;
+
     const positions = geometry.attributes.position.array as Float32Array;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      // Compute animated world position (home + sine)
       const hx = positions[i * 3] * PARTICLE_SPREAD;
       const hy = positions[i * 3 + 1] * PARTICLE_SPREAD;
       const rx = randoms[i * 4];
@@ -170,61 +165,44 @@ export default function Particles({ heroRefs }: ParticlesProps) {
       let accelX = 0;
       let accelY = 0;
 
-      // Forces from trail points
-      for (const tp of trailWorld) {
-        const dx = px - tp.x;
-        const dy = py - tp.y;
+      if (cur.active) {
+        const dx = px - cur.x;
+        const dy = py - cur.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < tp.radius && dist > 0.001) {
+        if (dist < radius && dist > 0.001) {
           const nx = dx / dist;
           const ny = dy / dist;
-          const force = 1 - dist / tp.radius;
+          const force = 1 - dist / radius;
           const cubicForce = force * force * force;
 
-          // Radial repulsion
           accelX += nx * cubicForce * REPULSION_STRENGTH;
           accelY += ny * cubicForce * REPULSION_STRENGTH;
 
-          // Exponential bow-wave: particles ahead of cursor get pushed forward
-          const speed = Math.sqrt(tp.vx * tp.vx + tp.vy * tp.vy);
+          // Bow wave: particles in front of the cursor get pushed along its direction
+          const speed = Math.sqrt(cur.vx * cur.vx + cur.vy * cur.vy);
           if (speed > 0.0001) {
-            const vnx = tp.vx / speed;
-            const vny = tp.vy / speed;
-            const ahead = nx * vnx + ny * vny; // dot: >0 = in front
+            const vnx = cur.vx / speed;
+            const vny = cur.vy / speed;
+            const ahead = nx * vnx + ny * vny;
             const bowWave = Math.exp(ahead * 2.0) - 1.0;
             const normalizedSpeed = Math.min(speed * 12.0, 1.0);
-            accelX +=
-              vnx *
-              cubicForce *
-              bowWave *
-              normalizedSpeed *
-              BOW_WAVE_STRENGTH;
-            accelY +=
-              vny *
-              cubicForce *
-              bowWave *
-              normalizedSpeed *
-              BOW_WAVE_STRENGTH;
+            accelX += vnx * cubicForce * bowWave * normalizedSpeed * BOW_WAVE_STRENGTH;
+            accelY += vny * cubicForce * bowWave * normalizedSpeed * BOW_WAVE_STRENGTH;
           }
         }
       }
 
-      // Viscous return to origin (spring force)
       accelX -= offsets[i * 2] * RETURN_FORCE;
       accelY -= offsets[i * 2 + 1] * RETURN_FORCE;
 
-      // Acceleration → Velocity (with damping 0.92)
-      velocities[i * 2] =
-        (velocities[i * 2] + accelX * dtScale) * DAMPING;
+      velocities[i * 2] = (velocities[i * 2] + accelX * dtScale) * DAMPING;
       velocities[i * 2 + 1] =
         (velocities[i * 2 + 1] + accelY * dtScale) * DAMPING;
 
-      // Velocity → Position
       offsets[i * 2] += velocities[i * 2] * dtScale;
       offsets[i * 2 + 1] += velocities[i * 2 + 1] * dtScale;
     }
 
-    // Upload displacement attribute to GPU
     (geometry.attributes.aOffset as THREE.BufferAttribute).needsUpdate = true;
   });
 

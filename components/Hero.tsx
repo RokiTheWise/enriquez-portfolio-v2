@@ -5,27 +5,26 @@ import { Canvas } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import type { MotionValue } from "framer-motion";
 import Particles from "./hero/Particles";
-import BrushStrokeMask from "./hero/BrushStrokeMask";
 import CompositeQuad from "./hero/CompositeQuad";
 import HeroHUD from "./hero/HeroHUD";
 import type { HeroRefs } from "./hero/types";
-import { TRAIL_LENGTH, CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
+import { CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
+
+const PORTRAIT_SRCS = [
+  "/DJ1.webp",
+  "/DJ2.webp",
+  "/DJ3.webp",
+  "/DJ4.webp",
+  "/DJ5.webp",
+];
 
 function HeroScene({ heroRefs }: { heroRefs: HeroRefs }) {
-  const [casualTex, businessTex] = useTexture([
-    "/DJ-Casual.png",
-    "/DJ-Business.png",
-  ]);
+  const textures = useTexture(PORTRAIT_SRCS);
 
   return (
     <>
       <Particles heroRefs={heroRefs} />
-      <BrushStrokeMask heroRefs={heroRefs} />
-      <CompositeQuad
-        casualTex={casualTex}
-        businessTex={businessTex}
-        heroRefs={heroRefs}
-      />
+      <CompositeQuad textures={textures} heroRefs={heroRefs} />
     </>
   );
 }
@@ -40,19 +39,7 @@ export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) 
 
   const heroRefs: HeroRefs = useMemo(
     () => ({
-      mouseRef: { current: { x: -9999, y: -9999 } },
-      trailRef: {
-        current: Array.from({ length: TRAIL_LENGTH }, () => ({
-          x: -9999,
-          y: -9999,
-          prevX: -9999,
-          prevY: -9999,
-          velocity: 0,
-          width: 0,
-        })),
-      },
-      maskRef: { current: null },
-      hasEnteredRef: { current: false },
+      mouseRef: { current: { x: 0, y: 0, active: false } },
       scrollProgressRef,
     }),
     [scrollProgressRef],
@@ -62,30 +49,15 @@ export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) 
     (e: React.MouseEvent) => {
       const rect = sectionRef.current?.getBoundingClientRect();
       if (!rect) return;
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      heroRefs.mouseRef.current.x = x;
-      heroRefs.mouseRef.current.y = y;
-
-      if (!heroRefs.hasEnteredRef.current) {
-        heroRefs.hasEnteredRef.current = true;
-        // Snap all trail points to current mouse position
-        const trail = heroRefs.trailRef.current;
-        for (let i = 0; i < trail.length; i++) {
-          trail[i].x = x;
-          trail[i].y = y;
-          trail[i].prevX = x;
-          trail[i].prevY = y;
-        }
-      }
+      heroRefs.mouseRef.current.x = e.clientX - rect.left;
+      heroRefs.mouseRef.current.y = e.clientY - rect.top;
+      heroRefs.mouseRef.current.active = true;
     },
     [heroRefs],
   );
 
   const handleMouseLeave = useCallback(() => {
-    heroRefs.mouseRef.current.x = -9999;
-    heroRefs.mouseRef.current.y = -9999;
-    heroRefs.hasEnteredRef.current = false;
+    heroRefs.mouseRef.current.active = false;
   }, [heroRefs]);
 
   return (
