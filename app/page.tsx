@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import ReactLenis, { useLenis } from "lenis/react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import HeroTransition from "@/components/HeroTransition";
@@ -9,6 +9,7 @@ import Techstack from "@/components/Techstack";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import BeyondCodeToContact from "@/components/BeyondCodeToContact";
 import StaggeredMenu from "@/components/StaggeredMenu";
+import StartupLoader from "@/components/StartupLoader";
 
 const MENU_ITEMS = [
   { label: "Home", ariaLabel: "Go to top", link: "#" },
@@ -91,15 +92,24 @@ function NavMenu() {
 }
 
 export default function Home() {
+  const [loaderDone, setLoaderDone] = useState(false);
+
   return (
     <ReactLenis root>
-      <ScrollProgressBar />
-      <NavMenu />
-      <HeroTransition />
-      <About />
-      <Techstack />
-      <FeaturedProjects />
-      <BeyondCodeToContact />
+      <StartupLoader onComplete={() => setLoaderDone(true)} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loaderDone ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        <ScrollProgressBar />
+        <NavMenu />
+        <HeroTransition />
+        <About />
+        <Techstack />
+        <FeaturedProjects />
+        <BeyondCodeToContact />
+      </motion.div>
     </ReactLenis>
   );
 }
