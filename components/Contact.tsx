@@ -71,7 +71,7 @@ export default function ContactContent({
     <div className="relative w-full h-full bg-white overflow-hidden" style={{ pointerEvents }}>
       <ContactParticles />
       <CornerBrackets />
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 text-center">
+      <div className="relative z-10 w-full h-[100dvh] md:h-full flex flex-col items-center justify-center px-6 text-center">
         <div className="inline-flex items-center gap-2 mb-5">
           <span className="relative flex h-1.5 w-1.5 shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFB800] opacity-60" />

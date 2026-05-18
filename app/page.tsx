@@ -1,6 +1,7 @@
 "use client";
 
-import ReactLenis from "lenis/react";
+import { useCallback } from "react";
+import ReactLenis, { useLenis } from "lenis/react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import HeroTransition from "@/components/HeroTransition";
 import About from "@/components/About";
@@ -49,6 +50,20 @@ function NavMenu() {
     v > 0.01 ? ("auto" as const) : ("none" as const),
   );
 
+  // Lock background scrolling while the menu panel is open. Lenis drives
+  // smooth scroll for the whole page, so just toggling body overflow isn't
+  // enough — Lenis keeps running. Stop/start the Lenis instance directly,
+  // and also lock body overflow so the native scroll layer is pinned too.
+  const lenis = useLenis();
+  const handleMenuOpen = useCallback(() => {
+    lenis?.stop();
+    document.body.style.overflow = "hidden";
+  }, [lenis]);
+  const handleMenuClose = useCallback(() => {
+    lenis?.start();
+    document.body.style.overflow = "";
+  }, [lenis]);
+
   return (
     <motion.div
       style={{ opacity: navOpacity, pointerEvents: navPointerEvents }}
@@ -68,6 +83,8 @@ function NavMenu() {
         colors={["#FFF3D6", "#FFB800"]}
         accentColor="#FFB800"
         isFixed
+        onMenuOpen={handleMenuOpen}
+        onMenuClose={handleMenuClose}
       />
     </motion.div>
   );
