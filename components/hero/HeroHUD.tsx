@@ -8,7 +8,6 @@ import { twMerge } from "tailwind-merge";
 import { FileTextIcon, Mail } from "lucide-react";
 import DecryptedText from "./DecryptedText";
 import TextType from "../TextType";
-import Image from "next/image";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -421,12 +420,11 @@ export default function HeroHUD({
           style={{ x: slideLeft, pointerEvents: hudPointerEvents }}
           className="flex items-center gap-2 md:gap-3 max-w-[60%] md:max-w-[40%]"
         >
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/DexDev-Logo.svg"
             alt="DexDev Logo"
-            width={40}
-            height={40}
-            className="w-7 h-7 md:w-12 md:h-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
+            className="w-7 h-7 md:w-12 md:h-12 flex-shrink-0 drop-shadow-[0_0_3px_rgba(255,184,0,0.4)] md:drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
           />
           <div className="flex flex-col">
             <h1 className="font-mono text-base md:text-3xl font-bold tracking-tighter text-black uppercase leading-none">
