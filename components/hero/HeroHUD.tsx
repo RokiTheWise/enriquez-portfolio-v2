@@ -288,7 +288,7 @@ const HUDButton = ({
         onMouseLeave={handleMouseLeave}
         style={{ x: springX, y: springY }}
         className={cn(
-          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-all duration-300 py-1 md:py-2",
+          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-all duration-300 py-2.5 md:py-2",
           className,
         )}
       >
@@ -481,27 +481,27 @@ export default function HeroHUD({
           <HUDButton
             label="About"
             href="#about"
-            className="text-base md:text-xl leading-tight"
+            className="text-2xl md:text-xl leading-tight"
           />
           <HUDButton
             label="Techstack"
             href="#techstack"
-            className="text-base md:text-xl leading-tight"
+            className="text-2xl md:text-xl leading-tight"
           />
           <HUDButton
             label="Featured Projects"
             href="#projects"
-            className="text-base md:text-xl leading-tight"
+            className="text-2xl md:text-xl leading-tight"
           />
 
           <HUDButton
             label="Beyond Coding"
             href="#beyond"
-            className="text-base md:text-xl leading-tight"
+            className="text-2xl md:text-xl leading-tight"
           />
           <HUDButton
             label="Contact"
-            className="text-base md:text-xl leading-tight"
+            className="text-2xl md:text-xl leading-tight"
             isLast
           />
 
