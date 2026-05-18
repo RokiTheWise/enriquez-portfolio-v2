@@ -86,8 +86,8 @@ export default function ContactContent({
           className="font-mono font-bold uppercase mb-6 flex flex-col items-center"
           style={{ lineHeight: 0.92, letterSpacing: "-0.03em" }}
         >
-          <span className="text-[clamp(3rem,8vw,6rem)] text-black">Get In</span>
-          <span className="text-[clamp(3rem,8vw,6rem)] text-[#FFB800]">Touch</span>
+          <span className="text-[clamp(4.5rem,8vw,6rem)] text-black">Get In</span>
+          <span className="text-[clamp(4.5rem,8vw,6rem)] text-[#FFB800]">Touch</span>
         </h2>
 
         <div className="w-10 h-px bg-[#FFB800]/60 mb-6" />
@@ -98,29 +98,31 @@ export default function ContactContent({
           My inbox is always open.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="w-full max-w-lg flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center justify-center gap-3">
           <a
             href="mailto:dexterjethro.enriquez@gmail.com"
-            className="inline-flex items-center gap-3 bg-[#FFB800] px-8 py-4 font-mono text-xs font-bold tracking-[0.18em] text-black uppercase transition-all duration-200 hover:bg-black hover:text-[#FFB800]"
+            className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-[#FFB800] px-8 py-4 font-mono text-xs font-bold tracking-[0.18em] text-black uppercase transition-all duration-200 hover:bg-black hover:text-[#FFB800]"
           >
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
             Send a Message
           </a>
-          <div className="w-px h-8 bg-black/10" />
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={s.label}
-              className="inline-flex items-center justify-center w-12 h-12 border border-black/10 text-black/40 transition-all duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5"
-            >
-              {s.icon}
-            </a>
-          ))}
+          <div className="hidden md:block w-px h-8 bg-black/10" />
+          <div className="grid grid-cols-4 gap-3 md:flex md:items-center md:justify-center">
+            {SOCIALS.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="inline-flex items-center justify-center h-12 w-full md:w-12 border border-black/10 text-black/40 transition-all duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5"
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
         </div>
 
         <span className="absolute bottom-5 font-mono text-[8px] tracking-[0.2em] text-black/20 uppercase">
