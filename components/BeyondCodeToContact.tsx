@@ -102,15 +102,12 @@ export default function BeyondCodeToContact() {
   return (
     <section id="beyond" className="relative bg-black">
       {/*
-        Wrapper height: 900vh desktop (desktop-tuned). Mobile gets 1050dvh
-        (DYNAMIC viewport height). dvh tracks Chrome mobile's URL bar
-        show/hide; if we used vh, the wrapper would jump 12-15% mid-scroll
-        when the URL bar toggles, breaking Lenis cache, scrollYProgress, and
-        the iris trigger points — manifesting as "stuck scroll" or
-        "black screen" glitches.
+        Wrapper height: 900vh desktop (desktop-tuned). Mobile gets 1050vh —
+        sized so the 0.25 inner ratio traverses the inner content and lands
+        card 06 below the sticky photo by the time inner clamps.
       */}
-      <div ref={wrapperRef} className="relative h-[1050dvh] lg:h-[900vh]">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
+      <div ref={wrapperRef} className="relative h-[1050vh] lg:h-[900vh]">
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
 
           {/*
             BeyondTheCode in an inner scrollable div.

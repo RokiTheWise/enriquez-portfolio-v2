@@ -163,10 +163,9 @@ const content = ACTIVITIES.map((a, i) => ({
   // lands when inner scroll clamps at its natural max.
   // - More padding → card lands higher in viewport (toward top)
   // - Less padding → card lands lower in viewport (toward bottom)
-  // dvh (not vh) so the padding tracks Chrome mobile's URL bar — vh causes
-  // mid-scroll resize glitches. Desktop fits naturally, no spacer.
+  // Use pb (not mb) — last:mb-8 would override mb. Desktop fits naturally.
   ...(i === ACTIVITIES.length - 1
-    ? { spacerClassName: "pb-[20dvh] lg:pb-0" }
+    ? { spacerClassName: "pb-[20vh] lg:pb-0" }
     : {}),
 }));
 
