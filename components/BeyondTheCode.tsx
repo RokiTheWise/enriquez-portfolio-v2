@@ -159,12 +159,14 @@ const content = ACTIVITIES.map((a, i) => ({
       objectPosition={a.card.objectPosition}
     />
   ),
-  // Mobile: card 06 (the last) needs DOM scroll runway BELOW it so it can
-  // scroll up into the IntersectionObserver's center band before inner
-  // scrollTop clamps. Use pb (not mb) — last:mb-8 in the base classes would
-  // override mb. Desktop layout fits naturally, so no spacer needed.
+  // Mobile: card 06 needs bottom padding sized so that when inner scrollTop
+  // hits its natural max (scrollHeight - clientHeight), card 06 lands
+  // CENTERED in the viewport — not past center, not before it.
+  // Math: padding ≈ viewportHeight/2 - cardHeight/2. For mobile (~700-800px
+  // viewport, ~140px card), that's ~300-330px ≈ 40vh.
+  // Use pb (not mb) — last:mb-8 would override mb. Desktop fits naturally.
   ...(i === ACTIVITIES.length - 1
-    ? { spacerClassName: "pb-[80vh] lg:pb-0" }
+    ? { spacerClassName: "pb-[40vh] lg:pb-0" }
     : {}),
 }));
 
