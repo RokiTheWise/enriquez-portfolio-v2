@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { compositeVertex, compositeFragment } from "./shaders";
 import type { HeroRefs } from "./types";
-import { IMAGE_SIZES, PORTRAIT_HOLD, PORTRAIT_CROSSFADE } from "./types";
+import { IMAGE_SIZES, PORTRAIT_CROSSFADE, PORTRAIT_CYCLE_GRACE_S } from "./types";
 
 interface CompositeQuadProps {
   textures: THREE.Texture[];
@@ -17,8 +17,18 @@ const easeInOut = (t: number) => t * t * (3 - 2 * t);
 
 export default function CompositeQuad({ textures, heroRefs }: CompositeQuadProps) {
   const matRef = useRef<THREE.ShaderMaterial>(null);
-  const elapsedRef = useRef(0);
-  const indexRef = useRef(0);
+  // Index of the photo currently fully visible (uCurrentTex slot).
+  const photoIndexRef = useRef(0);
+  // Last cycle-signal value we observed from HeroHUD. Latched lazily on the
+  // first frame.
+  const lastSignalRef = useRef<number | null>(null);
+  // Wall-clock age (seconds) since this component mounted. The first
+  // adjective is already mid-typing when we mount, so we ignore any cycle
+  // signals that fire before this expires — DJ1 stays paired with the first
+  // adjective regardless of StrictMode double-mounts or other timing noise.
+  const ageRef = useRef(0);
+  // Crossfade progress in seconds. -1 means "no fade in progress".
+  const fadeElapsedRef = useRef(-1);
 
   const uniforms = useMemo(
     () => ({
@@ -35,26 +45,34 @@ export default function CompositeQuad({ textures, heroRefs }: CompositeQuadProps
     const mat = matRef.current;
     if (!mat) return;
 
-    elapsedRef.current += delta;
-
-    // ── Portrait cycle ──
-    const cycleDuration = PORTRAIT_HOLD + PORTRAIT_CROSSFADE;
-    const cyclesElapsed = elapsedRef.current / cycleDuration;
-    const cycleIndex = Math.floor(cyclesElapsed);
-    const t = cyclesElapsed - cycleIndex; // 0..1 within current cycle
-
-    if (cycleIndex !== indexRef.current) {
-      indexRef.current = cycleIndex;
-      const cur = cycleIndex % textures.length;
-      const nxt = (cycleIndex + 1) % textures.length;
-      mat.uniforms.uCurrentTex.value = textures[cur];
+    // ── Event-driven portrait cycle ──
+    // Each bump of cycleSignalRef kicks off a single PORTRAIT_CROSSFADE-second
+    // ease-in-out blend. Signals received during the startup grace period
+    // are absorbed so DJ1 stays paired with the first adjective.
+    ageRef.current += delta;
+    const signal = heroRefs.cycleSignalRef.current;
+    if (lastSignalRef.current === null || ageRef.current < PORTRAIT_CYCLE_GRACE_S) {
+      // Latch onto whatever's there — ignore any pre-grace bumps.
+      lastSignalRef.current = signal;
+    } else if (signal !== lastSignalRef.current && fadeElapsedRef.current < 0) {
+      lastSignalRef.current = signal;
+      fadeElapsedRef.current = 0;
+      const nxt = (photoIndexRef.current + 1) % textures.length;
       mat.uniforms.uNextTex.value = textures[nxt];
     }
 
-    // Hold, then ease-in-out crossfade
-    const holdRatio = PORTRAIT_HOLD / cycleDuration;
-    const fadeRaw = t < holdRatio ? 0 : (t - holdRatio) / (1 - holdRatio);
-    mat.uniforms.uFade.value = easeInOut(Math.min(1, Math.max(0, fadeRaw)));
+    if (fadeElapsedRef.current >= 0) {
+      fadeElapsedRef.current += delta;
+      const t = Math.min(1, fadeElapsedRef.current / PORTRAIT_CROSSFADE);
+      mat.uniforms.uFade.value = easeInOut(t);
+      if (t >= 1) {
+        // Promote next → current and reset the blend.
+        photoIndexRef.current = (photoIndexRef.current + 1) % textures.length;
+        mat.uniforms.uCurrentTex.value = textures[photoIndexRef.current];
+        mat.uniforms.uFade.value = 0;
+        fadeElapsedRef.current = -1;
+      }
+    }
 
     // ── Scroll-driven dissolve ──
     const scrollP = heroRefs.scrollProgressRef.current;

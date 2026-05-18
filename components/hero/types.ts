@@ -4,6 +4,9 @@ import type { RefObject } from "react";
 export interface HeroRefs {
   mouseRef: RefObject<{ x: number; y: number; active: boolean }>;
   scrollProgressRef: RefObject<number>;
+  // Bumped each time the adjective ticker finishes typing a new title.
+  // CompositeQuad watches this counter and advances the portrait on change.
+  cycleSignalRef: RefObject<number>;
 }
 
 /* ── Tuning constants ── */
@@ -28,6 +31,9 @@ export const BOW_WAVE_STRENGTH = 1.2;
 // Image sizing (px) — responsive breakpoints
 export const IMAGE_SIZES = { sm: 420, md: 500, lg: 600 } as const;
 
-// Portrait cycle timing (seconds)
-export const PORTRAIT_HOLD = 2.0;        // time fully visible on each photo
-export const PORTRAIT_CROSSFADE = 0.8;   // crossfade duration
+// Portrait cycle: photo advances when the adjective ticker finishes typing a
+// new word. PORTRAIT_CROSSFADE is how long each ease-in-out blend takes.
+// PORTRAIT_CYCLE_GRACE_S is a startup grace period during which cycle signals
+// are absorbed — keeps DJ1 paired with the first adjective while it types in.
+export const PORTRAIT_CROSSFADE = 0.8;
+export const PORTRAIT_CYCLE_GRACE_S = 3.5;

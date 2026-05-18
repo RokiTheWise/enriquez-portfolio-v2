@@ -13,7 +13,6 @@ import { CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
 const PORTRAIT_SRCS = [
   "/DJ1.webp",
   "/DJ2.webp",
-  "/DJ3.webp",
   "/DJ4.webp",
   "/DJ5.webp",
 ];
@@ -41,9 +40,14 @@ export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) 
     () => ({
       mouseRef: { current: { x: 0, y: 0, active: false } },
       scrollProgressRef,
+      cycleSignalRef: { current: 0 },
     }),
     [scrollProgressRef],
   );
+
+  const handleAdjectiveCycle = useCallback(() => {
+    heroRefs.cycleSignalRef.current += 1;
+  }, [heroRefs]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
@@ -83,7 +87,10 @@ export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) 
           <HeroScene heroRefs={heroRefs} />
         </Suspense>
       </Canvas>
-      <HeroHUD scrollYProgress={scrollYProgress} />
+      <HeroHUD
+        scrollYProgress={scrollYProgress}
+        onAdjectiveCycle={handleAdjectiveCycle}
+      />
     </section>
   );
 }
