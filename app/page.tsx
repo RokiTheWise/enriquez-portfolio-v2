@@ -59,7 +59,7 @@ function NavMenu() {
         socialItems={SOCIAL_ITEMS}
         displaySocials
         displayItemNumbering
-        logoUrl="/DexDev-Logo.svg"
+        logoUrl="/DexDev-Logo-96.png"
         logoText="Dexter Jethro Enriquez"
         resumeUrl="/Enriquez_DexterJethro_Resume.pdf"
         menuButtonColor="#000"
