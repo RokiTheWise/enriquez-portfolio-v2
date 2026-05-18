@@ -422,8 +422,12 @@ export default function HeroHUD({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/DexDev-Logo.svg"
+            src="/DexDev-Logo-96.png"
+            srcSet="/DexDev-Logo-56.png 56w, /DexDev-Logo-84.png 84w, /DexDev-Logo-96.png 96w, /DexDev-Logo-144.png 144w"
+            sizes="(min-width: 768px) 48px, 28px"
             alt="DexDev Logo"
+            width={48}
+            height={48}
             className="w-7 h-7 md:w-12 md:h-12 flex-shrink-0 drop-shadow-[0_0_3px_rgba(255,184,0,0.4)] md:drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
           />
           <div className="flex flex-col">
