@@ -102,11 +102,11 @@ export default function BeyondCodeToContact() {
   return (
     <section id="beyond" className="relative bg-black">
       {/*
-        Wrapper height: 900vh desktop (desktop-tuned). Mobile gets 1100vh —
-        the single-column layout plus card 06's 40vh spacer needs more outer
-        scroll budget for the 0.25 ratio to traverse all the inner content.
+        Wrapper height: 900vh desktop (desktop-tuned). Mobile gets 1050vh —
+        sized so the 0.25 inner ratio traverses the inner content and lands
+        card 06 below the sticky photo by the time inner clamps.
       */}
-      <div ref={wrapperRef} className="relative h-[1100vh] lg:h-[900vh]">
+      <div ref={wrapperRef} className="relative h-[1050vh] lg:h-[900vh]">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
 
           {/*
