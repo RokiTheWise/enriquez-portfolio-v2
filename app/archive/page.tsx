@@ -382,29 +382,17 @@ export default function ArchivePage() {
           </p>
         </motion.div>
 
-        {/* ── Column labels ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="flex items-center gap-4 md:gap-0 px-4 md:px-6 pb-3 border-b border-black/[0.08]"
-        >
-          <div className="w-16 md:w-24 flex-shrink-0">
-            <span className="font-mono text-[7px] md:text-[8px] tracking-[0.3em] text-black/15 uppercase">
-              ID / Year
-            </span>
-          </div>
-          <div className="flex-1">
-            <span className="font-mono text-[7px] md:text-[8px] tracking-[0.3em] text-black/15 uppercase">
-              Project • Details
-            </span>
-          </div>
-        </motion.div>
-
-        {/* ── Archive entries ── */}
+        {/* ── Timeline groups ── */}
         <div>
-          {ARCHIVE.map((entry, idx) => (
-            <ArchiveRow key={entry.index} entry={entry} idx={idx} />
+          {groupByYear(ARCHIVE).map(({ year, entries }, groupIdx) => (
+            <div key={year}>
+              <YearGroupHeader year={year} count={entries.length} groupIdx={groupIdx} />
+              <div>
+                {entries.map((entry, idx) => (
+                  <ArchiveRow key={entry.index} entry={entry} idx={idx} />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
