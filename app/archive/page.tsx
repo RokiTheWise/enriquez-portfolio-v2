@@ -33,6 +33,7 @@ interface ArchiveEntry {
 const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
+    month: "Jan",
     index: "01",
     project: "Aklatang Galera",
     classification: "CIVIC TECH",
