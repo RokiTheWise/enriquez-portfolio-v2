@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { usePageTransition } from "@/components/PageTransition";
 
 /*
  * Horizontal scroll approach: CSS sticky + Framer Motion.
@@ -248,6 +249,7 @@ function ProjectSlide({ project }: { project: Project }) {
 
 export default function FeaturedProjects() {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const { navigate } = usePageTransition();
 
   // Track vertical scroll progress through the tall wrapper (0 → 1)
   const { scrollYProgress } = useScroll({
@@ -358,15 +360,15 @@ export default function FeaturedProjects() {
                   A complete log of deployed systems, experiments, and academic coursework.
                 </p>
 
-                <a
-                  href="/archive"
-                  className="group inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-semibold border border-black bg-black text-white px-8 py-4 mt-4 no-underline transition-colors duration-200 hover:bg-transparent hover:text-black"
+                <button
+                  onClick={() => navigate("/archive")}
+                  className="group inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-semibold border border-black bg-black text-white px-8 py-4 mt-4 transition-colors duration-200 hover:bg-transparent hover:text-black cursor-pointer"
                 >
                   <span>View All Projects</span>
                   <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
                     &rarr;
                   </span>
-                </a>
+                </button>
 
                 <span className="font-mono text-[8px] tracking-[0.25em] text-black/30 uppercase mt-4">
                   {PROJECTS.length} featured • 8 total entries

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import ContactParticles from "@/components/contact/ContactParticles";
+import { usePageTransition } from "@/components/PageTransition";
 import {
   siNextdotjs,
   siTypescript,
@@ -559,6 +560,7 @@ function ArchiveModal({
    ═══════════════════════════════════════════ */
 
 export default function ArchivePage() {
+  const { navigate } = usePageTransition();
   const [selectedEntry, setSelectedEntry] = useState<ArchiveEntry | null>(null);
   return (
     <main className="relative min-h-screen bg-white overflow-hidden">
@@ -583,15 +585,15 @@ export default function ArchivePage() {
           </Link>
 
           {/* Return — same style as MENU + button, minus the vertical bar */}
-          <Link
-            href="/?from=archive"
-            className="inline-flex items-center gap-[0.3rem] font-mono font-medium leading-none tracking-[0.12em] uppercase text-xs text-black hover:opacity-60 transition-opacity duration-200"
+          <button
+            onClick={() => navigate("/?from=archive")}
+            className="inline-flex items-center gap-[0.3rem] font-mono font-medium leading-none tracking-[0.12em] uppercase text-xs text-black hover:opacity-60 transition-opacity duration-200 cursor-pointer bg-transparent border-none p-0"
           >
             <span>Return</span>
             <span className="relative w-[14px] h-[14px] shrink-0 inline-flex items-center justify-center">
               <span className="absolute left-1/2 top-1/2 w-full h-[2px] bg-current rounded-[2px] -translate-x-1/2 -translate-y-1/2" />
             </span>
-          </Link>
+          </button>
         </div>
       </header>
 
