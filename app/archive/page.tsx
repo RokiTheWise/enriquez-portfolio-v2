@@ -219,32 +219,35 @@ function ArchiveCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: idx * 0.06 }}
-      className="aspect-square"
+      className="h-64"
     >
       <div
         onClick={onClick}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="relative w-full h-full cursor-pointer flex flex-col justify-end overflow-hidden"
+        className="relative w-full h-full cursor-pointer overflow-hidden"
         style={{
+          borderRadius: "18px",
           boxShadow: hovered
-            ? "0 4px 6px -1px rgba(0,0,0,0.02), 0 20px 40px -4px rgba(0,0,0,0.12)"
-            : "0 4px 6px -1px rgba(0,0,0,0.02), 0 12px 30px -4px rgba(0,0,0,0.08)",
-          border: hovered
-            ? `1px solid ${entry.accentColor}60`
-            : "1px solid rgba(0,0,0,0.06)",
-          transition: "border-color 0.25s ease, box-shadow 0.25s ease",
+            ? "0 2px 4px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.08), 0 24px 48px rgba(0,0,0,0.10)"
+            : "0 2px 4px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.06), 0 12px 24px rgba(0,0,0,0.08)",
+          transition: "box-shadow 0.3s ease, transform 0.3s ease",
+          transform: hovered ? "translateY(-2px)" : "translateY(0)",
         }}
       >
-        {/* Image or accent placeholder filling the top */}
+        {/* Image or accent placeholder */}
         {entry.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={entry.image}
             alt={`${entry.project} screenshot`}
-            width={400}
-            height={400}
+            width={800}
+            height={256}
             className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              transform: hovered ? "scale(1.03)" : "scale(1)",
+              transition: "transform 0.4s ease",
+            }}
           />
         ) : (
           <div
@@ -253,24 +256,24 @@ function ArchiveCard({
           />
         )}
 
-        {/* Bottom label bar */}
+        {/* Bottom scrim + label */}
         <div
-          className="relative z-10 flex items-end justify-between px-4 py-3"
+          className="absolute bottom-0 left-0 right-0 flex items-end justify-between px-4 py-3 z-10"
           style={{
             background: entry.image
-              ? "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)"
+              ? "linear-gradient(to top, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)"
               : undefined,
           }}
         >
           <h3
-            className="font-mono text-sm font-bold tracking-tight uppercase leading-tight"
+            className="font-mono text-xs font-bold tracking-[0.12em] uppercase leading-tight"
             style={{ color: entry.image ? "#fff" : "#000" }}
           >
             {entry.project}
           </h3>
           <ArrowRight
-            size={16}
-            style={{ color: entry.image ? "#fff" : "#000", opacity: 0.7, flexShrink: 0 }}
+            size={14}
+            style={{ color: entry.image ? "#fff" : "#000", opacity: 0.8, flexShrink: 0 }}
           />
         </div>
       </div>
@@ -477,7 +480,7 @@ export default function ArchivePage() {
           {groupByYear(ARCHIVE).map(({ year, entries }, groupIdx) => (
             <div key={year}>
               <YearGroupHeader year={year} count={entries.length} groupIdx={groupIdx} />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                 {entries.map((entry, idx) => (
                   <ArchiveCard
                     key={entry.index}
