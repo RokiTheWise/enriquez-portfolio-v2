@@ -29,7 +29,7 @@ export const REPULSION_RADIUS_WORLD = 2.4;   // how far the cursor's pull reache
 export const BOW_WAVE_STRENGTH = 1.2;
 
 // Image sizing (px) — responsive breakpoints
-export const IMAGE_SIZES = { sm: 420, md: 500, lg: 600 } as const;
+export const IMAGE_SIZES = { sm: 320, md: 500, lg: 600 } as const;
 
 // Portrait cycle: photo advances when the adjective ticker finishes typing a
 // new word. PORTRAIT_CROSSFADE is how long each ease-in-out blend takes.

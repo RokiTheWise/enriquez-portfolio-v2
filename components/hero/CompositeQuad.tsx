@@ -87,11 +87,8 @@ export default function CompositeQuad({ textures, heroRefs }: CompositeQuadProps
       width < 640 ? IMAGE_SIZES.sm : width < 768 ? IMAGE_SIZES.md : IMAGE_SIZES.lg;
 
     const isMobile = width < 768;
-    const mobileScale = isMobile ? 1.1 : 1.0;
-    const scaledSize = imageSize * mobileScale;
-
-    const imgW = scaledSize / width;
-    const imgH = scaledSize / height;
+    const imgW = imageSize / width;
+    const imgH = imageSize / height;
     const yOffset = isMobile ? 0.04 : 0.0;
 
     // Gentle scroll zoom (+20% max)
