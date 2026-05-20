@@ -120,6 +120,47 @@ const ARCHIVE: ArchiveEntry[] = [
 ];
 
 /* ═══════════════════════════════════════════
+   Group by Year Helper
+   ═══════════════════════════════════════════ */
+
+function groupByYear(entries: ArchiveEntry[]): { year: string; entries: ArchiveEntry[] }[] {
+  const map = new Map<string, ArchiveEntry[]>();
+  for (const entry of entries) {
+    if (!map.has(entry.year)) map.set(entry.year, []);
+    map.get(entry.year)!.push(entry);
+  }
+  return Array.from(map.entries())
+    .sort(([a], [b]) => Number(b) - Number(a))
+    .map(([year, entries]) => ({ year, entries }));
+}
+
+/* ═══════════════════════════════════════════
+   Year Group Header
+   ═══════════════════════════════════════════ */
+
+function YearGroupHeader({ year, count, groupIdx }: { year: string; count: number; groupIdx: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: groupIdx * 0.1 }}
+      className="flex items-baseline gap-4 pt-12 pb-4 first:pt-0"
+    >
+      <h2
+        className="font-mono text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.95] flex-shrink-0"
+        style={{ color: "#FFB800" }}
+      >
+        {year}
+      </h2>
+      <div className="flex-1 h-[1px] bg-black/[0.06]" />
+      <span className="font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase flex-shrink-0">
+        {count} {count === 1 ? "Project" : "Projects"}
+      </span>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════
    Corner Brackets
    ═══════════════════════════════════════════ */
 
