@@ -197,6 +197,19 @@ const ARCHIVE: ArchiveEntry[] = [
     image: "/wurdle.webp",
     imagePosition: "left top",
   },
+  {
+    year: "2024",
+    month: "Mar",
+    index: "08",
+    project: "Hello, World.",
+    classification: "ORIGIN",
+    description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
+    tech: [
+      { name: "Python", tag: "CORE" },
+    ],
+    accentColor: "#F59E0B",
+    image: "/immersion.webp",
+  },
 ];
 
 /* ═══════════════════════════════════════════
