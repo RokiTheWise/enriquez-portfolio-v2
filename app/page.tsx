@@ -77,6 +77,7 @@ function NavMenu() {
         displayItemNumbering
         logoUrl="/DexDev-Logo-96.png"
         logoText="Dexter Jethro Enriquez"
+        logoHref="#"
         resumeUrl="/Enriquez_DexterJethro_Resume.pdf"
         menuButtonColor="#000"
         openMenuButtonColor="#000"

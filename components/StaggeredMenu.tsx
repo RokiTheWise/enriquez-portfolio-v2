@@ -52,6 +52,7 @@ export interface StaggeredMenuProps {
   className?: string;
   logoUrl?: string;
   logoText?: string;
+  logoHref?: string;
   resumeUrl?: string;
   menuButtonColor?: string;
   openMenuButtonColor?: string;
@@ -73,6 +74,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   className,
   logoUrl,
   logoText,
+  logoHref = "/",
   resumeUrl,
   menuButtonColor = '#fff',
   openMenuButtonColor = '#fff',
@@ -452,7 +454,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
           className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-between p-[2em] bg-transparent pointer-events-none z-20"
           aria-label="Main navigation header"
         >
-          <div className="sm-logo flex items-center gap-2 md:gap-3 select-none pointer-events-auto" aria-label="Logo">
+          <a href={logoHref} className="sm-logo flex items-center gap-2 md:gap-3 select-none pointer-events-auto" aria-label="Go to top">
             {logoUrl && (
               <img
                 src={logoUrl}
@@ -468,7 +470,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 {logoText}
               </span>
             )}
-          </div>
+          </a>
 
           <button
             ref={toggleBtnRef}
