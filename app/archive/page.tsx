@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
+import ContactParticles from "@/components/contact/ContactParticles";
 import {
   siNextdotjs,
   siTypescript,
@@ -298,25 +299,73 @@ function ArchiveCard({
           />
         )}
 
-        {/* Bottom scrim + label */}
+        {/* Hover overlay — tech icons + brief description */}
         <div
-          className="absolute bottom-0 left-0 right-0 flex items-end justify-between px-4 py-3 z-10"
+          className="absolute inset-0 z-10 flex flex-col justify-end px-4 py-4"
           style={{
-            background: entry.image
-              ? "linear-gradient(to top, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)"
-              : undefined,
+            background: hovered
+              ? "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.15) 100%)"
+              : "linear-gradient(to top, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+            transition: "background 0.3s ease",
           }}
         >
-          <h3
-            className="font-mono text-xs font-bold tracking-[0.12em] uppercase leading-tight"
-            style={{ color: entry.image ? "#fff" : "#000" }}
+          {/* Tech icons — fade in on hover */}
+          <div
+            className="flex items-center gap-2 mb-2"
+            style={{
+              opacity: hovered ? 1 : 0,
+              transform: hovered ? "translateY(0)" : "translateY(6px)",
+              transition: "opacity 0.25s ease, transform 0.25s ease",
+            }}
           >
-            {entry.project}
-          </h3>
-          <ArrowRight
-            size={14}
-            style={{ color: entry.image ? "#fff" : "#000", opacity: 0.8, flexShrink: 0 }}
-          />
+            {entry.tech.slice(0, 5).map((t) => {
+              const icon = TECH_ICONS[t.name];
+              if (!icon) return null;
+              return (
+                <svg
+                  key={t.name}
+                  width={14}
+                  height={14}
+                  viewBox="0 0 24 24"
+                  fill="white"
+                  opacity={0.75}
+                  aria-label={t.name}
+                >
+                  <path d={icon.path} />
+                </svg>
+              );
+            })}
+          </div>
+
+          {/* Brief description — fade in on hover */}
+          <p
+            className="font-mono text-[9px] leading-[1.6] text-white/70 mb-2 line-clamp-2"
+            style={{
+              opacity: hovered ? 1 : 0,
+              transform: hovered ? "translateY(0)" : "translateY(6px)",
+              transition: "opacity 0.25s ease 0.04s, transform 0.25s ease 0.04s",
+            }}
+          >
+            {entry.description}
+          </p>
+
+          {/* Title + arrow — always visible */}
+          <div className="flex items-end justify-between">
+            <h3
+              className="font-mono text-xs font-bold tracking-[0.12em] uppercase leading-tight text-white"
+            >
+              {entry.project}
+            </h3>
+            <ArrowRight
+              size={14}
+              style={{
+                color: "#fff",
+                opacity: hovered ? 1 : 0.8,
+                flexShrink: 0,
+                transition: "opacity 0.25s ease",
+              }}
+            />
+          </div>
         </div>
       </div>
     </motion.div>
@@ -468,7 +517,8 @@ function ArchiveModal({
 export default function ArchivePage() {
   const [selectedEntry, setSelectedEntry] = useState<ArchiveEntry | null>(null);
   return (
-    <main className="min-h-screen bg-white">
+    <main className="relative min-h-screen bg-white overflow-hidden">
+      <ContactParticles />
       {/* ── Fixed top nav bar ── */}
       <header className="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-sm">
         <div className="flex items-center justify-between p-[2em]">
