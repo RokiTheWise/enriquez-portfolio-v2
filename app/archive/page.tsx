@@ -47,6 +47,7 @@ const ARCHIVE: ArchiveEntry[] = [
     link: "https://aklatang-galera.djenriquez.dev/",
     github: "https://github.com/RokiTheWise/aklatang-galera",
     accentColor: "#CCFF00",
+    image: "/aklatang-galera.webp",
   },
   {
     year: "2026",
@@ -62,6 +63,7 @@ const ARCHIVE: ArchiveEntry[] = [
     link: "https://logisketch.djenriquez.dev/",
     github: "https://github.com/RokiTheWise/CircuitBuilder",
     accentColor: "#00D4FF",
+    image: "/logisketch.webp",
   },
   {
     year: "2026",
@@ -76,6 +78,7 @@ const ARCHIVE: ArchiveEntry[] = [
     ],
     link: "https://www.aceandco.org",
     accentColor: "#FFB800",
+    image: "/ace-and-co.webp",
   },
   {
     year: "2026",
@@ -91,6 +94,7 @@ const ARCHIVE: ArchiveEntry[] = [
     ],
     github: "https://github.com/RokiTheWise/en-portfolio-website.git",
     accentColor: "#FF6B6B",
+    image: "/portfolio-v1.webp",
   },
   {
     year: "2026",
@@ -105,6 +109,7 @@ const ARCHIVE: ArchiveEntry[] = [
     ],
     link: "https://www.tinkercad.com/things/55OzGJMnEK3-3-input-majority-voter",
     accentColor: "#A78BFA",
+    image: "/3-input-majority-voter.webp",
   },
   {
     year: "2024",
@@ -118,6 +123,7 @@ const ARCHIVE: ArchiveEntry[] = [
     ],
     github: "https://github.com/RokiTheWise/Project-Wurdle.git",
     accentColor: "#34D399",
+    image: "/wurdle.webp",
   },
 ];
 

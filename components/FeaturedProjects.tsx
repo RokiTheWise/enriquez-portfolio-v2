@@ -41,7 +41,7 @@ const PROJECTS: Project[] = [
     classification: "CIVIC TECH",
     description:
       "A bilingual civic portal centralizing 100+ educational, livelihood, and government resources for Puerto Galera. Features Semantic Scholar\u2013powered research, 34+ scholarly databases, and a curated public services hub. Lighthouse 100 on desktop, 98 mobile.",
-    heroImage: "/Aklatang-Galera.png",
+    heroImage: "/aklatang-galera.webp",
     registry: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "React", tag: "UI" },
@@ -58,7 +58,7 @@ const PROJECTS: Project[] = [
     classification: "DIGITAL LOGIC SYNTHESIS",
     description:
       "A reactive Boolean logic synthesis tool featuring a recursive descent parser, Quine\u2013McCluskey minimization for optimal SOP reduction, and a custom schematic routing engine generating NAND/NOR circuits with vertical bus alignment.",
-    heroImage: "/LogiSketch.png",
+    heroImage: "/logisketch.webp",
     registry: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "React", tag: "UI" },
@@ -75,7 +75,7 @@ const PROJECTS: Project[] = [
     classification: "CORPORATE WEB",
     description:
       "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Achieves perfect 100 Lighthouse scores in Performance, SEO, and Best Practices with dynamic sitemap, Open Graph, and fluid Framer Motion animations.",
-    heroImage: "/ACE.png",
+    heroImage: "/ace-and-co.webp",
     registry: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "React", tag: "UI" },
