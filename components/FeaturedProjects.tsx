@@ -138,7 +138,7 @@ function ProjectSlide({ project }: { project: Project }) {
         <div className="relative w-full md:w-[55%] aspect-[16/8] md:aspect-[16/10] flex-shrink-0">
           <ViewportBrackets color={project.accentColor} />
 
-          <div className="absolute inset-[8px] border border-black/[0.06] overflow-hidden bg-black/[0.015]">
+          <div className="absolute inset-[8px] overflow-hidden bg-[#F5F5F5]">
             <Image
               src={project.heroImage}
               alt={project.title}
@@ -147,11 +147,10 @@ function ProjectSlide({ project }: { project: Project }) {
               sizes="(max-width: 768px) 100vw, 55vw"
             />
             <div
-              className="absolute bottom-0 left-0 right-0 h-[1px]"
+              className="absolute bottom-0 left-0 right-0 h-[2px]"
               style={{ background: project.accentColor }}
             />
           </div>
-
         </div>
 
         {/* Diagnostic Data Card */}
@@ -159,7 +158,7 @@ function ProjectSlide({ project }: { project: Project }) {
           {/* Classification */}
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5" style={{ background: project.accentColor }} />
-            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/30 uppercase">
+            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/50 uppercase">
               {project.classification}
             </span>
           </div>
@@ -181,13 +180,13 @@ function ProjectSlide({ project }: { project: Project }) {
           <div className="w-full h-[1px] bg-black/[0.06]" />
 
           {/* Technical description */}
-          <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/45 max-w-md">
+          <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/60 max-w-md">
             {project.description}
           </p>
 
-          {/* Tech Registry */}
+          {/* Tech Stack */}
           <div className="flex flex-col gap-2 mt-0 md:mt-1">
-            <span className="font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase">
+            <span className="font-mono text-[8px] tracking-[0.3em] text-black/40 uppercase">
               Tech Stack
             </span>
             <div className="flex flex-wrap gap-0">
@@ -201,7 +200,7 @@ function ProjectSlide({ project }: { project: Project }) {
                   <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-black/80 uppercase group-hover:text-[#FFB800] transition-colors duration-300">
                     {r.name}
                   </span>
-                  <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-black/20 uppercase">
+                  <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-black/35 uppercase">
                     {r.tag}
                   </span>
                 </div>
@@ -284,9 +283,10 @@ export default function FeaturedProjects() {
             <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase">
               Featured Projects
             </h2>
-            <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/20 uppercase">
+            <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/35 uppercase">
               Deployment Archive • Selected Work
             </div>
+
           </div>
 
           {/* HUD Overlay: Progress pips */}
@@ -311,9 +311,10 @@ export default function FeaturedProjects() {
 
           {/* HUD Overlay: Scroll hint */}
           <div className="absolute bottom-8 md:bottom-12 right-6 md:right-12 z-30 pointer-events-none">
-            <span className="font-mono text-[8px] tracking-[0.25em] text-black/[0.12] uppercase flex items-center gap-2">
+            <span className="font-mono text-[8px] tracking-[0.25em] text-black/25 uppercase flex items-center gap-2">
               Scroll &rarr;
             </span>
+
           </div>
 
           {/* Horizontal track — translated by scroll progress */}
@@ -327,7 +328,6 @@ export default function FeaturedProjects() {
 
             {/* 4th panel — View All Projects CTA */}
             <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20">
-              {/* Background index */}
               <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
                 <span
                   className="font-mono font-bold leading-none"
@@ -354,7 +354,7 @@ export default function FeaturedProjects() {
                   Project Archive
                 </h3>
 
-                <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/40 max-w-sm">
+                <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/55 max-w-sm">
                   A complete log of deployed systems, experiments, and academic coursework.
                 </p>
 
@@ -368,7 +368,7 @@ export default function FeaturedProjects() {
                   </span>
                 </a>
 
-                <span className="font-mono text-[8px] tracking-[0.25em] text-black/15 uppercase mt-4">
+                <span className="font-mono text-[8px] tracking-[0.25em] text-black/30 uppercase mt-4">
                   {PROJECTS.length} featured • 6 total entries
                 </span>
               </div>
