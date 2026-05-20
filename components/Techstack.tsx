@@ -22,34 +22,82 @@ const CATEGORIES: TechCategory[] = [
     label: "Languages",
     tag: "LANG",
     items: [
-      { name: "Python", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/python.svg" },
-      { name: "Java", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/coffeescript.svg" },
-      { name: "JavaScript", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/javascript.svg" },
-      { name: "TypeScript", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/typescript.svg" },
+      {
+        name: "Python",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/python.svg",
+      },
+      {
+        name: "Java",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/coffeescript.svg",
+      },
+      {
+        name: "JavaScript",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/javascript.svg",
+      },
+      {
+        name: "TypeScript",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/typescript.svg",
+      },
     ],
   },
   {
     label: "Architecture",
     tag: "ARCH",
     items: [
-      { name: "Node.js", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nodedotjs.svg" },
-      { name: "Next.js", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nextdotjs.svg" },
-      { name: "React", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/react.svg" },
-      { name: "Django", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/django.svg" },
-      { name: "Tailwind", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/tailwindcss.svg" },
-      { name: "Vite", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vite.svg" },
+      {
+        name: "Node.js",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nodedotjs.svg",
+      },
+      {
+        name: "Next.js",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/nextdotjs.svg",
+      },
+      {
+        name: "React",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/react.svg",
+      },
+      {
+        name: "Django",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/django.svg",
+      },
+      {
+        name: "Tailwind",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/tailwindcss.svg",
+      },
+      {
+        name: "Vite",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vite.svg",
+      },
     ],
   },
   {
     label: "Ecosystem & OPS",
     tag: "OPS",
     items: [
-      { name: "Git", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/git.svg" },
-      { name: "GitHub", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/github.svg" },
-      { name: "Vercel", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vercel.svg" },
-      { name: "Supabase", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/supabase.svg" },
-      { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/postgresql.svg" },
-      { name: "Search Console", icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googlesearchconsole.svg" },
+      {
+        name: "Git",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/git.svg",
+      },
+      {
+        name: "GitHub",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/github.svg",
+      },
+      {
+        name: "Vercel",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vercel.svg",
+      },
+      {
+        name: "Supabase",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/supabase.svg",
+      },
+      {
+        name: "PostgreSQL",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/postgresql.svg",
+      },
+      {
+        name: "GSC",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googlesearchconsole.svg",
+      },
     ],
   },
 ];
@@ -150,13 +198,7 @@ export default function Techstack() {
               <div className="grid grid-cols-2 gap-y-1 gap-x-4">
                 {cat.items.map((item) => {
                   const idx = globalIndex++;
-                  return (
-                    <TechModule
-                      key={item.name}
-                      item={item}
-                      index={idx}
-                    />
-                  );
+                  return <TechModule key={item.name} item={item} index={idx} />;
                 })}
               </div>
             </div>
