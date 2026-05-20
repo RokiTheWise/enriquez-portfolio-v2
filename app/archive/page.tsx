@@ -64,6 +64,7 @@ interface ArchiveEntry {
   year: string;
   month?: string;           // e.g. "Jan", "Mar"
   image?: string;           // path or URL to screenshot/thumbnail
+  imagePosition?: string;   // CSS object-position, defaults to "center"
   project: string;
   index: string;
   classification: string;
@@ -167,6 +168,7 @@ const ARCHIVE: ArchiveEntry[] = [
     github: "https://github.com/RokiTheWise/Project-Wurdle.git",
     accentColor: "#34D399",
     image: "/wurdle.webp",
+    imagePosition: "left top",
   },
 ];
 
@@ -288,6 +290,7 @@ function ArchiveCard({
             height={256}
             className="absolute inset-0 w-full h-full object-cover"
             style={{
+              objectPosition: entry.imagePosition ?? "center",
               transform: hovered ? "scale(1.03)" : "scale(1)",
               transition: "transform 0.4s ease",
             }}
@@ -425,6 +428,7 @@ function ArchiveModal({
               width={680}
               height={320}
               className="w-full h-72 object-cover"
+              style={{ objectPosition: entry.imagePosition ?? "center" }}
             />
           ) : (
             <div
@@ -540,7 +544,7 @@ export default function ArchivePage() {
 
           {/* Return — same style as MENU + button, minus the vertical bar */}
           <Link
-            href="/#projects"
+            href="/?from=archive"
             className="inline-flex items-center gap-[0.3rem] font-mono font-medium leading-none tracking-[0.12em] uppercase text-xs text-black hover:opacity-60 transition-opacity duration-200"
           >
             <span>Return</span>

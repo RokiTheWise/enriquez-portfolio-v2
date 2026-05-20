@@ -97,16 +97,26 @@ function useLenisAnchorScroll() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      const anchor = (e.target as Element).closest("a[href^='#']") as HTMLAnchorElement | null;
+      const anchor = (e.target as Element).closest(
+        "a[href^='#']",
+      ) as HTMLAnchorElement | null;
       if (!anchor) return;
       const hash = anchor.getAttribute("href");
       if (!hash) return;
       e.preventDefault();
       if (hash === "#") {
-        lenis?.scrollTo(0, { duration: 1.4, easing: (t: number) => 1 - Math.pow(1 - t, 4) });
+        lenis?.scrollTo(0, {
+          duration: 1.4,
+          easing: (t: number) => 1 - Math.pow(1 - t, 4),
+        });
       } else {
         const target = document.querySelector(hash);
-        if (target) lenis?.scrollTo(target as HTMLElement, { duration: 1.4, easing: (t: number) => 1 - Math.pow(1 - t, 4), offset: 0 });
+        if (target)
+          lenis?.scrollTo(target as HTMLElement, {
+            duration: 1.4,
+            easing: (t: number) => 1 - Math.pow(1 - t, 4),
+            offset: 0,
+          });
       }
     };
     document.addEventListener("click", handler);
@@ -114,8 +124,39 @@ function useLenisAnchorScroll() {
   }, [lenis]);
 }
 
-function PageContent({ loaderDone, setLoaderDone }: { loaderDone: boolean; setLoaderDone: (v: boolean) => void }) {
+function useScrollToArchiveCTA(loaderDone: boolean) {
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (!loaderDone || !lenis) return;
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("from") !== "archive") return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete("from");
+    window.history.replaceState({}, "", url.toString());
+
+    const id = setTimeout(() => {
+      const section = document.getElementById("projects");
+      if (!section) return;
+      const target = section.offsetTop + 3 * window.innerHeight;
+      lenis.scrollTo(target, { immediate: true });
+    }, 50);
+
+    return () => clearTimeout(id);
+  }, [lenis, loaderDone]);
+}
+
+function PageContent({
+  loaderDone,
+  setLoaderDone,
+}: {
+  loaderDone: boolean;
+  setLoaderDone: (v: boolean) => void;
+}) {
   useLenisAnchorScroll();
+  useScrollToArchiveCTA(loaderDone);
   return (
     <>
       <StartupLoader onComplete={() => setLoaderDone(true)} />
@@ -138,7 +179,8 @@ function PageContent({ loaderDone, setLoaderDone }: { loaderDone: boolean; setLo
 
 export default function Home() {
   const [loaderDone, setLoaderDone] = useState(
-    typeof window !== "undefined" && sessionStorage.getItem("portfolio_visited") === "1"
+    typeof window !== "undefined" &&
+      sessionStorage.getItem("portfolio_visited") === "1",
   );
 
   return (
