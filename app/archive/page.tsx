@@ -18,6 +18,8 @@ function GithubIcon({ size = 16 }: { size?: number }) {
 
 interface ArchiveEntry {
   year: string;
+  month?: string;           // e.g. "Jan", "Mar"
+  image?: string;           // path or URL to screenshot/thumbnail
   project: string;
   index: string;
   classification: string;
