@@ -4,6 +4,48 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
+import {
+  siNextdotjs,
+  siTypescript,
+  siTailwindcss,
+  siFramer,
+  siReact,
+  siGsap,
+  siPython,
+  siTinkercad,
+  siXyflow,
+  siLucide,
+} from "simple-icons";
+
+const TECH_ICONS: Record<string, { path: string; color: string }> = {
+  "Next.js":        { path: siNextdotjs.path,   color: "#000000" },
+  "TypeScript":     { path: siTypescript.path,   color: "#3178C6" },
+  "Tailwind":       { path: siTailwindcss.path,  color: "#06B6D4" },
+  "Framer Motion":  { path: siFramer.path,       color: "#0055FF" },
+  "React":          { path: siReact.path,        color: "#61DAFB" },
+  "GSAP":           { path: siGsap.path,         color: "#88CE02" },
+  "Python":         { path: siPython.path,       color: "#3776AB" },
+  "Tinkercad":      { path: siTinkercad.path,    color: "#F16022" },
+  "React Flow":     { path: siXyflow.path,       color: "#FF0072" },
+  "Lucide React":   { path: siLucide.path,       color: "#F56565" },
+};
+
+function TechIcon({ name }: { name: string }) {
+  const icon = TECH_ICONS[name];
+  if (!icon) return null;
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill={icon.color}
+      className="flex-shrink-0"
+      aria-hidden
+    >
+      <path d={icon.path} />
+    </svg>
+  );
+}
 
 function GithubIcon({ size = 16 }: { size?: number }) {
   return (
@@ -38,7 +80,7 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "01",
     project: "Aklatang Galera",
     classification: "CIVIC TECH",
-    description: "A community knowledge portal and digital library system for local government units. Full-text search, role-based access, and offline-first sync.",
+    description: "A localized civic portal unifying educational resources, livelihood programs, and government services for the people of Puerto Galera. Features a bilingual (Filipino/English) interface, Semantic Scholar-powered library search across 30+ curated databases, a livelihood hub connecting locals to TESDA, DOLE, and DTI resources, and a public services directory for scholarships, eLGU permits, and government transparency feeds — all optimized for mobile-first access.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "TypeScript", tag: "CORE" },
@@ -54,7 +96,7 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "02",
     project: "LogiSketch",
     classification: "DIGITAL LOGIC CORE",
-    description: "A digital logic circuit designer and Boolean synthesis tool. Gate-level schematics on Canvas API with real-time truth-table generation.",
+    description: "An interactive Boolean logic visualizer that parses equations in real-time and instantly generates truth tables and circuit diagrams. Supports standard AND/OR/NOT gates alongside NAND-only and NOR-only universal logic modes. Built with React Flow for a fully interactive canvas — zoom, pan, and drag nodes. Includes professional trunk-logic wiring, dynamic truth tables, and a one-click PNG report export. Designed for CS students, engineers, and hobbyists who want to go from equation to schematic without the manual work.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "TypeScript", tag: "CORE" },
@@ -70,7 +112,7 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "03",
     project: "Ace & Co. Accounting",
     classification: "PROFESSIONAL WORK",
-    description: "A full-service accounting platform with integrated client portals, automated scheduling, and real-time financial reporting.",
+    description: "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Built to establish digital presence and generate leads for tax, audit, and business registration services. Achieved a perfect 100 Lighthouse score with dynamic sitemap and robots.txt generation, semantic HTML structured for 'Accounting Firm Manila' search ranking, Open Graph metadata, and React Server Components via the Next.js App Router. Deployed on Vercel with an atomic CI/CD pipeline.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "TypeScript", tag: "CORE" },
@@ -85,7 +127,7 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "04",
     project: "Portfolio V1",
     classification: "PERSONAL IDENTITY",
-    description: "First-generation portfolio system with GSAP-driven scroll animations, page transitions, and dynamic theming.",
+    description: "My first deployed portfolio — built to break away from standard resume templates by framing skills and achievements through a technology-operator aesthetic. Features a bento grid project showcase, GSAP-powered pixel transitions for photo reveals, CSS glitch and scanline effects, and a dark 'Obsidian' theme built entirely with Tailwind. My second published web project and my first deep dive into the React ecosystem.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
       { name: "TypeScript", tag: "CORE" },
@@ -101,7 +143,7 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "05",
     project: "Majority Voter Circuit",
     classification: "ELECTRONICS",
-    description: "A 3-input majority voter using combinational logic gates. Simulated and validated in Tinkercad.",
+    description: "A combinational logic circuit that outputs High only when two or more of its three binary inputs are active — the core mechanism behind fault-tolerant redundant systems. Implemented using 74HC08 quad AND gates and 74HC32 quad OR gates, derived from the Boolean expression Y = AB + BC + AC. Designed, simulated, and validated in Tinkercad.",
     tech: [
       { name: "Tinkercad", tag: "PLATFORM" },
       { name: "Digital Logic", tag: "DOMAIN" },
@@ -116,7 +158,7 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "06",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
-    description: "A terminal-based word guessing game built as a CS fundamentals exercise. Pattern matching and algorithmic letter validation.",
+    description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
     tech: [
       { name: "Python", tag: "CORE" },
       { name: "Algorithms", tag: "DOMAIN" },
@@ -307,102 +349,111 @@ function ArchiveModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-4 backdrop-blur-md"
+      style={{ background: "rgba(255,255,255,0.15)" }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
+        initial={{ opacity: 0, y: 32, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 32, scale: 0.97 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-white rounded-[18px] overflow-hidden"
+        className="relative w-full bg-white rounded-[18px] overflow-hidden flex flex-col"
         style={{
-          boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02), 0 20px 40px -4px rgba(0,0,0,0.12)",
+          maxWidth: "680px",
+          maxHeight: "90vh",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.08), 0 24px 48px rgba(0,0,0,0.14)",
         }}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/[0.06] hover:bg-black/[0.12] transition-colors duration-150 font-mono text-black/50 text-sm"
-          aria-label="Close"
-        >
-          ✕
-        </button>
-
-        {/* Image or accent placeholder */}
-        {entry.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={entry.image}
-            alt={`${entry.project} screenshot`}
-            width={800}
-            height={224}
-            className="w-full h-56 object-cover"
-          />
-        ) : (
-          <div
-            className="w-full h-56 flex items-center justify-center"
-            style={{ background: `${entry.accentColor}18` }}
-          >
-            <span
-              className="font-mono text-5xl font-bold tracking-tight select-none"
-              style={{ color: entry.accentColor }}
+        {/* Image or accent placeholder with close button overlaid top-left */}
+        <div className="relative flex-shrink-0">
+          {entry.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={entry.image}
+              alt={`${entry.project} screenshot`}
+              width={680}
+              height={320}
+              className="w-full h-72 object-cover"
+            />
+          ) : (
+            <div
+              className="w-full h-72 flex items-center justify-center"
+              style={{ background: `${entry.accentColor}18` }}
             >
-              {getInitials(entry.project)}
-            </span>
-          </div>
-        )}
+              <span
+                className="font-mono text-6xl font-bold tracking-tight select-none"
+                style={{ color: entry.accentColor }}
+              >
+                {getInitials(entry.project)}
+              </span>
+            </div>
+          )}
+          <button
+            onClick={onClose}
+            className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-sm transition-colors duration-150 font-mono text-white text-xs"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
 
-        {/* Modal body */}
-        <div className="p-6">
-          <h2 className="font-mono text-xl font-bold tracking-tight text-black uppercase mb-1">
-            {entry.project}
-          </h2>
+        {/* Scrollable body */}
+        <div className="overflow-y-auto flex-1 p-6">
+          {/* Name + links row */}
+          <div className="flex items-start justify-between gap-4 mb-1">
+            <h2 className="font-mono text-xl font-bold tracking-tight text-black uppercase leading-tight">
+              {entry.project}
+            </h2>
+            <div className="flex items-center gap-5 flex-shrink-0 pt-1">
+              {entry.github && (
+                <a
+                  href={entry.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 font-mono text-xs font-semibold tracking-[0.1em] uppercase text-black/40 hover:text-black transition-colors duration-150"
+                >
+                  <GithubIcon size={15} />
+                  Source Code
+                </a>
+              )}
+              {entry.link && (
+                <a
+                  href={entry.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 font-mono text-xs font-semibold tracking-[0.1em] uppercase text-black/40 hover:text-[#FFB800] transition-colors duration-150"
+                >
+                  <ArrowUpRight size={15} />
+                  Visit Site
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Classification */}
           <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
             {classificationLabel}
           </span>
-          <p className="font-mono text-[11px] leading-[1.8] text-black/50 mt-3 mb-4">
-            {entry.description}
-          </p>
 
           {/* Tech badges */}
-          <div className="flex flex-wrap gap-1.5 mb-5">
+          <div className="flex flex-wrap gap-1.5 mt-4 mb-6">
             {entry.tech.map((t) => (
               <span
                 key={t.name}
-                className="font-mono text-[8px] tracking-wider text-black/35 uppercase px-2 py-0.5 border border-black/[0.06]"
+                className="inline-flex items-center gap-1.5 font-mono text-[8px] tracking-wider text-black/35 uppercase px-2 py-0.5"
               >
+                <TechIcon name={t.name} />
                 {t.name}
               </span>
             ))}
           </div>
 
-          {/* Links */}
-          <div className="flex items-center gap-4">
-            {entry.github && (
-              <a
-                href={entry.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.15em] uppercase text-black/30 hover:text-black/70 transition-colors duration-150"
-              >
-                <GithubIcon size={13} />
-                Source
-              </a>
-            )}
-            {entry.link && (
-              <a
-                href={entry.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.15em] uppercase text-black/30 hover:text-[#FFB800] transition-colors duration-150"
-              >
-                <ArrowUpRight size={13} />
-                Visit
-              </a>
-            )}
-          </div>
+          {/* Description */}
+          <p className="font-mono text-[11px] leading-[1.9] text-black/50">
+            {entry.description}
+          </p>
         </div>
       </motion.div>
     </div>
