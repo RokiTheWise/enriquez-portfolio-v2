@@ -1,87 +1,63 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { gsap } from "gsap";
+import { animate } from "framer-motion";
 
-/* ── Types ── */
 interface TransitionContextValue {
   navigate: (href: string) => void;
 }
 
-/* ── Context ── */
 const TransitionContext = createContext<TransitionContextValue>({
   navigate: (href) => { window.location.href = href; },
 });
 
-/* ── Hook ── */
 export function usePageTransition() {
   return useContext(TransitionContext);
 }
 
-// Three yellow shades — lightest leads, darkest is the main panel
-const LAYER_COLORS = ["#FFF3D6", "#FFD166", "#FFB800"];
-const STAGGER     = 0.07;  // seconds between each layer
-const SWEEP_IN    = 0.45;  // each layer slide-in duration
-const HOLD        = 80;    // ms pause at full cover before route push
-const SWEEP_OUT   = 0.32;  // all layers exit together
+const SWEEP_IN  = 0.32;
+const HOLD      = 0.08;
+const SWEEP_OUT = 0.38;
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
-  const router      = useRouter();
-  const layerRefs   = useRef<(HTMLDivElement | null)[]>([]);
-  const isAnimating = useRef(false);
-  const mounted     = useRef(true);
+  const router = useRouter();
+  const curtainRef = useRef<HTMLDivElement>(null);
+  const isAnimatingRef = useRef(false);
+  const mountedRef = useRef(true);
+  const [label, setLabel] = useState("");
 
   useEffect(() => {
-    mounted.current = true;
-    // Park all layers off-screen to the right
-    layerRefs.current.forEach((el) => {
-      if (el) gsap.set(el, { xPercent: 100 });
-    });
-    return () => { mounted.current = false; };
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
   }, []);
 
   const navigate = useCallback(
     (href: string) => {
-      if (isAnimating.current) return;
-      const layers = layerRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (!layers.length) { router.push(href); return; }
+      if (isAnimatingRef.current) return;
+      const el = curtainRef.current;
+      if (!el) { router.push(href); return; }
 
-      isAnimating.current = true;
+      isAnimatingRef.current = true;
 
-      // 1. Stagger layers in from the right
-      const tl = gsap.timeline({
-        onComplete: () => {
-          // 2. Hold briefly, push route, then sweep all out to the left
-          setTimeout(() => {
-            router.push(href);
+      const segment = href === "/" || href.startsWith("/?") ? "Home" : href.replace(/^\//, "").split("/")[0];
+      setLabel(segment.charAt(0).toUpperCase() + segment.slice(1));
 
-            setTimeout(() => {
-              if (!mounted.current) return;
-              gsap.to(layers, {
-                xPercent: -100,
-                duration: SWEEP_OUT,
-                ease: "power3.in",
-                stagger: 0,
-                onComplete: () => {
-                  if (!mounted.current) return;
-                  // Reset off-screen right for next use
-                  gsap.set(layers, { xPercent: 100 });
-                  isAnimating.current = false;
-                },
-              });
-            }, 80);
-          }, HOLD);
-        },
-      });
-
-      layers.forEach((el, i) => {
-        tl.to(
-          el,
-          { xPercent: 0, duration: SWEEP_IN, ease: "power4.out" },
-          i * STAGGER
-        );
-      });
+      // Sweep in from right
+      animate(el, { x: "0%" }, { duration: SWEEP_IN, ease: [0.76, 0, 0.24, 1] })
+        .then(() =>
+          new Promise<void>((res) => setTimeout(() => { router.push(href); res(); }, HOLD * 1000))
+        )
+        .then(() =>
+          // Exit to the left
+          animate(el, { x: "-100%" }, { duration: SWEEP_OUT, ease: [0.76, 0, 0.24, 1] })
+        )
+        .then(() => {
+          if (!mountedRef.current) return;
+          animate(el, { x: "100%" }, { duration: 0 });
+          setLabel("");
+          isAnimatingRef.current = false;
+        });
     },
     [router]
   );
@@ -90,28 +66,36 @@ export default function PageTransition({ children }: { children: React.ReactNode
     <TransitionContext.Provider value={{ navigate }}>
       {children}
 
-      {/* Layered curtain — fixed, off-screen right, above everything */}
+      {/* Starts off-screen right, sweeps left across, exits left */}
       <div
+        ref={curtainRef}
         aria-hidden
         style={{
           position: "fixed",
           inset: 0,
+          transform: "translateX(100%)",
           zIndex: 99999,
+          backgroundColor: "#FFB800",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           pointerEvents: "none",
         }}
       >
-        {LAYER_COLORS.map((color, i) => (
-          <div
-            key={i}
-            ref={(el) => { layerRefs.current[i] = el; }}
+        {label && (
+          <span
             style={{
-              position: "absolute",
-              inset: 0,
-              backgroundColor: color,
-              transform: "translateX(100%)",
+              fontFamily: "var(--font-geist-mono), monospace",
+              fontSize: "clamp(13px, 1.5vw, 16px)",
+              letterSpacing: "0.35em",
+              textTransform: "uppercase",
+              fontWeight: 700,
+              color: "rgba(0,0,0,0.55)",
             }}
-          />
-        ))}
+          >
+            {label}
+          </span>
+        )}
       </div>
     </TransitionContext.Provider>
   );
