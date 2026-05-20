@@ -428,6 +428,7 @@ export default function HeroHUD({
             alt="DexDev Logo"
             width={48}
             height={48}
+            data-header-logo
             className="w-7 h-7 md:w-12 md:h-12 flex-shrink-0 drop-shadow-[0_0_3px_rgba(255,184,0,0.4)] md:drop-shadow-[0_0_8px_rgba(255,184,0,0.4)]"
           />
           <div className="flex flex-col">
