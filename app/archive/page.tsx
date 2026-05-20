@@ -411,144 +411,11 @@ function ArchiveModal({
 
 
 /* ═══════════════════════════════════════════
-   Archive Row
-   ═══════════════════════════════════════════ */
-
-function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
-  const classificationLabel = entry.month
-    ? `${entry.month} · ${entry.classification}`
-    : entry.classification;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: idx * 0.06 }}
-      className="group relative"
-    >
-      {/* Accent bar — always visible, not just on hover */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-[3px]"
-        style={{ background: entry.accentColor }}
-      />
-
-      <div className="flex items-start gap-4 py-6 pl-5 pr-4 md:pr-6 hover:bg-black/[0.015] transition-colors duration-200">
-        {/* Main content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-8">
-            {/* Title + Classification + Description */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-1">
-                <h3 className="font-mono text-sm md:text-base font-bold tracking-tight text-black uppercase group-hover:text-[#FFB800] transition-colors duration-300 truncate">
-                  {entry.project}
-                </h3>
-                <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-                  <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
-                  <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
-                    {classificationLabel}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <p className="font-mono text-[10px] md:text-[11px] leading-[1.7] text-black/35 max-w-lg flex-1">
-                  {entry.description}
-                </p>
-
-                {/* Thumbnail — desktop only, right of description */}
-                {entry.image && (
-                  <div className="hidden md:block flex-shrink-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={entry.image}
-                      alt={`${entry.project} screenshot`}
-                      width={96}
-                      height={64}
-                      className="w-24 h-16 object-cover rounded-sm"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Mobile: classification + thumbnail stacked */}
-              <div className="md:hidden mt-2 flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
-                  <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
-                    {classificationLabel}
-                  </span>
-                </div>
-                {entry.image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={entry.image}
-                    alt={`${entry.project} screenshot`}
-                    width={80}
-                    height={56}
-                    className="w-20 h-14 object-cover rounded-sm flex-shrink-0"
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Tech + Links — right side */}
-            <div className="flex flex-col items-start md:items-end gap-3 flex-shrink-0">
-              {/* Tech tags */}
-              <div className="flex flex-wrap gap-1.5 md:justify-end">
-                {entry.tech.map((t) => (
-                  <span
-                    key={t.name}
-                    className="font-mono text-[8px] md:text-[9px] tracking-wider text-black/35 uppercase px-2 py-0.5 border border-black/[0.06]"
-                  >
-                    {t.name}
-                  </span>
-                ))}
-              </div>
-
-              {/* Links */}
-              <div className="flex items-center gap-3">
-                {entry.github && (
-                  <a
-                    href={entry.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-[9px] tracking-[0.15em] uppercase text-black/20 hover:text-black/60 transition-colors duration-200 flex items-center gap-1.5"
-                  >
-                    <GithubIcon size={12} />
-                    <span className="hidden md:inline">Source</span>
-                  </a>
-                )}
-                {entry.github && entry.link && (
-                  <span className="w-[1px] h-3 bg-black/[0.08]" />
-                )}
-                {entry.link && (
-                  <a
-                    href={entry.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-[9px] tracking-[0.15em] uppercase text-black/20 hover:text-[#FFB800] transition-colors duration-200 flex items-center gap-1.5"
-                  >
-                    <ArrowUpRight size={12} />
-                    <span className="hidden md:inline">Deploy</span>
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom separator */}
-      <div className="h-[1px] bg-black/[0.04]" />
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════
    Archive Page
    ═══════════════════════════════════════════ */
 
 export default function ArchivePage() {
+  const [selectedEntry, setSelectedEntry] = useState<ArchiveEntry | null>(null);
   return (
     <main className="min-h-screen bg-white">
       {/* ── Fixed top nav bar ── */}
@@ -613,9 +480,14 @@ export default function ArchivePage() {
           {groupByYear(ARCHIVE).map(({ year, entries }, groupIdx) => (
             <div key={year}>
               <YearGroupHeader year={year} count={entries.length} groupIdx={groupIdx} />
-              <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
                 {entries.map((entry, idx) => (
-                  <ArchiveRow key={entry.index} entry={entry} idx={idx} />
+                  <ArchiveCard
+                    key={entry.index}
+                    entry={entry}
+                    idx={idx}
+                    onClick={() => setSelectedEntry(entry)}
+                  />
                 ))}
               </div>
             </div>
@@ -658,6 +530,14 @@ export default function ArchivePage() {
           </div>
         </motion.div>
       </div>
+      <AnimatePresence>
+        {selectedEntry && (
+          <ArchiveModal
+            entry={selectedEntry}
+            onClose={() => setSelectedEntry(null)}
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 }
