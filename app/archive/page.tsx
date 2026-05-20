@@ -33,7 +33,7 @@ const ARCHIVE: ArchiveEntry[] = [
     year: "2026",
     index: "01",
     project: "Aklatang Galera",
-    classification: "CIVIC_TECH",
+    classification: "CIVIC TECH",
     description: "A community knowledge portal and digital library system for local government units. Full-text search, role-based access, and offline-first sync.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
@@ -48,7 +48,7 @@ const ARCHIVE: ArchiveEntry[] = [
     year: "2026",
     index: "02",
     project: "LogiSketch",
-    classification: "DIGITAL_LOGIC_CORE",
+    classification: "DIGITAL LOGIC CORE",
     description: "A digital logic circuit designer and Boolean synthesis tool. Gate-level schematics on Canvas API with real-time truth-table generation.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
@@ -63,7 +63,7 @@ const ARCHIVE: ArchiveEntry[] = [
     year: "2026",
     index: "03",
     project: "Ace & Co. Accounting",
-    classification: "PROFESSIONAL_WORK",
+    classification: "PROFESSIONAL WORK",
     description: "A full-service accounting platform with integrated client portals, automated scheduling, and real-time financial reporting.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
@@ -77,7 +77,7 @@ const ARCHIVE: ArchiveEntry[] = [
     year: "2026",
     index: "04",
     project: "Portfolio V1",
-    classification: "PERSONAL_IDENTITY",
+    classification: "PERSONAL IDENTITY",
     description: "First-generation portfolio system with GSAP-driven scroll animations, page transitions, and dynamic theming.",
     tech: [
       { name: "Next.js", tag: "FRAMEWORK" },
@@ -184,8 +184,8 @@ function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
                 </h3>
                 <div className="hidden md:flex items-center gap-2 flex-shrink-0">
                   <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
-                  <span className="font-mono text-[8px] tracking-[0.2em] text-black/20 uppercase">
-                    [ {entry.classification} ]
+                  <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
+                    {entry.classification}
                   </span>
                 </div>
               </div>
@@ -197,7 +197,7 @@ function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
               {/* Mobile classification */}
               <div className="md:hidden mt-2 flex items-center gap-2">
                 <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
-                <span className="font-mono text-[8px] tracking-[0.2em] text-black/20 uppercase">
+                <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
                   {entry.classification}
                 </span>
               </div>
@@ -264,24 +264,35 @@ export default function ArchivePage() {
   return (
     <main className="min-h-screen bg-white">
       {/* ── Fixed top nav bar ── */}
-      <header className="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-sm border-b border-black/[0.08]">
-        <nav className="flex items-center justify-between px-6 md:px-12 h-12">
-          <Link
-            href="/"
-            className="font-mono text-[11px] md:text-sm font-semibold tracking-tight text-black uppercase"
-          >
-            Dexter Jethro Enriquez
+      <header className="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-sm">
+        <div className="flex items-center justify-between p-[2em]">
+          {/* Logo + Name — pixel-matched to StaggeredMenu header */}
+          <Link href="/" className="flex items-center gap-2 md:gap-3 select-none">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/DexDev-Logo-96.png"
+              alt="Logo"
+              className="block h-7 md:h-8 w-auto object-contain"
+              draggable={false}
+              width={32}
+              height={32}
+            />
+            <span className="font-mono text-[11px] md:text-sm font-semibold tracking-tight text-black uppercase">
+              Dexter Jethro Enriquez
+            </span>
           </Link>
+
+          {/* Return — same style as MENU + button, minus the vertical bar */}
           <Link
             href="/#projects"
-            className="group font-mono text-[11px] tracking-[0.12em] text-black/50 uppercase hover:text-black transition-colors duration-200 flex items-center gap-2"
+            className="inline-flex items-center gap-[0.3rem] font-mono font-medium leading-none tracking-[0.12em] uppercase text-xs text-black hover:opacity-60 transition-opacity duration-200"
           >
-            <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">
-              &larr;
+            <span>Return</span>
+            <span className="relative w-[14px] h-[14px] shrink-0 inline-flex items-center justify-center">
+              <span className="absolute left-1/2 top-1/2 w-full h-[2px] bg-current rounded-[2px] -translate-x-1/2 -translate-y-1/2" />
             </span>
-            Return to Base
           </Link>
-        </nav>
+        </div>
       </header>
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 pt-32 pb-24">
@@ -323,7 +334,7 @@ export default function ArchivePage() {
           </div>
           <div className="flex-1">
             <span className="font-mono text-[7px] md:text-[8px] tracking-[0.3em] text-black/15 uppercase">
-              Project // Details
+              Project • Details
             </span>
           </div>
         </motion.div>
