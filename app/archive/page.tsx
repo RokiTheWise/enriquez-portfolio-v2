@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 
 function GithubIcon({ size = 16 }: { size?: number }) {
   return (
@@ -207,74 +207,65 @@ function ArchiveCard({
   onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
-  const classificationLabel = entry.month
-    ? `${entry.month} · ${entry.classification}`
-    : entry.classification;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: idx * 0.06 }}
+      className="aspect-square"
     >
       <div
         onClick={onClick}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="cursor-pointer rounded-[18px] overflow-hidden bg-white"
+        className="relative w-full h-full cursor-pointer flex flex-col justify-end overflow-hidden"
         style={{
           boxShadow: hovered
             ? "0 4px 6px -1px rgba(0,0,0,0.02), 0 20px 40px -4px rgba(0,0,0,0.12)"
             : "0 4px 6px -1px rgba(0,0,0,0.02), 0 12px 30px -4px rgba(0,0,0,0.08)",
-          transform: hovered ? "scale(1.01)" : "scale(1)",
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          border: hovered
+            ? `1px solid ${entry.accentColor}60`
+            : "1px solid rgba(0,0,0,0.06)",
+          transition: "border-color 0.25s ease, box-shadow 0.25s ease",
         }}
       >
-        {/* Image or accent placeholder */}
+        {/* Image or accent placeholder filling the top */}
         {entry.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={entry.image}
             alt={`${entry.project} screenshot`}
-            width={600}
-            height={176}
-            className="w-full h-44 object-cover"
+            width={400}
+            height={400}
+            className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
           <div
-            className="w-full h-44 flex items-center justify-center"
-            style={{ background: `${entry.accentColor}18` }}
-          >
-            <span
-              className="font-mono text-3xl font-bold tracking-tight select-none"
-              style={{ color: entry.accentColor }}
-            >
-              {getInitials(entry.project)}
-            </span>
-          </div>
+            className="absolute inset-0"
+            style={{ background: `${entry.accentColor}10` }}
+          />
         )}
 
-        {/* Card body */}
-        <div className="p-5">
-          <h3 className="font-mono text-sm font-bold tracking-tight text-black uppercase mb-1 truncate">
+        {/* Bottom label bar */}
+        <div
+          className="relative z-10 flex items-end justify-between px-4 py-3"
+          style={{
+            background: entry.image
+              ? "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)"
+              : undefined,
+          }}
+        >
+          <h3
+            className="font-mono text-sm font-bold tracking-tight uppercase leading-tight"
+            style={{ color: entry.image ? "#fff" : "#000" }}
+          >
             {entry.project}
           </h3>
-          <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
-            {classificationLabel}
-          </span>
-          <p className="font-mono text-[10px] leading-[1.7] text-black/40 mt-2 line-clamp-2">
-            {entry.description}
-          </p>
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {entry.tech.map((t) => (
-              <span
-                key={t.name}
-                className="font-mono text-[8px] tracking-wider text-black/35 uppercase px-2 py-0.5 border border-black/[0.06]"
-              >
-                {t.name}
-              </span>
-            ))}
-          </div>
+          <ArrowRight
+            size={16}
+            style={{ color: entry.image ? "#fff" : "#000", opacity: 0.7, flexShrink: 0 }}
+          />
         </div>
       </div>
     </motion.div>
