@@ -16,6 +16,8 @@ import {
   siTinkercad,
   siXyflow,
   siLucide,
+  siArduino,
+  siCplusplus,
 } from "simple-icons";
 
 const TECH_ICONS: Record<string, { path: string; color: string }> = {
@@ -29,6 +31,8 @@ const TECH_ICONS: Record<string, { path: string; color: string }> = {
   "Tinkercad":      { path: siTinkercad.path,    color: "#F16022" },
   "React Flow":     { path: siXyflow.path,       color: "#FF0072" },
   "Lucide React":   { path: siLucide.path,       color: "#F56565" },
+  "Arduino":        { path: siArduino.path,      color: "#00979D" },
+  "C++":            { path: siCplusplus.path,    color: "#00599C" },
 };
 
 function TechIcon({ name }: { name: string }) {
@@ -78,8 +82,26 @@ interface ArchiveEntry {
 const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
-    month: "Jan",
+    month: "May",
     index: "01",
+    project: "Arduino Mastermind",
+    classification: "EMBEDDED SYSTEMS",
+    description: "A hardware Mastermind code-breaking game on Arduino Uno. The player has 5 attempts to crack a randomly generated 3-digit secret code (digits 1–6) using 4 push buttons — one to cycle digits, one to confirm. A 16×2 I2C LCD displays the current guess and Bulls & Cows feedback after each attempt. RGB LEDs and a buzzer provide distinct audio-visual feedback for input, win, and loss states with custom melodies. Implements a two-pass Bulls & Cows scoring algorithm, button debounce, and auto-reset on game end. Components: Arduino Uno, I2C LCD, push buttons, RGB LEDs, passive buzzer, and resistors.",
+    tech: [
+      { name: "Arduino", tag: "PLATFORM" },
+      { name: "C++", tag: "CORE" },
+      { name: "I2C LCD", tag: "HARDWARE" },
+      { name: "Digital Logic", tag: "DOMAIN" },
+    ],
+    link: "https://www.tinkercad.com/things/9bZaeWx1rMC-arduino-mastermind-code-breaking-game",
+    accentColor: "#00C853",
+    image: "/arduino-mastermind.webp",
+    imagePosition: "left top",
+  },
+  {
+    year: "2026",
+    month: "Mar",
+    index: "02",
     project: "Aklatang Galera",
     classification: "CIVIC TECH",
     description: "A localized civic portal unifying educational resources, livelihood programs, and government services for the people of Puerto Galera. Features a bilingual (Filipino/English) interface, Semantic Scholar-powered library search across 30+ curated databases, a livelihood hub connecting locals to TESDA, DOLE, and DTI resources, and a public services directory for scholarships, eLGU permits, and government transparency feeds — all optimized for mobile-first access.",
@@ -95,7 +117,8 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2026",
-    index: "02",
+    month: "Mar",
+    index: "03",
     project: "LogiSketch",
     classification: "DIGITAL LOGIC CORE",
     description: "An interactive Boolean logic visualizer that parses equations in real-time and instantly generates truth tables and circuit diagrams. Supports standard AND/OR/NOT gates alongside NAND-only and NOR-only universal logic modes. Built with React Flow for a fully interactive canvas — zoom, pan, and drag nodes. Includes professional trunk-logic wiring, dynamic truth tables, and a one-click PNG report export. Designed for CS students, engineers, and hobbyists who want to go from equation to schematic without the manual work.",
@@ -111,7 +134,8 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2026",
-    index: "03",
+    month: "Jan",
+    index: "04",
     project: "Ace & Co. Accounting",
     classification: "PROFESSIONAL WORK",
     description: "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Built to establish digital presence and generate leads for tax, audit, and business registration services. Achieved a perfect 100 Lighthouse score with dynamic sitemap and robots.txt generation, semantic HTML structured for 'Accounting Firm Manila' search ranking, Open Graph metadata, and React Server Components via the Next.js App Router. Deployed on Vercel with an atomic CI/CD pipeline.",
@@ -126,7 +150,8 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2026",
-    index: "04",
+    month: "Jan",
+    index: "05",
     project: "Portfolio V1",
     classification: "PERSONAL IDENTITY",
     description: "My first deployed portfolio — built to break away from standard resume templates by framing skills and achievements through a technology-operator aesthetic. Features a bento grid project showcase, GSAP-powered pixel transitions for photo reveals, CSS glitch and scanline effects, and a dark 'Obsidian' theme built entirely with Tailwind. My second published web project and my first deep dive into the React ecosystem.",
@@ -142,7 +167,8 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2026",
-    index: "05",
+    month: "Jan",
+    index: "06",
     project: "Majority Voter Circuit",
     classification: "ELECTRONICS",
     description: "A combinational logic circuit that outputs High only when two or more of its three binary inputs are active — the core mechanism behind fault-tolerant redundant systems. Implemented using 74HC08 quad AND gates and 74HC32 quad OR gates, derived from the Boolean expression Y = AB + BC + AC. Designed, simulated, and validated in Tinkercad.",
@@ -157,7 +183,8 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2024",
-    index: "06",
+    month: "Sep",
+    index: "07",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
