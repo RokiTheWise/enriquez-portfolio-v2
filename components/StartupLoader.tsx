@@ -34,13 +34,15 @@ interface LogoAnim {
 }
 
 export default function StartupLoader({ onComplete }: StartupLoaderProps) {
-  const alreadyVisited = typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY) === "1";
-  const [overlayVisible, setOverlayVisible] = useState(!alreadyVisited);
-  const [logoVisible, setLogoVisible] = useState(!alreadyVisited);
+  const [overlayVisible, setOverlayVisible] = useState(true);
+  const [logoVisible, setLogoVisible] = useState(true);
   const [anim, setAnim] = useState<LogoAnim | null>(null);
 
   useEffect(() => {
+    const alreadyVisited = sessionStorage.getItem(SESSION_KEY) === "1";
     if (alreadyVisited) {
+      setOverlayVisible(false);
+      setLogoVisible(false);
       onComplete?.();
       return;
     }
