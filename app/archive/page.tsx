@@ -189,33 +189,24 @@ function ViewportBrackets({ color }: { color: string }) {
    ═══════════════════════════════════════════ */
 
 function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
+  const classificationLabel = entry.month
+    ? `${entry.month} · ${entry.classification}`
+    : entry.classification;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: idx * 0.08 }}
+      transition={{ duration: 0.4, delay: idx * 0.06 }}
       className="group relative"
     >
-      {/* 1px accent bar on left */}
+      {/* Accent bar — always visible, not just on hover */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        className="absolute left-0 top-0 bottom-0 w-[3px]"
         style={{ background: entry.accentColor }}
       />
 
-      <div className="flex items-start gap-4 md:gap-0 py-6 px-4 md:px-6 hover:bg-black/[0.015] transition-colors duration-200">
-        {/* Index + Year */}
-        <div className="w-16 md:w-24 flex-shrink-0 flex flex-col gap-1">
-          <span
-            className="font-mono text-[10px] font-bold tracking-[0.2em] uppercase"
-            style={{ color: entry.accentColor }}
-          >
-            {entry.index}
-          </span>
-          <span className="font-mono text-[10px] text-black/20">
-            {entry.year}
-          </span>
-        </div>
-
+      <div className="flex items-start gap-4 py-6 pl-5 pr-4 md:pr-6 hover:bg-black/[0.015] transition-colors duration-200">
         {/* Main content */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-8">
@@ -228,21 +219,45 @@ function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
                 <div className="hidden md:flex items-center gap-2 flex-shrink-0">
                   <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
                   <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
-                    {entry.classification}
+                    {classificationLabel}
                   </span>
                 </div>
               </div>
 
-              <p className="font-mono text-[10px] md:text-[11px] leading-[1.7] text-black/35 max-w-lg">
-                {entry.description}
-              </p>
+              <div className="flex items-start gap-4">
+                <p className="font-mono text-[10px] md:text-[11px] leading-[1.7] text-black/35 max-w-lg flex-1">
+                  {entry.description}
+                </p>
 
-              {/* Mobile classification */}
-              <div className="md:hidden mt-2 flex items-center gap-2">
-                <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
-                <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
-                  {entry.classification}
-                </span>
+                {/* Thumbnail — desktop only, right of description */}
+                {entry.image && (
+                  <div className="hidden md:block flex-shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={entry.image}
+                      alt={`${entry.project} screenshot`}
+                      className="w-24 h-16 object-cover rounded-sm"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile: classification + thumbnail stacked */}
+              <div className="md:hidden mt-2 flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-1" style={{ background: `${entry.accentColor}60` }} />
+                  <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
+                    {classificationLabel}
+                  </span>
+                </div>
+                {entry.image && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={entry.image}
+                    alt={`${entry.project} screenshot`}
+                    className="w-20 h-14 object-cover rounded-sm flex-shrink-0"
+                  />
+                )}
               </div>
             </div>
 
