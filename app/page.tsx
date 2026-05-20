@@ -178,10 +178,13 @@ function PageContent({
 }
 
 export default function Home() {
-  const [loaderDone, setLoaderDone] = useState(
-    typeof window !== "undefined" &&
-      sessionStorage.getItem("portfolio_visited") === "1",
-  );
+  const [loaderDone, setLoaderDone] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("portfolio_visited") === "1") {
+      setLoaderDone(true);
+    }
+  }, []);
 
   return (
     <ReactLenis root>
