@@ -280,6 +280,135 @@ function ArchiveCard({
     </motion.div>
   );
 }
+/* ═══════════════════════════════════════════
+   Archive Modal
+   ═══════════════════════════════════════════ */
+
+function ArchiveModal({
+  entry,
+  onClose,
+}: {
+  entry: ArchiveEntry;
+  onClose: () => void;
+}) {
+  const classificationLabel = entry.month
+    ? `${entry.month} · ${entry.classification}`
+    : entry.classification;
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handler);
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.2 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white rounded-[18px] overflow-hidden"
+        style={{
+          boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02), 0 20px 40px -4px rgba(0,0,0,0.12)",
+        }}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/[0.06] hover:bg-black/[0.12] transition-colors duration-150 font-mono text-black/50 text-sm"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+
+        {/* Image or accent placeholder */}
+        {entry.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={entry.image}
+            alt={`${entry.project} screenshot`}
+            width={800}
+            height={224}
+            className="w-full h-56 object-cover"
+          />
+        ) : (
+          <div
+            className="w-full h-56 flex items-center justify-center"
+            style={{ background: `${entry.accentColor}18` }}
+          >
+            <span
+              className="font-mono text-5xl font-bold tracking-tight select-none"
+              style={{ color: entry.accentColor }}
+            >
+              {getInitials(entry.project)}
+            </span>
+          </div>
+        )}
+
+        {/* Modal body */}
+        <div className="p-6">
+          <h2 className="font-mono text-xl font-bold tracking-tight text-black uppercase mb-1">
+            {entry.project}
+          </h2>
+          <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
+            {classificationLabel}
+          </span>
+          <p className="font-mono text-[11px] leading-[1.8] text-black/50 mt-3 mb-4">
+            {entry.description}
+          </p>
+
+          {/* Tech badges */}
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {entry.tech.map((t) => (
+              <span
+                key={t.name}
+                className="font-mono text-[8px] tracking-wider text-black/35 uppercase px-2 py-0.5 border border-black/[0.06]"
+              >
+                {t.name}
+              </span>
+            ))}
+          </div>
+
+          {/* Links */}
+          <div className="flex items-center gap-4">
+            {entry.github && (
+              <a
+                href={entry.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.15em] uppercase text-black/30 hover:text-black/70 transition-colors duration-150"
+              >
+                <GithubIcon size={13} />
+                Source
+              </a>
+            )}
+            {entry.link && (
+              <a
+                href={entry.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.15em] uppercase text-black/30 hover:text-[#FFB800] transition-colors duration-150"
+              >
+                <ArrowUpRight size={13} />
+                Visit
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 
 /* ═══════════════════════════════════════════
    Archive Row
