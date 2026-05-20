@@ -236,6 +236,8 @@ function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
                     <img
                       src={entry.image}
                       alt={`${entry.project} screenshot`}
+                      width={96}
+                      height={64}
                       className="w-24 h-16 object-cover rounded-sm"
                     />
                   </div>
@@ -255,6 +257,8 @@ function ArchiveRow({ entry, idx }: { entry: ArchiveEntry; idx: number }) {
                   <img
                     src={entry.image}
                     alt={`${entry.project} screenshot`}
+                    width={80}
+                    height={56}
                     className="w-20 h-14 object-cover rounded-sm flex-shrink-0"
                   />
                 )}
