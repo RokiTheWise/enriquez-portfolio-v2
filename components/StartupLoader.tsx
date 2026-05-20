@@ -21,17 +21,25 @@ interface StartupLoaderProps {
 */
 
 const LOADER_DURATION_MS = 1400;
+const SESSION_KEY = "portfolio_visited";
 
 export default function StartupLoader({ onComplete }: StartupLoaderProps) {
-  const [visible, setVisible] = useState(true);
+  const alreadyVisited = typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY) === "1";
+  const [visible, setVisible] = useState(!alreadyVisited);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    if (alreadyVisited) {
+      onComplete?.();
+      return;
+    }
+    sessionStorage.setItem(SESSION_KEY, "1");
     setIsMobile(window.innerWidth < 768);
     const t = setTimeout(() => {
       setVisible(false);
     }, LOADER_DURATION_MS);
     return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Final size + center coordinates of the hero header logo, in px.

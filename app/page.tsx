@@ -92,7 +92,9 @@ function NavMenu() {
 }
 
 export default function Home() {
-  const [loaderDone, setLoaderDone] = useState(false);
+  const [loaderDone, setLoaderDone] = useState(
+    typeof window !== "undefined" && sessionStorage.getItem("portfolio_visited") === "1"
+  );
 
   return (
     <ReactLenis root>
