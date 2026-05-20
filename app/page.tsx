@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactLenis, { useLenis } from "lenis/react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import HeroTransition from "@/components/HeroTransition";
@@ -91,13 +91,32 @@ function NavMenu() {
   );
 }
 
-export default function Home() {
-  const [loaderDone, setLoaderDone] = useState(
-    typeof window !== "undefined" && sessionStorage.getItem("portfolio_visited") === "1"
-  );
+function useLenisAnchorScroll() {
+  const lenis = useLenis();
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const anchor = (e.target as Element).closest("a[href^='#']") as HTMLAnchorElement | null;
+      if (!anchor) return;
+      const hash = anchor.getAttribute("href");
+      if (!hash) return;
+      e.preventDefault();
+      if (hash === "#") {
+        lenis?.scrollTo(0, { duration: 1.4, easing: (t: number) => 1 - Math.pow(1 - t, 4) });
+      } else {
+        const target = document.querySelector(hash);
+        if (target) lenis?.scrollTo(target as HTMLElement, { duration: 1.4, easing: (t: number) => 1 - Math.pow(1 - t, 4), offset: 0 });
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [lenis]);
+}
+
+function PageContent({ loaderDone, setLoaderDone }: { loaderDone: boolean; setLoaderDone: (v: boolean) => void }) {
+  useLenisAnchorScroll();
   return (
-    <ReactLenis root>
+    <>
       <StartupLoader onComplete={() => setLoaderDone(true)} />
       <motion.div
         initial={{ opacity: 0 }}
@@ -112,6 +131,18 @@ export default function Home() {
         <FeaturedProjects />
         <BeyondCodeToContact />
       </motion.div>
+    </>
+  );
+}
+
+export default function Home() {
+  const [loaderDone, setLoaderDone] = useState(
+    typeof window !== "undefined" && sessionStorage.getItem("portfolio_visited") === "1"
+  );
+
+  return (
+    <ReactLenis root>
+      <PageContent loaderDone={loaderDone} setLoaderDone={setLoaderDone} />
     </ReactLenis>
   );
 }

@@ -504,6 +504,7 @@ export default function HeroHUD({
           />
           <HUDButton
             label="Contact"
+            href="#contact"
             className="text-2xl md:text-xl leading-tight"
             isLast
           />
