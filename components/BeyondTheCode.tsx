@@ -91,7 +91,7 @@ const ACTIVITIES = [
     card: {
       index: "02",
       label: "Technical Writing",
-      highlight: "Editor-in-Chief // Division Champion",
+      highlight: "Editor-in-Chief • Division Champion",
       accentColor: "#CCFF00",
       image: "/writing.jpeg",
     },
@@ -103,7 +103,7 @@ const ACTIVITIES = [
     card: {
       index: "03",
       label: "Research",
-      highlight: "Published Study // Marine Biodiversity",
+      highlight: "Published Study • Marine Biodiversity",
       accentColor: "#00D4FF",
       image: "/Research.jpeg",
       objectPosition: "top",
@@ -128,7 +128,7 @@ const ACTIVITIES = [
     card: {
       index: "05",
       label: "Youth Advocacy",
-      highlight: "Peer Educator // Kabarkada Founder",
+      highlight: "Peer Educator • Kabarkada Founder",
       accentColor: "#A78BFA",
       image: "/youthadvocacy.jpeg",
     },
@@ -140,7 +140,7 @@ const ACTIVITIES = [
     card: {
       index: "06",
       label: "Sports & Competition",
-      highlight: "Varsity Chess // Multi-sport",
+      highlight: "Varsity Chess • Multi-sport",
       accentColor: "#34D399",
       image: "/chess.jpg",
     },
@@ -194,7 +194,7 @@ export default function BeyondTheCode() {
           Beyond the Code
         </h2>
         <div className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
-          Activity Log // Off-screen
+          Activity Log • Off-screen
         </div>
       </motion.div>
 
@@ -228,7 +228,7 @@ export function BeyondTheCodeContent({
           Beyond the Code
         </h2>
         <div className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
-          Activity Log // Off-screen
+          Activity Log • Off-screen
         </div>
       </motion.div>
 

@@ -38,7 +38,7 @@ const PROJECTS: Project[] = [
   {
     index: "01",
     title: "Aklatang Galera",
-    classification: "CIVIC_TECH",
+    classification: "CIVIC TECH",
     description:
       "A bilingual civic portal centralizing 100+ educational, livelihood, and government resources for Puerto Galera. Features Semantic Scholar\u2013powered research, 34+ scholarly databases, and a curated public services hub. Lighthouse 100 on desktop, 98 mobile.",
     heroImage: "/Aklatang-Galera.png",
@@ -55,7 +55,7 @@ const PROJECTS: Project[] = [
   {
     index: "02",
     title: "LogiSketch",
-    classification: "DIGITAL_LOGIC_SYNTHESIS",
+    classification: "DIGITAL LOGIC SYNTHESIS",
     description:
       "A reactive Boolean logic synthesis tool featuring a recursive descent parser, Quine\u2013McCluskey minimization for optimal SOP reduction, and a custom schematic routing engine generating NAND/NOR circuits with vertical bus alignment.",
     heroImage: "/LogiSketch.png",
@@ -72,7 +72,7 @@ const PROJECTS: Project[] = [
   {
     index: "03",
     title: "ACE & Company",
-    classification: "CORPORATE_WEB",
+    classification: "CORPORATE WEB",
     description:
       "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Achieves perfect 100 Lighthouse scores in Performance, SEO, and Best Practices with dynamic sitemap, Open Graph, and fluid Framer Motion animations.",
     heroImage: "/ACE.png",
@@ -152,9 +152,6 @@ function ProjectSlide({ project }: { project: Project }) {
             />
           </div>
 
-          <span className="absolute -bottom-6 left-0 font-mono text-[7px] tracking-[0.25em] text-black/15 uppercase hidden md:inline">
-            fig_{project.index}_preview.render
-          </span>
         </div>
 
         {/* Diagnostic Data Card */}
@@ -163,7 +160,7 @@ function ProjectSlide({ project }: { project: Project }) {
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5" style={{ background: project.accentColor }} />
             <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/30 uppercase">
-              [ {project.classification} ]
+              {project.classification}
             </span>
           </div>
 
@@ -191,7 +188,7 @@ function ProjectSlide({ project }: { project: Project }) {
           {/* Tech Registry */}
           <div className="flex flex-col gap-2 mt-0 md:mt-1">
             <span className="font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase">
-              Tech Registry
+              Tech Stack
             </span>
             <div className="flex flex-wrap gap-0">
               {project.registry.map((r, i) => (
@@ -205,7 +202,7 @@ function ProjectSlide({ project }: { project: Project }) {
                     {r.name}
                   </span>
                   <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-black/20 uppercase">
-                    [ {r.tag} ]
+                    {r.tag}
                   </span>
                 </div>
               ))}
@@ -288,7 +285,7 @@ export default function FeaturedProjects() {
               Featured Projects
             </h2>
             <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/20 uppercase">
-              Deployment Archive // Selected Work
+              Deployment Archive • Selected Work
             </div>
           </div>
 
@@ -372,7 +369,7 @@ export default function FeaturedProjects() {
                 </a>
 
                 <span className="font-mono text-[8px] tracking-[0.25em] text-black/15 uppercase mt-4">
-                  {PROJECTS.length} featured // 6 total entries
+                  {PROJECTS.length} featured • 6 total entries
                 </span>
               </div>
             </div>
