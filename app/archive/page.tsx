@@ -183,9 +183,23 @@ const ARCHIVE: ArchiveEntry[] = [
     image: "/3-input-majority-voter.webp",
   },
   {
+    year: "2025",
+    month: "Nov",
+    index: "07",
+    project: "Seam Carver",
+    classification: "ALGORITHMS",
+    description: "Content-aware image resizing via seam carving — removes paths of least visual importance rather than cropping uniformly, preserving image content while shrinking width or height. Built with a pixel energy model using gradient magnitude, a dynamic-programming minimum-seam finder for both vertical and horizontal axes, and a PyQt6 desktop GUI that lets users open an image, preview the computed seam, remove one or many seams in sequence, and save the result. Seam computation runs on background threads to keep the UI responsive. Final project for CSCI 30. Built with Carl Jacob Landicho (github.com/Sazemii) and Charles Daniel Quinto (github.com/CharlesRemarks).",
+    tech: [
+      { name: "Python", tag: "CORE" },
+      { name: "Algorithms", tag: "DOMAIN" },
+    ],
+    github: "https://github.com/Sazemii/SeamCarving",
+    accentColor: "#818CF8",
+  },
+  {
     year: "2024",
     month: "Sep",
-    index: "07",
+    index: "08",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
@@ -201,7 +215,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Mar",
-    index: "08",
+    index: "09",
     project: "Hello, World.",
     classification: "ORIGIN",
     description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
