@@ -203,9 +203,28 @@ const ARCHIVE: ArchiveEntry[] = [
     ],
   },
   {
+    year: "2025",
+    month: "Oct",
+    index: "08",
+    project: "Guitar Simulator",
+    classification: "AUDIO / DSP",
+    description: "A real-time keyboard-driven instrument simulator built in Python using the Karplus-Strong algorithm for physically modeled sound synthesis. A ring buffer is seeded with white noise on each keypress; each tick the front sample is averaged with the next, multiplied by a decay factor, and re-enqueued — producing natural string sustain and decay. Covers a 20-note guitar range with octave shifting and auto-strum, plus a full drum kit (kick, snare, toms, hi-hat, crash) with a percussive Karplus-Strong variant that randomly negates averaged samples for a noisier timbre. Audio streamed at 44,100 Hz via pygame.",
+    tech: [
+      { name: "Python", tag: "CORE" },
+      { name: "Algorithms", tag: "DOMAIN" },
+    ],
+    github: "https://github.com/RokiTheWise/guitar_files",
+    accentColor: "#34D399",
+    image: "/guitar-sim.webp",
+    collaborators: [
+      { name: "Carl Jacob Landicho", github: "https://github.com/Sazemii" },
+      { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
+    ],
+  },
+  {
     year: "2024",
     month: "Sep",
-    index: "08",
+    index: "09",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
@@ -221,7 +240,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Mar",
-    index: "09",
+    index: "10",
     project: "Hello, World.",
     classification: "ORIGIN",
     description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
