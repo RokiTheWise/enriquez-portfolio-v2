@@ -103,7 +103,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Mar",
-    index: "02",
+    index: "03",
     project: "Aklatang Galera",
     classification: "CIVIC TECH",
     description: "A localized civic portal unifying educational resources, livelihood programs, and government services for the people of Puerto Galera. Features a bilingual (Filipino/English) interface, Semantic Scholar-powered library search across 30+ curated databases, a livelihood hub connecting locals to TESDA, DOLE, and DTI resources, and a public services directory for scholarships, eLGU permits, and government transparency feeds — all optimized for mobile-first access.",
@@ -120,7 +120,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Mar",
-    index: "03",
+    index: "02",
     project: "Project DAGYAW",
     classification: "CIVIC TECH",
     description: "A community-driven urban sustainability platform submitted to BlueHacks 2026. Bridges the invisibility gap between citizens and LGUs by transforming subjective reports into objective data through a 70/30 consensus loop — an issue only reaches Resolved if 67% of community voters confirm the fix within 3 days. Features a Watch Mode dashboard with AI-powered issue prioritization (Claude API), real-time external data enrichment via IQAir (PM2.5/CO2) and Open-Meteo (rain/weather), and Supabase Realtime for live pin updates on a React Leaflet map.",
