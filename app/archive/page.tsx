@@ -78,6 +78,7 @@ interface ArchiveEntry {
   link?: string;
   github?: string;
   accentColor: string;
+  collaborators?: { name: string; github: string }[];
 }
 
 const ARCHIVE: ArchiveEntry[] = [
@@ -188,13 +189,17 @@ const ARCHIVE: ArchiveEntry[] = [
     index: "07",
     project: "Seam Carver",
     classification: "ALGORITHMS",
-    description: "Content-aware image resizing via seam carving — removes paths of least visual importance rather than cropping uniformly, preserving image content while shrinking width or height. Built with a pixel energy model using gradient magnitude, a dynamic-programming minimum-seam finder for both vertical and horizontal axes, and a PyQt6 desktop GUI that lets users open an image, preview the computed seam, remove one or many seams in sequence, and save the result. Seam computation runs on background threads to keep the UI responsive. Final project for CSCI 30. Built with Carl Jacob Landicho (github.com/Sazemii) and Charles Daniel Quinto (github.com/CharlesRemarks).",
+    description: "Content-aware image resizing via seam carving — removes paths of least visual importance rather than cropping uniformly, preserving image content while shrinking width or height. Built with a pixel energy model using gradient magnitude, a dynamic-programming minimum-seam finder for both vertical and horizontal axes, and a PyQt6 desktop GUI that lets users open an image, preview the computed seam, remove one or many seams in sequence, and save the result. Seam computation runs on background threads to keep the UI responsive. Final project for CSCI 30.",
     tech: [
       { name: "Python", tag: "CORE" },
       { name: "Algorithms", tag: "DOMAIN" },
     ],
     github: "https://github.com/Sazemii/SeamCarving",
     accentColor: "#818CF8",
+    collaborators: [
+      { name: "Carl Jacob Landicho", github: "https://github.com/Sazemii" },
+      { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
+    ],
   },
   {
     year: "2024",
@@ -562,6 +567,26 @@ function ArchiveModal({
           <p className="font-mono text-[11px] leading-[1.9] text-black/50">
             {entry.description}
           </p>
+
+          {/* Collaborators */}
+          {entry.collaborators && (
+            <div className="mt-4 flex flex-col gap-1">
+              <span className="font-mono text-[8px] tracking-[0.3em] text-black/30 uppercase">Built with</span>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                {entry.collaborators.map((c) => (
+                  <a
+                    key={c.github}
+                    href={c.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[11px] text-black/50 hover:text-black transition-colors duration-150 underline underline-offset-2"
+                  >
+                    {c.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
     </div>
