@@ -246,8 +246,26 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2025",
-    month: "May",
+    month: "Mar",
     index: "10",
+    project: "Atenean Stickmin",
+    classification: "GAME DEV",
+    description: "A Java Swing animation project built around a DrawingObject interface — every primitive shape and composite scene object implements draw(Graphics2D) and adjustX(double), letting the canvas hold a heterogeneous render list. Opens with an animated title screen (falling comets, Ateneo cheer audio), advances through a six-frame classroom intro on a 2.5s timer with the Wii Theme, then branches into two user-selectable interactive scenes: a coding scene and a ritual scene. All visuals are drawn programmatically — no image assets, just ~30 custom shape and composite classes.",
+    tech: [
+      { name: "Java", tag: "CORE" },
+      { name: "Java Swing", tag: "UI" },
+    ],
+    github: "https://github.com/RokiTheWise/Atenean-Stickmin",
+    accentColor: "#818CF8",
+    image: "/Atenean-Stickmin.webp",
+    collaborators: [
+      { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
+    ],
+  },
+  {
+    year: "2025",
+    month: "May",
+    index: "11",
     project: "The Hunt of the Skinwalker",
     classification: "GAME DEV",
     description: "A 2-player asymmetric horror game built with Java Swing. One player is a Hunter armed with a gun; the other is a SkinWalker that can disguise itself as any of 18 environment props. Players connect over a local network and compete across three timed phases — Hide (15s), Hunt (60s), and Revenge (30s) — where the Hunter wins by landing a shot and the SkinWalker wins by surviving into Revenge and landing a melee attack. Features an authoritative server architecture, custom sprite animations (6-frame Hunter, 8-frame SkinWalker), tilemap rendering, real-time position sync at 25 ms intervals, and original sound effects.",
@@ -266,7 +284,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Sep",
-    index: "11",
+    index: "12",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
@@ -282,7 +300,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Mar",
-    index: "12",
+    index: "13",
     project: "Hello, World.",
     classification: "ORIGIN",
     description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
