@@ -121,6 +121,28 @@ const ARCHIVE: ArchiveEntry[] = [
     year: "2026",
     month: "Mar",
     index: "03",
+    project: "Project DAGYAW",
+    classification: "CIVIC TECH",
+    description: "A community-driven urban sustainability platform submitted to BlueHacks 2026. Bridges the invisibility gap between citizens and LGUs by transforming subjective reports into objective data through a 70/30 consensus loop — an issue only reaches Resolved if 67% of community voters confirm the fix within 3 days. Features a Watch Mode dashboard with AI-powered issue prioritization (Claude API), real-time external data enrichment via IQAir (PM2.5/CO2) and Open-Meteo (rain/weather), and Supabase Realtime for live pin updates on a React Leaflet map.",
+    tech: [
+      { name: "Next.js", tag: "FRAMEWORK" },
+      { name: "TypeScript", tag: "CORE" },
+      { name: "Tailwind", tag: "STYLING" },
+      { name: "Supabase", tag: "BACKEND" },
+    ],
+    link: "https://dagyaw-wine.vercel.app/",
+    github: "https://github.com/Sazemii/dagyaw-",
+    accentColor: "#60A5FA",
+    image: "/dagyaw.webp",
+    collaborators: [
+      { name: "Carl Jacob Landicho", github: "https://github.com/Sazemii" },
+      { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
+    ],
+  },
+  {
+    year: "2026",
+    month: "Mar",
+    index: "04",
     project: "LogiSketch",
     classification: "DIGITAL LOGIC CORE",
     description: "An interactive Boolean logic visualizer that parses equations in real-time and instantly generates truth tables and circuit diagrams. Supports standard AND/OR/NOT gates alongside NAND-only and NOR-only universal logic modes. Built with React Flow for a fully interactive canvas — zoom, pan, and drag nodes. Includes professional trunk-logic wiring, dynamic truth tables, and a one-click PNG report export. Designed for CS students, engineers, and hobbyists who want to go from equation to schematic without the manual work.",
@@ -137,7 +159,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jan",
-    index: "04",
+    index: "05",
     project: "Ace & Co. Accounting",
     classification: "PROFESSIONAL WORK",
     description: "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Built to establish digital presence and generate leads for tax, audit, and business registration services. Achieved a perfect 100 Lighthouse score with dynamic sitemap and robots.txt generation, semantic HTML structured for 'Accounting Firm Manila' search ranking, Open Graph metadata, and React Server Components via the Next.js App Router. Deployed on Vercel with an atomic CI/CD pipeline.",
@@ -153,7 +175,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jan",
-    index: "05",
+    index: "06",
     project: "Portfolio V1",
     classification: "PERSONAL IDENTITY",
     description: "My first deployed portfolio — built to break away from standard resume templates by framing skills and achievements through a technology-operator aesthetic. Features a bento grid project showcase, GSAP-powered pixel transitions for photo reveals, CSS glitch and scanline effects, and a dark 'Obsidian' theme built entirely with Tailwind. My second published web project and my first deep dive into the React ecosystem.",
@@ -170,7 +192,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jan",
-    index: "06",
+    index: "07",
     project: "Majority Voter Circuit",
     classification: "ELECTRONICS",
     description: "A combinational logic circuit that outputs High only when two or more of its three binary inputs are active — the core mechanism behind fault-tolerant redundant systems. Implemented using 74HC08 quad AND gates and 74HC32 quad OR gates, derived from the Boolean expression Y = AB + BC + AC. Designed, simulated, and validated in Tinkercad.",
@@ -186,7 +208,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2025",
     month: "Nov",
-    index: "07",
+    index: "08",
     project: "Seam Carver",
     classification: "ALGORITHMS",
     description: "Content-aware image resizing via seam carving — removes paths of least visual importance rather than cropping uniformly, preserving image content while shrinking width or height. Built with a pixel energy model using gradient magnitude, a dynamic-programming minimum-seam finder for both vertical and horizontal axes, and a PyQt6 desktop GUI that lets users open an image, preview the computed seam, remove one or many seams in sequence, and save the result. Seam computation runs on background threads to keep the UI responsive. Final project for CSCI 30.",
@@ -205,7 +227,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2025",
     month: "Oct",
-    index: "08",
+    index: "09",
     project: "Guitar Simulator",
     classification: "AUDIO / DSP",
     description: "A real-time keyboard-driven instrument simulator built in Python using the Karplus-Strong algorithm for physically modeled sound synthesis. A ring buffer is seeded with white noise on each keypress; each tick the front sample is averaged with the next, multiplied by a decay factor, and re-enqueued — producing natural string sustain and decay. Covers a 20-note guitar range with octave shifting and auto-strum, plus a full drum kit (kick, snare, toms, hi-hat, crash) with a percussive Karplus-Strong variant that randomly negates averaged samples for a noisier timbre. Audio streamed at 44,100 Hz via pygame.",
@@ -224,7 +246,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Sep",
-    index: "09",
+    index: "10",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
@@ -240,7 +262,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Mar",
-    index: "10",
+    index: "11",
     project: "Hello, World.",
     classification: "ORIGIN",
     description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
