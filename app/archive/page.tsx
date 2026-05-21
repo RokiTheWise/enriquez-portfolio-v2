@@ -196,6 +196,7 @@ const ARCHIVE: ArchiveEntry[] = [
     ],
     github: "https://github.com/Sazemii/SeamCarving",
     accentColor: "#818CF8",
+    image: "/seam-carver.webp",
     collaborators: [
       { name: "Carl Jacob Landicho", github: "https://github.com/Sazemii" },
       { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
