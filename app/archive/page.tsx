@@ -283,8 +283,22 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2024",
-    month: "Sep",
+    month: "Dec",
     index: "12",
+    project: "The Realms of Yggdrasil",
+    classification: "GAME DEV",
+    description: "A two-player, turn-based card battle game written in Java. Players draw from a shared deck of typed cards (Dragon, Ghost, Fairy, Human) and race to claim 3 tokens by defeating the opponent's active card. Implements a two-pass Bulls & Cows-style damage system with four type matchups — resistances halve incoming damage, weaknesses double it — plus deck import from a custom .txt format. Ships with both a console entry point (GameConsole) and a Swing GUI (SimpleApp/SimpleGUI) with a turn counter, token display, and file-based deck import. Player hand management, draw/discard/swap mechanics, and win-check logic are split across Card, Player, and GameMaster classes.",
+    tech: [
+      { name: "Java", tag: "CORE" },
+      { name: "Java Swing", tag: "UI" },
+    ],
+    accentColor: "#9333EA",
+    image: "/Realms.webp",
+  },
+  {
+    year: "2024",
+    month: "Sep",
+    index: "13",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
@@ -300,7 +314,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Mar",
-    index: "13",
+    index: "14",
     project: "Hello, World.",
     classification: "ORIGIN",
     description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
