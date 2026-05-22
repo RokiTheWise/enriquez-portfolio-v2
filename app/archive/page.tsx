@@ -246,26 +246,8 @@ const ARCHIVE: ArchiveEntry[] = [
   },
   {
     year: "2025",
-    month: "Mar",
-    index: "10",
-    project: "Atenean Stickmin",
-    classification: "GAME DEV",
-    description: "A Java Swing animation project built around a DrawingObject interface — every primitive shape and composite scene object implements draw(Graphics2D) and adjustX(double), letting the canvas hold a heterogeneous render list. Opens with an animated title screen (falling comets, Ateneo cheer audio), advances through a six-frame classroom intro on a 2.5s timer with the Wii Theme, then branches into two user-selectable interactive scenes: a coding scene and a ritual scene. All visuals are drawn programmatically — no image assets, just ~30 custom shape and composite classes.",
-    tech: [
-      { name: "Java", tag: "CORE" },
-      { name: "Java Swing", tag: "UI" },
-    ],
-    github: "https://github.com/RokiTheWise/Atenean-Stickmin",
-    accentColor: "#818CF8",
-    image: "/Atenean-Stickmin.webp",
-    collaborators: [
-      { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
-    ],
-  },
-  {
-    year: "2025",
     month: "May",
-    index: "11",
+    index: "10",
     project: "The Hunt of the Skinwalker",
     classification: "GAME DEV",
     description: "A 2-player asymmetric horror game built with Java Swing. One player is a Hunter armed with a gun; the other is a SkinWalker that can disguise itself as any of 18 environment props. Players connect over a local network and compete across three timed phases — Hide (15s), Hunt (60s), and Revenge (30s) — where the Hunter wins by landing a shot and the SkinWalker wins by surviving into Revenge and landing a melee attack. Features an authoritative server architecture, custom sprite animations (6-frame Hunter, 8-frame SkinWalker), tilemap rendering, real-time position sync at 25 ms intervals, and original sound effects.",
@@ -277,6 +259,24 @@ const ARCHIVE: ArchiveEntry[] = [
     github: "https://github.com/RokiTheWise/The-Hunt-of-the-Skinwalker",
     accentColor: "#F97316",
     image: "/java-game.webp",
+    collaborators: [
+      { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
+    ],
+  },
+  {
+    year: "2025",
+    month: "Mar",
+    index: "11",
+    project: "Atenean Stickmin",
+    classification: "GAME DEV",
+    description: "A Java Swing animation project built around a DrawingObject interface — every primitive shape and composite scene object implements draw(Graphics2D) and adjustX(double), letting the canvas hold a heterogeneous render list. Opens with an animated title screen (falling comets, Ateneo cheer audio), advances through a six-frame classroom intro on a 2.5s timer with the Wii Theme, then branches into two user-selectable interactive scenes: a coding scene and a ritual scene. All visuals are drawn programmatically — no image assets, just ~30 custom shape and composite classes.",
+    tech: [
+      { name: "Java", tag: "CORE" },
+      { name: "Java Swing", tag: "UI" },
+    ],
+    github: "https://github.com/RokiTheWise/Atenean-Stickmin",
+    accentColor: "#818CF8",
+    image: "/Atenean-Stickmin.webp",
     collaborators: [
       { name: "Charles Daniel Quinto", github: "https://github.com/CharlesRemarks" },
     ],
