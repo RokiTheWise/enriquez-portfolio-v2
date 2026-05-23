@@ -79,7 +79,7 @@ function QPIRing() {
         className="font-mono text-[34px] font-bold tracking-tighter"
         fill="black"
       >
-        3.72
+        3.76
       </text>
     </svg>
   );
@@ -385,7 +385,7 @@ export default function About() {
                       Year Level
                     </span>
                     <p className="font-mono text-[9px] md:text-xs text-black/50 mt-0.5">
-                      2nd Year
+                      3rd Year
                     </p>
                   </div>
                   <div>
