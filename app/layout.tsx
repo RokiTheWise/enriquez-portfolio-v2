@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://djenriquez.dev"),
   title: "Dexter Jethro Enriquez — Software Engineer",
   description:
     "Portfolio of Dexter Jethro Enriquez — software engineer, projects, and writing.",
