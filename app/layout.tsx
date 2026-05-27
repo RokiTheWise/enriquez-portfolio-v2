@@ -15,7 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://djenriquez.dev"),
-  title: "Dexter Jethro Enriquez — Software Engineer",
+  title: {
+    default: "Dexter Jethro Enriquez — Software Engineer",
+    template: "%s — Dexter Jethro Enriquez",
+  },
   description:
     "Portfolio of Dexter Jethro Enriquez — software engineer, projects, and writing.",
   applicationName: "DJ Enriquez",
