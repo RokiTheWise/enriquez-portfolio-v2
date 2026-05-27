@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://djenriquez.dev"),
   title: {
-    default: "Dexter Jethro Enriquez — Software Engineer",
+    default: "Dexter Jethro Enriquez — Software Developer",
     template: "%s — Dexter Jethro Enriquez",
   },
   description:
-    "Portfolio of Dexter Jethro Enriquez — software engineer, projects, and writing.",
+    "Portfolio of Dexter Jethro Enriquez — software developer, projects, and writing.",
   applicationName: "DJ Enriquez",
   authors: [{ name: "Dexter Jethro Enriquez" }],
   manifest: "/site.webmanifest",
@@ -34,26 +34,46 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "Dexter Jethro Enriquez — Software Engineer",
+    title: "Dexter Jethro Enriquez — Software Developer",
     description:
-      "Portfolio of Dexter Jethro Enriquez — software engineer, projects, and writing.",
+      "Portfolio of Dexter Jethro Enriquez — software developer, projects, and writing.",
     siteName: "Dexter Jethro Enriquez",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Dexter Jethro Enriquez — Software Engineer",
+        alt: "Dexter Jethro Enriquez — Software Developer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dexter Jethro Enriquez — Software Engineer",
+    title: "Dexter Jethro Enriquez — Software Developer",
     description:
-      "Portfolio of Dexter Jethro Enriquez — software engineer, projects, and writing.",
+      "Portfolio of Dexter Jethro Enriquez — software developer, projects, and writing.",
     images: ["/og-image.png"],
   },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Dexter Jethro Enriquez",
+  alternateName: "DJ Enriquez",
+  url: "https://djenriquez.dev",
+  image: "https://djenriquez.dev/og-image.png",
+  jobTitle: "Software Developer",
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Ateneo de Manila University",
+  },
+  sameAs: [
+    "https://github.com/RokiTheWise",
+    "https://www.linkedin.com/in/dexter-jethro-enriquez/",
+    "https://www.instagram.com/dexjet_enriquez/",
+    "https://www.facebook.com/dexterjethro.enriquez",
+  ],
 };
 
 export default function RootLayout({
@@ -67,6 +87,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <PageTransition>{children}</PageTransition>
       </body>
     </html>
