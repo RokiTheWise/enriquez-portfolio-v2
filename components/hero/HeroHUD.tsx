@@ -425,7 +425,7 @@ export default function HeroHUD({
             src="/DexDev-Logo-96.png"
             srcSet="/DexDev-Logo-56.png 56w, /DexDev-Logo-84.png 84w, /DexDev-Logo-96.png 96w, /DexDev-Logo-144.png 144w"
             sizes="(min-width: 768px) 48px, 28px"
-            alt="DexDev Logo"
+            alt="Dexter Jethro Enriquez"
             width={48}
             height={48}
             data-header-logo

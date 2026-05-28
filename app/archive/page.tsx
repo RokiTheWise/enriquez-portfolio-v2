@@ -439,7 +439,7 @@ function ArchiveCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={entry.image}
-            alt={`${entry.project} screenshot`}
+            alt={entry.project}
             width={800}
             height={256}
             className="absolute inset-0 w-full h-full object-cover"
@@ -578,7 +578,7 @@ function ArchiveModal({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={entry.image}
-              alt={`${entry.project} screenshot`}
+              alt={entry.project}
               width={680}
               height={320}
               className="w-full h-72 object-cover"
@@ -706,7 +706,7 @@ export default function ArchivePage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/DexDev-Logo-96.png"
-              alt="Logo"
+              alt="Dexter Jethro Enriquez"
               className="block h-7 md:h-8 w-auto object-contain"
               draggable={false}
               width={32}

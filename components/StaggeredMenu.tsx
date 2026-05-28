@@ -458,7 +458,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
             {logoUrl && (
               <img
                 src={logoUrl}
-                alt="Logo"
+                alt="Dexter Jethro Enriquez"
                 className="sm-logo-img block h-7 md:h-8 w-auto object-contain"
                 draggable={false}
                 width={32}
