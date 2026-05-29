@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import PageTransition from "@/components/PageTransition";
@@ -22,8 +22,12 @@ export const metadata: Metadata = {
   description:
     "Portfolio of Dexter Jethro Enriquez — software developer, projects, and writing.",
   applicationName: "DJ Enriquez",
-  authors: [{ name: "Dexter Jethro Enriquez" }],
+  authors: [{ name: "Dexter Jethro Enriquez", url: "https://djenriquez.dev" }],
+  creator: "Dexter Jethro Enriquez",
   manifest: "/site.webmanifest",
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -34,6 +38,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
+    locale: "en_US",
     title: "Dexter Jethro Enriquez — Software Developer",
     description:
       "Portfolio of Dexter Jethro Enriquez — software developer, projects, and writing.",
@@ -54,6 +59,21 @@ export const metadata: Metadata = {
       "Portfolio of Dexter Jethro Enriquez — software developer, projects, and writing.",
     images: ["/og-image.png"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FFB800",
 };
 
 const personJsonLd = {
@@ -64,10 +84,22 @@ const personJsonLd = {
   url: "https://djenriquez.dev",
   image: "https://djenriquez.dev/og-image.png",
   jobTitle: "Software Developer",
+  description:
+    "Software Developer and Computer Science student at Ateneo de Manila University specializing in full-stack web development.",
   alumniOf: {
     "@type": "CollegeOrUniversity",
     name: "Ateneo de Manila University",
   },
+  knowsAbout: [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Tailwind CSS",
+    "Framer Motion",
+    "GSAP",
+    "Web Development",
+    "Software Engineering",
+  ],
   sameAs: [
     "https://github.com/RokiTheWise",
     "https://www.linkedin.com/in/dexter-jethro-enriquez/",
