@@ -79,7 +79,7 @@ function QPIRing() {
         className="font-mono text-[34px] font-bold tracking-tighter"
         fill="black"
       >
-        3.76
+        3.75
       </text>
     </svg>
   );
