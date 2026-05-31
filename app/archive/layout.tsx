@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Archive",
   description:
     "An archive of past projects, experiments, and side work by Dexter Jethro Enriquez.",
+  alternates: {
+    canonical: "/archive",
+  },
   openGraph: {
     title: "Archive — Dexter Jethro Enriquez",
     description:
