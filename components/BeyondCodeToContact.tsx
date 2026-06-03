@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useMotionTemplate,
+  useMotionValueEvent,
 } from "framer-motion";
 import { BeyondTheCodeContent } from "@/components/BeyondTheCode";
 import ContactContent from "@/components/Contact";
@@ -41,6 +42,15 @@ export default function BeyondCodeToContact() {
     This gives ~675vh of outer scroll to cover the inner content height,
     so card 06 settles comfortably before the iris starts.
   */
+
+  // BeyondTheCode owns progress 0→0.75, split into 6 equal bands (snap-swap).
+  const CARD_COUNT = 6;
+  const BTC_PHASE_END = 0.75;
+  const [activeCard, setActiveCard] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const band = Math.floor((v / BTC_PHASE_END) * CARD_COUNT);
+    setActiveCard(Math.min(Math.max(band, 0), CARD_COUNT - 1));
+  });
 
   // Sync inner scroll to outer page scroll during BeyondTheCode phase (0→75%)
   useEffect(() => {
@@ -132,7 +142,7 @@ export default function BeyondCodeToContact() {
                 overscrollBehavior: "none",
               }}
             >
-              <BeyondTheCodeContent scrollRoot={innerScrollRef} />
+              <BeyondTheCodeContent activeCard={activeCard} />
             </div>
           </motion.div>
 
