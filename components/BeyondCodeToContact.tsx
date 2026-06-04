@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -13,7 +13,6 @@ import ContactContent from "@/components/Contact";
 
 export default function BeyondCodeToContact() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const innerScrollRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
@@ -21,26 +20,15 @@ export default function BeyondCodeToContact() {
   });
 
   /*
-    Architecture:
-    - Outer 750vh wrapper drives scrollYProgress (0→1)
-    - Sticky viewport pins to screen for entire journey
-    - BeyondTheCode sits in an inner div with overflow-y-scroll
-    - JS syncs the inner div's scroll position to the outer page scroll
-      so IntersectionObserver fires correctly (it observes the inner scroller)
-    - Aperture phase (60%→75%): iris clip on BeyondTheCode layer shrinks 150→0
-    - Contact phase (80%→100%): iris clip on Contact grows 0→150
-  */
-
-  /*
-    Phase map (% of 900vh wrapper):
-      0  → 0.75 : BeyondTheCode inner scroll drives cards 01–06
-      0.75 → 0.85: Iris CLOSES over BeyondTheCode (150%→0%)
-      0.85 → 0.88: Pinhole hold
-      0.88 → 1.0 : Iris OPENS — Contact revealed (0%→150%)
-
-    Inner scroll is mapped across the full BeyondTheCode phase (0→0.75).
-    This gives ~675vh of outer scroll to cover the inner content height,
-    so card 06 settles comfortably before the iris starts.
+    Architecture (mobile-safe, single scroll surface):
+    - Outer 1050vh (mobile) / 900vh (desktop) wrapper drives scrollYProgress 0→1.
+    - One sticky viewport pins to screen for the whole journey.
+    - BeyondTheCode renders statically inside the pin. The active activity card
+      is derived from scrollYProgress (0→0.75 split into 6 equal bands) and
+      passed to BeyondTheCodeContent as `activeCard` — no nested scroll container,
+      so touch always drives the native page (this fixes the mobile scroll-trap).
+    - Iris transition: BeyondTheCode clip shrinks 150→0 (0.75→0.85), pinhole hold
+      (0.85→0.88), then Contact clip grows 0→150 (0.88→1.0).
   */
 
   // BeyondTheCode owns progress 0→0.75, split into 6 equal bands (snap-swap).
@@ -49,29 +37,9 @@ export default function BeyondCodeToContact() {
   const [activeCard, setActiveCard] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const band = Math.floor((v / BTC_PHASE_END) * CARD_COUNT);
-    setActiveCard(Math.min(Math.max(band, 0), CARD_COUNT - 1));
+    const next = Math.min(Math.max(band, 0), CARD_COUNT - 1);
+    setActiveCard((prev) => (prev === next ? prev : next));
   });
-
-  // Sync inner scroll to outer page scroll during BeyondTheCode phase (0→75%)
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const inner = innerScrollRef.current;
-    if (!wrapper || !inner) return;
-
-    const onScroll = () => {
-      const wrapperTop = wrapper.getBoundingClientRect().top;
-      const scrolledPx = Math.max(0, -wrapperTop);
-      // Drive inner scroll at 1:4 ratio. Clamped so inner freezes on the
-      // blank buffer card while outer scroll continues into the iris phase.
-      inner.scrollTop = Math.min(
-        scrolledPx * 0.25,
-        inner.scrollHeight - inner.clientHeight,
-      );
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // BeyondTheCode iris: full open until 75%, closes to pinhole at 85%
   const btcRadius = useTransform(
@@ -112,36 +80,19 @@ export default function BeyondCodeToContact() {
   return (
     <section id="beyond" className="relative bg-black">
       {/*
-        Wrapper height: 900vh desktop (desktop-tuned). Mobile gets 1050vh —
-        sized so the 0.25 inner ratio traverses the inner content and lands
-        card 06 below the sticky photo by the time inner clamps.
+        Wrapper height = scroll budget. ~75% covers the 6 activity cards
+        (snap-swap), the remaining ~25% drives the iris into Contact.
+        Mobile gets extra height (1050vh) so each card band feels unhurried.
+        Keep vh (NOT dvh) — dvh on the pin breaks Lenis.
       */}
       <div ref={wrapperRef} className="relative h-[1050vh] lg:h-[900vh]">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-          {/*
-            BeyondTheCode in an inner scrollable div.
-            JS syncs scrollTop to outer page progress so cards cycle correctly.
-            Iris clip shrinks this layer as iris closes.
-          */}
           <motion.div
             style={{ clipPath: btcClipPath }}
             className="absolute inset-0 z-10"
           >
-            <div
-              ref={innerScrollRef}
-              className="w-full h-full overflow-y-scroll overflow-x-hidden"
-              style={{
-                scrollbarWidth: "none",
-                // touch-action: pan-y lets the browser route vertical touch
-                // pans to the PAGE (not this inner overflow container). We
-                // drive inner.scrollTop programmatically from page scroll, so
-                // the inner shouldn't consume touches itself. Without this,
-                // mobile users get stuck once inner.scrollTop hits its clamp.
-                touchAction: "pan-y",
-                overscrollBehavior: "none",
-              }}
-            >
+            <div className="w-full h-full overflow-hidden">
               <BeyondTheCodeContent activeCard={activeCard} />
             </div>
           </motion.div>
