@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* ═══════════════════════════════════════════
    Visual Card — right-side sticky panel
@@ -175,59 +175,53 @@ export function BeyondTheCodeContent({
           />
         </div>
 
-        {/* Text column — full dimmed list on desktop, active-only on mobile */}
-        <div className="order-2 lg:order-1 max-w-lg">
-          {/* Mobile: active entry only */}
-          <div className="lg:hidden">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-1.5 h-1.5" style={{ background: active.card.accentColor }} />
-              <span className="font-mono text-[9px] tracking-[0.3em] text-black/25 uppercase">
-                {String(activeCard + 1).padStart(2, "0")}
-              </span>
-            </div>
-            <h3 className="font-mono text-lg font-bold tracking-tighter text-black uppercase">
-              {active.title}
-            </h3>
-            <p className="font-mono text-[11px] leading-[1.8] text-black/50 mt-3 max-w-sm">
-              {active.description}
-            </p>
-          </div>
-
-          {/* Desktop: dimmed full list */}
-          <div className="hidden lg:block">
-            {ACTIVITIES.map((item, index) => (
-              <div key={item.title} className="my-10 first:mt-0">
+        {/* Text column — single active entry that cross-fades, on mobile + desktop */}
+        <div className="order-2 lg:order-1 w-full max-w-lg">
+          {/* Active entry — keyed so consecutive activities cross-fade */}
+          <div className="relative min-h-[180px] lg:min-h-[220px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeCard}
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 6 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <div className="flex items-center gap-2 mb-3">
-                  <div
-                    className="w-1.5 h-1.5"
-                    style={{
-                      background:
-                        activeCard === index ? item.card.accentColor : "rgba(0,0,0,0.08)",
-                    }}
-                  />
+                  <div className="w-1.5 h-1.5" style={{ background: active.card.accentColor }} />
                   <span className="font-mono text-[9px] tracking-[0.3em] text-black/25 uppercase">
-                    {String(index + 1).padStart(2, "0")}
+                    {String(activeCard + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <motion.h3
+                <h3 className="font-mono text-lg md:text-2xl font-bold tracking-tighter text-black uppercase">
+                  {active.title}
+                </h3>
+                <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/50 mt-3 max-w-sm">
+                  {active.description}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Progress dots — fill cumulatively as activities are reached */}
+          <div className="flex items-center gap-2.5 mt-8" aria-hidden>
+            {ACTIVITIES.map((item, index) => {
+              const reached = index <= activeCard;
+              const isActive = index === activeCard;
+              return (
+                <motion.div
+                  key={item.title}
+                  className="rounded-full"
                   animate={{
-                    opacity: activeCard === index ? 1 : 0.2,
-                    x: activeCard === index ? 0 : -4,
+                    width: isActive ? 18 : 6,
+                    backgroundColor: reached ? item.card.accentColor : "rgba(0,0,0,0.1)",
+                    opacity: reached ? (isActive ? 1 : 0.55) : 1,
                   }}
-                  transition={{ duration: 0.3 }}
-                  className="font-mono text-2xl font-bold tracking-tighter text-black uppercase"
-                >
-                  {item.title}
-                </motion.h3>
-                <motion.p
-                  animate={{ opacity: activeCard === index ? 1 : 0.15 }}
-                  transition={{ duration: 0.3 }}
-                  className="font-mono text-xs leading-[1.8] text-black/50 mt-3 max-w-sm"
-                >
-                  {item.description}
-                </motion.p>
-              </div>
-            ))}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ height: 6 }}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
