@@ -153,10 +153,10 @@ export function BeyondTheCodeContent({
 
   return (
     <div className="relative w-full h-full bg-white overflow-hidden">
-      <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col pt-24 pb-12">
+      <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col pt-[max(5rem,12svh)] pb-[4svh] lg:pt-24 lg:pb-12">
         {/* Header — in flow at the top */}
         <div className="flex-shrink-0">
-          <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-tighter text-black uppercase">
+          <h2 className="font-mono text-[clamp(1.5rem,5vh,1.875rem)] md:text-6xl font-bold tracking-tighter text-black uppercase">
             Beyond the Code
           </h2>
           <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
@@ -167,7 +167,7 @@ export function BeyondTheCodeContent({
         {/* Activity row — centered in the space below the header */}
         <div className="flex-1 min-h-0 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16">
         {/* Visual panel */}
-        <div className="order-1 lg:order-2 w-full lg:w-[460px] aspect-[3/2] lg:aspect-auto lg:h-[340px] flex-shrink-0 overflow-hidden">
+        <div className="order-1 lg:order-2 w-full lg:w-[460px] h-[30svh] min-h-[150px] max-h-[300px] lg:h-[340px] lg:min-h-0 lg:max-h-none flex-shrink-0 overflow-hidden">
           <ActivityCard
             index={active.card.index}
             highlight={active.card.highlight}
@@ -189,16 +189,20 @@ export function BeyondTheCodeContent({
                 exit={{ opacity: 0, x: 6 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-[1.5vh] lg:mb-4">
                   <div className="w-1.5 h-1.5" style={{ background: active.card.accentColor }} />
                   <span className="font-mono text-[9px] tracking-[0.3em] text-black/25 uppercase">
                     {String(activeCard + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-mono text-lg md:text-2xl lg:text-4xl font-bold tracking-tighter text-black uppercase">
+                <h3
+                  className="font-mono font-bold tracking-tighter text-black uppercase text-[clamp(1.25rem,4.6vh,2.25rem)] lg:text-4xl"
+                >
                   {active.title}
                 </h3>
-                <p className="font-mono text-[11px] md:text-xs lg:text-sm leading-[1.8] lg:leading-[2] text-black/50 mt-3 lg:mt-5 max-w-sm lg:max-w-md">
+                <p
+                  className="font-mono text-black/50 mt-[1.6vh] lg:mt-5 max-w-md text-[clamp(0.7rem,1.85vh,0.875rem)] leading-[1.85] lg:leading-[2]"
+                >
                   {active.description}
                 </p>
               </motion.div>
@@ -206,21 +210,20 @@ export function BeyondTheCodeContent({
           </div>
 
           {/* Progress dots — fill cumulatively as activities are reached */}
-          <div className="flex items-center gap-2.5 mt-8" aria-hidden>
+          <div className="flex items-center gap-2.5 mt-[2.4vh] lg:mt-8" aria-hidden>
             {ACTIVITIES.map((item, index) => {
               const reached = index <= activeCard;
               const isActive = index === activeCard;
               return (
                 <motion.div
                   key={item.title}
-                  className="rounded-full"
+                  className="rounded-full h-1.5"
                   animate={{
-                    width: isActive ? 18 : 6,
+                    width: isActive ? 20 : 7,
                     backgroundColor: reached ? item.card.accentColor : "rgba(0,0,0,0.1)",
                     opacity: reached ? (isActive ? 1 : 0.55) : 1,
                   }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ height: 6 }}
                 />
               );
             })}
