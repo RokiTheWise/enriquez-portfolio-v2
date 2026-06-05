@@ -153,9 +153,9 @@ export function BeyondTheCodeContent({
 
   return (
     <div className="relative w-full h-full bg-white overflow-hidden">
-      <div className="relative h-full max-w-5xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16 pt-44 pb-12 lg:py-0">
-        {/* Header */}
-        <div className="absolute top-24 left-6 md:left-12 right-6">
+      <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col pt-24 pb-12">
+        {/* Header — in flow at the top */}
+        <div className="flex-shrink-0">
           <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-tighter text-black uppercase">
             Beyond the Code
           </h2>
@@ -164,8 +164,10 @@ export function BeyondTheCodeContent({
           </div>
         </div>
 
+        {/* Activity row — centered in the space below the header */}
+        <div className="flex-1 min-h-0 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16">
         {/* Visual panel */}
-        <div className="order-1 lg:order-2 w-full lg:w-80 aspect-[3/2] lg:aspect-auto lg:h-72 flex-shrink-0 overflow-hidden">
+        <div className="order-1 lg:order-2 w-full lg:w-[460px] aspect-[3/2] lg:aspect-auto lg:h-[340px] flex-shrink-0 overflow-hidden">
           <ActivityCard
             index={active.card.index}
             highlight={active.card.highlight}
@@ -176,9 +178,9 @@ export function BeyondTheCodeContent({
         </div>
 
         {/* Text column — single active entry that cross-fades, on mobile + desktop */}
-        <div className="order-2 lg:order-1 w-full max-w-lg">
+        <div className="order-2 lg:order-1 w-full max-w-xl">
           {/* Active entry — keyed so consecutive activities cross-fade */}
-          <div className="relative min-h-[180px] lg:min-h-[220px]">
+          <div className="relative min-h-[180px] lg:min-h-[240px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeCard}
@@ -193,10 +195,10 @@ export function BeyondTheCodeContent({
                     {String(activeCard + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-mono text-lg md:text-2xl font-bold tracking-tighter text-black uppercase">
+                <h3 className="font-mono text-lg md:text-2xl lg:text-4xl font-bold tracking-tighter text-black uppercase">
                   {active.title}
                 </h3>
-                <p className="font-mono text-[11px] md:text-xs leading-[1.8] text-black/50 mt-3 max-w-sm">
+                <p className="font-mono text-[11px] md:text-xs lg:text-sm leading-[1.8] lg:leading-[2] text-black/50 mt-3 lg:mt-5 max-w-sm lg:max-w-md">
                   {active.description}
                 </p>
               </motion.div>
@@ -223,6 +225,7 @@ export function BeyondTheCodeContent({
               );
             })}
           </div>
+        </div>
         </div>
       </div>
     </div>
