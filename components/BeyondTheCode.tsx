@@ -38,16 +38,23 @@ function ActivityCard({
         <path d={`M0 ${arm} L${arm} ${arm} L${arm} 0`} fill="none" stroke={accentColor} strokeWidth="1" />
       </svg>
 
-      {/* Image */}
-      <div className="relative flex-1">
-        <img
-          src={image}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          style={objectPosition ? { objectPosition } : undefined}
-        />
+      {/* Image — cross-fades on swap, matching the text transition */}
+      <div className="relative flex-1 bg-black/[0.04]">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={image}
+            src={image}
+            alt=""
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={objectPosition ? { objectPosition } : undefined}
+          />
+        </AnimatePresence>
         {/* Bottom accent line */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: accentColor }} />
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] z-[1]" style={{ background: accentColor }} />
       </div>
 
       {/* Bottom: index + highlight */}
