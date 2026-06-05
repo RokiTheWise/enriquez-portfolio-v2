@@ -153,9 +153,9 @@ export function BeyondTheCodeContent({
 
   return (
     <div className="relative w-full h-full bg-white overflow-hidden">
-      <div className="relative h-full max-w-5xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16 pt-28 pb-12 lg:py-0">
+      <div className="relative h-full max-w-5xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16 pt-44 pb-12 lg:py-0">
         {/* Header */}
-        <div className="absolute top-10 left-6 md:left-12 right-6">
+        <div className="absolute top-24 left-6 md:left-12 right-6">
           <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-tighter text-black uppercase">
             Beyond the Code
           </h2>
