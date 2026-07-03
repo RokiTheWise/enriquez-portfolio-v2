@@ -19,6 +19,8 @@ import {
   siLucide,
   siArduino,
   siCplusplus,
+  siPandas,
+  siNumpy,
 } from "simple-icons";
 
 const TECH_ICONS: Record<string, { path: string; color: string }> = {
@@ -34,6 +36,8 @@ const TECH_ICONS: Record<string, { path: string; color: string }> = {
   "Lucide React":   { path: siLucide.path,       color: "#F56565" },
   "Arduino":        { path: siArduino.path,      color: "#00979D" },
   "C++":            { path: siCplusplus.path,    color: "#00599C" },
+  "pandas":         { path: siPandas.path,        color: "#150458" },
+  "NumPy":          { path: siNumpy.path,         color: "#013243" },
   "Java":           { path: "M4.645 7.472c2.1.53 4.779.8 8.008.8 3.299 0 5.918-.27 8.008-.8 2.23-.52 3.299-1.22 3.299-1.88 0-.47-.48-.93-1.35-1.28.2.13.35.35.35.59 0 .67-1.01 1.22-3.039 1.68-1.88.41-4.279.7-7.198.7-2.82 0-5.329-.29-7.138-.68-1.95-.48-2.97-1-2.97-1.68 0-.28.13-.52.52-.8-1.22.47-1.88.87-1.88 1.47.07.68 1.16 1.36 3.39 1.88zm4.689-2.16c2.27-.2 2.929-1.659 5.588-1.899 1.31-.1 2.14.16 2.23.62.08.43-.57.72-1.36.78-1.09.11-1.54-.28-1.63-.65-.81.09-.94.43-.9.67.09.46 1.07.92 2.75.76 1.9-.15 2.54-.9 2.38-1.65-.2-.98-1.66-1.8-4.28-1.55-3.359.3-3.339 1.86-5.628 2.05-.94.09-1.46-.13-1.55-.5-.06-.37.4-.55.94-.59.5-.05 1.11.04 1.4.2.21-.11.28-.22.26-.35-.1-.35-.79-.5-1.66-.44-1.7.15-1.7.91-1.64 1.25.17.87 1.48 1.45 3.1 1.3zm11.417 3.84c-2.1.49-4.779.809-8.008.809-3.3 0-5.989-.34-8.078-.8-1.88-.48-2.88-1.01-3.23-1.56.18 1.23.49 2.42.89 3.55-.48.3-.91.67-1.3 1.17a4.519 4.519 0 00-1.019 3.098 3.6 3.599 0 001.42 2.62c.87.68 1.81.88 2.879.68.41-.07.87-.28 1.29-.42-.88 0-1.62-.28-2.36-.87a3.55 3.549 0 01-1.49-2.42c-.2-.94 0-1.81.53-2.579.12-.15.25-.28.39-.4.3.73.62 1.45.98 2.12.81 1.23 1.62 2.299 2.43 3.459.35.68.58 1.35.74 2.019a3.899 3.899 0 002.229 1.5c1.15.4 2.35.58 3.579.51h.13a10.197 10.197 0 003.689-.52 4.179 4.179 0 002.16-1.49h.07c.13-.67.35-1.34.67-2.02.799-1.17 1.619-2.229 2.419-3.458A20.995 20.993 0 0024 7.612c-.43.6-1.44 1.13-3.25 1.54z", color: "#2F2625" },
 };
 
@@ -85,8 +89,25 @@ interface ArchiveEntry {
 const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
-    month: "May",
+    month: "Jul",
     index: "01",
+    project: "PBA Player Radar",
+    classification: "DATA VISUALIZATION",
+    description: "A data viz exercise built while learning pandas + matplotlib for a Data Viz class. It takes a small hand-assembled PBA Finals box score dataset, cleans it — dropping unused columns, removing header/separator rows that leaked into the data, fixing an inconsistent MINS time format, and averaging each player's stats across however many games they appeared in — then normalizes 8 key stats (PTS, OREB, DREB, AST, STL, BLK, FG%, 3P%) on a 0–1 scale relative to the best performer league-wide, not just the two players being compared. This keeps the chart honest: a mediocre finals player shows up as genuinely small even against another mediocre player, instead of being artificially inflated by a two-player comparison. Prompts you to pick two players from a numbered list and renders an overlapping radar chart comparing them.",
+    tech: [
+      { name: "Python", tag: "CORE" },
+      { name: "pandas", tag: "DATA" },
+      { name: "NumPy", tag: "COMPUTE" },
+      { name: "matplotlib", tag: "VISUALIZATION" },
+    ],
+    github: "https://github.com/RokiTheWise/PBA-Player-Radar-Statistic.git",
+    accentColor: "#EF4444",
+    image: "/SampleGraph.webp",
+  },
+  {
+    year: "2026",
+    month: "May",
+    index: "02",
     project: "Arduino Mastermind",
     classification: "EMBEDDED SYSTEMS",
     description: "A hardware Mastermind code-breaking game on Arduino Uno. The player has 5 attempts to crack a randomly generated 3-digit secret code (digits 1–6) using 4 push buttons — one to cycle digits, one to confirm. A 16×2 I2C LCD displays the current guess and Bulls & Cows feedback after each attempt. RGB LEDs and a buzzer provide distinct audio-visual feedback for input, win, and loss states with custom melodies. Implements a two-pass Bulls & Cows scoring algorithm, button debounce, and auto-reset on game end. Components: Arduino Uno, I2C LCD, push buttons, RGB LEDs, passive buzzer, and resistors.",
@@ -104,7 +125,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Mar",
-    index: "02",
+    index: "03",
     project: "Project DAGYAW",
     classification: "CIVIC TECH",
     description: "A community-driven urban sustainability platform submitted to BlueHacks 2026. Bridges the invisibility gap between citizens and LGUs by transforming subjective reports into objective data through a 70/30 consensus loop — an issue only reaches Resolved if 67% of community voters confirm the fix within 3 days. Features a Watch Mode dashboard with AI-powered issue prioritization (Claude API), real-time external data enrichment via IQAir (PM2.5/CO2) and Open-Meteo (rain/weather), and Supabase Realtime for live pin updates on a React Leaflet map.",
@@ -126,7 +147,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Mar",
-    index: "03",
+    index: "04",
     project: "Aklatang Galera",
     classification: "CIVIC TECH",
     description: "A localized civic portal unifying educational resources, livelihood programs, and government services for the people of Puerto Galera. Features a bilingual (Filipino/English) interface, Semantic Scholar-powered library search across 30+ curated databases, a livelihood hub connecting locals to TESDA, DOLE, and DTI resources, and a public services directory for scholarships, eLGU permits, and government transparency feeds — all optimized for mobile-first access.",
@@ -143,7 +164,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Mar",
-    index: "04",
+    index: "05",
     project: "LogiSketch",
     classification: "DIGITAL LOGIC CORE",
     description: "An interactive Boolean logic visualizer that parses equations in real-time and instantly generates truth tables and circuit diagrams. Supports standard AND/OR/NOT gates alongside NAND-only and NOR-only universal logic modes. Built with React Flow for a fully interactive canvas — zoom, pan, and drag nodes. Includes professional trunk-logic wiring, dynamic truth tables, and a one-click PNG report export. Designed for CS students, engineers, and hobbyists who want to go from equation to schematic without the manual work.",
@@ -160,7 +181,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jan",
-    index: "05",
+    index: "06",
     project: "Ace & Co. Accounting",
     classification: "PROFESSIONAL WORK",
     description: "Official corporate website for Ang Chua Enriquez & Company, a professional accounting and auditing firm in Manila. Built to establish digital presence and generate leads for tax, audit, and business registration services. Achieved a perfect 100 Lighthouse score with dynamic sitemap and robots.txt generation, semantic HTML structured for 'Accounting Firm Manila' search ranking, Open Graph metadata, and React Server Components via the Next.js App Router. Deployed on Vercel with an atomic CI/CD pipeline.",
@@ -176,7 +197,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jan",
-    index: "06",
+    index: "07",
     project: "Portfolio V1",
     classification: "PERSONAL IDENTITY",
     description: "My first deployed portfolio — built to break away from standard resume templates by framing skills and achievements through a technology-operator aesthetic. Features a bento grid project showcase, GSAP-powered pixel transitions for photo reveals, CSS glitch and scanline effects, and a dark 'Obsidian' theme built entirely with Tailwind. My second published web project and my first deep dive into the React ecosystem.",
@@ -193,7 +214,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jan",
-    index: "07",
+    index: "08",
     project: "Majority Voter Circuit",
     classification: "ELECTRONICS",
     description: "A combinational logic circuit that outputs High only when two or more of its three binary inputs are active — the core mechanism behind fault-tolerant redundant systems. Implemented using 74HC08 quad AND gates and 74HC32 quad OR gates, derived from the Boolean expression Y = AB + BC + AC. Designed, simulated, and validated in Tinkercad.",
@@ -209,7 +230,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2025",
     month: "Nov",
-    index: "08",
+    index: "09",
     project: "Seam Carver",
     classification: "ALGORITHMS",
     description: "Content-aware image resizing via seam carving — removes paths of least visual importance rather than cropping uniformly, preserving image content while shrinking width or height. Built with a pixel energy model using gradient magnitude, a dynamic-programming minimum-seam finder for both vertical and horizontal axes, and a PyQt6 desktop GUI that lets users open an image, preview the computed seam, remove one or many seams in sequence, and save the result. Seam computation runs on background threads to keep the UI responsive. Final project for CSCI 30.",
@@ -228,7 +249,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2025",
     month: "Oct",
-    index: "09",
+    index: "10",
     project: "Guitar Simulator",
     classification: "AUDIO / DSP",
     description: "A real-time keyboard-driven instrument simulator built in Python using the Karplus-Strong algorithm for physically modeled sound synthesis. A ring buffer is seeded with white noise on each keypress; each tick the front sample is averaged with the next, multiplied by a decay factor, and re-enqueued — producing natural string sustain and decay. Covers a 20-note guitar range with octave shifting and auto-strum, plus a full drum kit (kick, snare, toms, hi-hat, crash) with a percussive Karplus-Strong variant that randomly negates averaged samples for a noisier timbre. Audio streamed at 44,100 Hz via pygame.",
@@ -247,7 +268,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2025",
     month: "May",
-    index: "10",
+    index: "11",
     project: "The Hunt of the Skinwalker",
     classification: "GAME DEV",
     description: "A 2-player asymmetric horror game built with Java Swing. One player is a Hunter armed with a gun; the other is a SkinWalker that can disguise itself as any of 18 environment props. Players connect over a local network and compete across three timed phases — Hide (15s), Hunt (60s), and Revenge (30s) — where the Hunter wins by landing a shot and the SkinWalker wins by surviving into Revenge and landing a melee attack. Features an authoritative server architecture, custom sprite animations (6-frame Hunter, 8-frame SkinWalker), tilemap rendering, real-time position sync at 25 ms intervals, and original sound effects.",
@@ -266,7 +287,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2025",
     month: "Mar",
-    index: "11",
+    index: "12",
     project: "Atenean Stickmin",
     classification: "GAME DEV",
     description: "A Java Swing animation project built around a DrawingObject interface — every primitive shape and composite scene object implements draw(Graphics2D) and adjustX(double), letting the canvas hold a heterogeneous render list. Opens with an animated title screen (falling comets, Ateneo cheer audio), advances through a six-frame classroom intro on a 2.5s timer with the Wii Theme, then branches into two user-selectable interactive scenes: a coding scene and a ritual scene. All visuals are drawn programmatically — no image assets, just ~30 custom shape and composite classes.",
@@ -284,7 +305,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Dec",
-    index: "12",
+    index: "13",
     project: "The Realms of Yggdrasil",
     classification: "GAME DEV",
     description: "A two-player, turn-based card battle game written in Java. Players draw from a shared deck of typed cards (Dragon, Ghost, Fairy, Human) and race to claim 3 tokens by defeating the opponent's active card. Implements a two-pass Bulls & Cows-style damage system with four type matchups — resistances halve incoming damage, weaknesses double it — plus deck import from a custom .txt format. Ships with both a console entry point (GameConsole) and a Swing GUI (SimpleApp/SimpleGUI) with a turn counter, token display, and file-based deck import. Player hand management, draw/discard/swap mechanics, and win-check logic are split across Card, Player, and GameMaster classes.",
@@ -298,7 +319,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Sep",
-    index: "13",
+    index: "14",
     project: "Project Wurdle",
     classification: "CS_FUNDAMENTALS",
     description: "A terminal Wordle reconstruction built under strict constraints — no str.upper(), str.count(), str.find(), or str.join() allowed. Every text operation is implemented from scratch using iterative loops, parallel ASCII-style arrays, and manual frequency counters. Includes single-player (random word), pass-and-play PvP, configurable difficulty (custom guess limit), and an in-game alphabet tracker. A deliberate exercise in understanding data structures and control flow beneath Python's conveniences.",
@@ -314,7 +335,7 @@ const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2024",
     month: "Mar",
-    index: "14",
+    index: "15",
     project: "Hello, World.",
     classification: "ORIGIN",
     description: "Not a project — a beginning. During my 80-hour work immersion at the Business Permit and Licensing Office of Puerto Galera's Municipal Government, the workload ran dry after day one. Instead of staring at a phone, I opened a laptop and started an online Python course. By the end of that week I had written a category sorter, a kg-to-lbs converter, a 67-line multi-operation calculator I packaged into a desktop app, a unit length converter (387 lines), a rock-paper-scissors game, and a YouTube downloader with no ads. None of it was assigned. All of it was a choice. That week in March 2024 is where the habit started.",
