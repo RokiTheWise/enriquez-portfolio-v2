@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { DUR, EASE } from "@/lib/motion";
 
 /* ═══════════════════════════════════════════
    Visual Card — right-side sticky panel
@@ -48,7 +49,7 @@ function ActivityCard({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: DUR.fast, ease: EASE }}
             className="absolute inset-0 w-full h-full object-cover"
             style={objectPosition ? { objectPosition } : undefined}
           />
@@ -194,7 +195,7 @@ export function BeyondTheCodeContent({
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 6 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: DUR.fast, ease: EASE }}
               >
                 <div className="flex items-center gap-2 mb-[1.5vh] lg:mb-4">
                   <div className="w-1.5 h-1.5" style={{ background: active.card.accentColor }} />
@@ -230,7 +231,7 @@ export function BeyondTheCodeContent({
                     backgroundColor: reached ? item.card.accentColor : "rgba(0,0,0,0.1)",
                     opacity: reached ? (isActive ? 1 : 0.55) : 1,
                   }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: DUR.fast, ease: EASE }}
                 />
               );
             })}

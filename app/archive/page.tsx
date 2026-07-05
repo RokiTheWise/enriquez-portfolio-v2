@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import ContactParticles from "@/components/contact/ContactParticles";
 import { usePageTransition } from "@/components/PageTransition";
+import { EASE } from "@/lib/motion";
 import {
   siNextdotjs,
   siTypescript,
@@ -355,7 +356,7 @@ function YearGroupHeader({ year, count, groupIdx }: { year: string; count: numbe
     <motion.div
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: groupIdx * 0.1 }}
+      transition={{ duration: 0.4, delay: groupIdx * 0.1, ease: EASE }}
       className="flex items-baseline gap-4 pt-12 pb-4 first:pt-0"
     >
       <h2
@@ -422,7 +423,7 @@ function ArchiveCard({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: idx * 0.06 }}
+      transition={{ duration: 0.4, delay: idx * 0.06, ease: EASE }}
       className="h-64"
     >
       <div
@@ -568,7 +569,7 @@ function ArchiveModal({
         initial={{ opacity: 0, y: 32, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 32, scale: 0.97 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
+        transition={{ duration: 0.25, ease: EASE }}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full bg-white rounded-[18px] overflow-hidden flex flex-col"
         style={{
@@ -740,7 +741,7 @@ export default function ArchivePage() {
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, ease: EASE }}
           className="mb-12"
         >
           <div className="flex items-center gap-3 mb-3">
@@ -783,7 +784,7 @@ export default function ArchivePage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ delay: 0.6, duration: 0.5, ease: EASE }}
           className="mt-16 relative"
         >
           <div className="w-full h-[1px] bg-black/[0.06] mb-8" />

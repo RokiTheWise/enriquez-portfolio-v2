@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import LogoLoop from "./LogoLoop";
+import { DUR, EASE } from "@/lib/motion";
 
 /* ── Data ── */
 
@@ -122,9 +123,9 @@ function TechModule({ item, index }: { item: TechItem; index: number }) {
       initial={{ opacity: 0, y: 10 }}
       animate={isInView ? { opacity: 1, y: 0 } : undefined}
       transition={{
-        duration: 0.5,
+        duration: DUR.base,
         delay: index * 0.03,
-        ease: [0.16, 1, 0.3, 1],
+        ease: EASE,
       }}
       className="group flex items-center gap-3 py-3 px-2 cursor-default"
     >
@@ -174,7 +175,7 @@ export default function Techstack() {
           ref={headingRef}
           initial={{ opacity: 0, y: 20 }}
           animate={headingInView ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: DUR.base, ease: EASE }}
           className="mb-10 md:mb-16 text-center px-6 md:px-12"
         >
           <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">

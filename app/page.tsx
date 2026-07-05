@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import ReactLenis, { useLenis } from "lenis/react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ANCHOR_SCROLL, LENIS_OPTIONS } from "@/lib/motion";
 import HeroTransition from "@/components/HeroTransition";
 import About from "@/components/About";
 import Techstack from "@/components/Techstack";
@@ -33,13 +34,13 @@ const SOCIAL_ITEMS = [
 
 function ScrollProgressBar() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  // Lenis already smooths scroll — track it 1:1, no extra spring layer.
   const opacity = useTransform(scrollYProgress, [0.08, 0.14], [0, 1]);
 
   return (
     <motion.div
       className="fixed top-0 left-0 right-0 h-[1px] bg-[#FFB800] origin-left z-[60]"
-      style={{ scaleX, opacity }}
+      style={{ scaleX: scrollYProgress, opacity }}
     />
   );
 }
@@ -105,16 +106,12 @@ function useLenisAnchorScroll() {
       if (!hash) return;
       e.preventDefault();
       if (hash === "#") {
-        lenis?.scrollTo(0, {
-          duration: 1.4,
-          easing: (t: number) => 1 - Math.pow(1 - t, 4),
-        });
+        lenis?.scrollTo(0, ANCHOR_SCROLL);
       } else {
         const target = document.querySelector(hash);
         if (target)
           lenis?.scrollTo(target as HTMLElement, {
-            duration: 1.4,
-            easing: (t: number) => 1 - Math.pow(1 - t, 4),
+            ...ANCHOR_SCROLL,
             offset: 0,
           });
       }
@@ -187,7 +184,7 @@ export default function Home() {
   }, []);
 
   return (
-    <ReactLenis root>
+    <ReactLenis root options={LENIS_OPTIONS}>
       <PageContent loaderDone={loaderDone} setLoaderDone={setLoaderDone} />
     </ReactLenis>
   );

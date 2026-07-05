@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ParticleCard, GlobalSpotlight } from "./MagicBento";
+import { DUR, EASE_GSAP } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,8 +28,8 @@ function QPIRing() {
         { strokeDashoffset: C },
         {
           strokeDashoffset: C * (1 - pct),
-          duration: 1.8,
-          ease: "power3.out",
+          duration: DUR.slow,
+          ease: EASE_GSAP,
           scrollTrigger: {
             trigger: el,
             start: "top 85%",
@@ -116,15 +117,16 @@ export default function About() {
 
       /* ═══════════════════════════════════════════════════════════
          Phase 1 — ENTRANCE  (no pin)
-         Cards snap into grid positions from the sides with a
-         spring-like back.out ease for a mechanical "snap" feel.
+         Cards snap into grid positions from the sides.
+         scrub: true — Lenis is the only smoothing layer, so the
+         timeline tracks scroll 1:1 (no extra catch-up lag).
          ═══════════════════════════════════════════════════════════ */
       const entranceTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top bottom",
           end: "top top",
-          scrub: 0.5,
+          scrub: true,
         },
       });
 
@@ -140,7 +142,7 @@ export default function About() {
       entranceTl.fromTo(
         bioRef.current,
         { opacity: 0, scale: 0.88 },
-        { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2)" },
+        { opacity: 1, scale: 1, duration: 0.6, ease: EASE_GSAP },
         0.1,
       );
 
@@ -148,13 +150,13 @@ export default function About() {
       entranceTl.fromTo(
         metricsRef.current,
         { x: -vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.55, ease: "back.out(2.5)" },
+        { x: 0, opacity: 1, duration: 0.55, ease: EASE_GSAP },
         0.15,
       );
       entranceTl.fromTo(
         interestsRef.current,
         { x: -vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, ease: "back.out(2.5)" },
+        { x: 0, opacity: 1, duration: 0.6, ease: EASE_GSAP },
         0.22,
       );
 
@@ -162,13 +164,13 @@ export default function About() {
       entranceTl.fromTo(
         academicRef.current,
         { x: vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.55, ease: "back.out(2.5)" },
+        { x: 0, opacity: 1, duration: 0.55, ease: EASE_GSAP },
         0.18,
       );
       entranceTl.fromTo(
         achievementRef.current,
         { x: vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, ease: "back.out(2.5)" },
+        { x: 0, opacity: 1, duration: 0.6, ease: EASE_GSAP },
         0.25,
       );
 
@@ -184,7 +186,7 @@ export default function About() {
           start: "top top",
           end: "+=150%",
           pin: true,
-          scrub: 0.6,
+          scrub: true,
           anticipatePin: 1,
         },
       });
