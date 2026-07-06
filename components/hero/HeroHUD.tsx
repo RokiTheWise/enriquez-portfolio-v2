@@ -362,10 +362,8 @@ const HUDButton = ({
 
 export default function HeroHUD({
   scrollYProgress,
-  onAdjectiveCycle,
 }: {
   scrollYProgress: MotionValue<number>;
-  onAdjectiveCycle?: (sentence: string, index: number) => void;
 }) {
   const [time, setTime] = useState("");
 
@@ -378,17 +376,6 @@ export default function HeroHUD({
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  // Latest-value ref so the callback we hand to TextType stays referentially
-  // stable across renders — otherwise TextType's effect re-runs every render
-  // and breaks the typing animation.
-  const onAdjectiveCycleRef = useRef(onAdjectiveCycle);
-  useEffect(() => {
-    onAdjectiveCycleRef.current = onAdjectiveCycle;
-  }, [onAdjectiveCycle]);
-  const stableOnTypingComplete = useRef((sentence: string, index: number) => {
-    onAdjectiveCycleRef.current?.(sentence, index);
-  }).current;
 
   // ── Scroll-driven exit: fade + slide + visibility + pointer-events ──
   const hudOpacity = useTransform(scrollYProgress, [0.02, 0.2], [1, 0]);
@@ -448,7 +435,6 @@ export default function HeroHUD({
               showCursor
               cursorCharacter="▎"
               cursorBlinkDuration={0.5}
-              onTypingComplete={stableOnTypingComplete}
               className="font-mono text-[9px] md:text-xs tracking-[0.25em] md:tracking-[0.4em] text-[#FFB800] font-bold mt-0.5"
             />
           </div>

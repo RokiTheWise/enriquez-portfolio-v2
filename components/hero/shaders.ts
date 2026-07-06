@@ -14,17 +14,14 @@ void main() {
 `;
 
 /* ── Composite fragment shader ──
-   Crossfades between two portrait textures (current ↔ next).
-   Both portraits share the same alpha cutout, so we blend RGB
-   and use the destination alpha for the cutout — avoids ghosting.
+   Renders the single portrait texture with soft edge fades and a
+   scroll-driven dissolve.
 ── */
 export const compositeFragment = /* glsl */ `
 precision highp float;
 
-uniform sampler2D uCurrentTex;
-uniform sampler2D uNextTex;
+uniform sampler2D uTex;
 uniform vec4 uImageBounds;
-uniform float uFade;          // 0 = full current, 1 = full next
 uniform float uPortraitFade;  // scroll-driven dissolve
 
 varying vec2 vUv;
@@ -38,15 +35,12 @@ void main() {
   float fadeY = smoothstep(0.0, 0.02, 1.0 - imgUv.y) * smoothstep(0.0, 0.15, imgUv.y);
   float inBounds = fadeX * fadeY;
 
-  vec2 safeUv = clamp(imgUv, 0.0, 1.0);
-  vec4 cur = texture2D(uCurrentTex, safeUv);
-  vec4 nxt = texture2D(uNextTex, safeUv);
+  vec4 tex = texture2D(uTex, clamp(imgUv, 0.0, 1.0));
 
-  vec3 rgb = mix(cur.rgb, nxt.rgb, uFade);
-  float a  = mix(cur.a,   nxt.a,   uFade) * inBounds * (1.0 - uPortraitFade);
+  float a = tex.a * inBounds * (1.0 - uPortraitFade);
 
   if (a < 0.01) discard;
-  gl_FragColor = vec4(rgb, a);
+  gl_FragColor = vec4(tex.rgb, a);
 }
 `;
 

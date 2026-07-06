@@ -11,16 +11,16 @@ import type { HeroRefs } from "./hero/types";
 import { CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
 
 // Single fixed portrait — the adjective-synced photo shuffle proved
-// distracting. CompositeQuad's cycle logic no-ops with one texture.
-const PORTRAIT_SRCS = ["/DJ1.webp"];
+// distracting and was removed.
+const PORTRAIT_SRC = "/DJ1.webp";
 
 function HeroScene({ heroRefs }: { heroRefs: HeroRefs }) {
-  const textures = useTexture(PORTRAIT_SRCS);
+  const texture = useTexture(PORTRAIT_SRC);
 
   return (
     <>
       <Particles heroRefs={heroRefs} />
-      <CompositeQuad textures={textures} heroRefs={heroRefs} />
+      <CompositeQuad texture={texture} heroRefs={heroRefs} />
     </>
   );
 }
@@ -37,14 +37,9 @@ export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) 
     () => ({
       mouseRef: { current: { x: 0, y: 0, active: false } },
       scrollProgressRef,
-      cycleSignalRef: { current: 0 },
     }),
     [scrollProgressRef],
   );
-
-  const handleAdjectiveCycle = useCallback(() => {
-    heroRefs.cycleSignalRef.current += 1;
-  }, [heroRefs]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
@@ -84,10 +79,7 @@ export default function Hero({ scrollProgressRef, scrollYProgress }: HeroProps) 
           <HeroScene heroRefs={heroRefs} />
         </Suspense>
       </Canvas>
-      <HeroHUD
-        scrollYProgress={scrollYProgress}
-        onAdjectiveCycle={handleAdjectiveCycle}
-      />
+      <HeroHUD scrollYProgress={scrollYProgress} />
     </section>
   );
 }
