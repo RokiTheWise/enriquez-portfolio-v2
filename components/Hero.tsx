@@ -10,12 +10,9 @@ import HeroHUD from "./hero/HeroHUD";
 import type { HeroRefs } from "./hero/types";
 import { CAMERA_FOV, CAMERA_DISTANCE } from "./hero/types";
 
-const PORTRAIT_SRCS = [
-  "/DJ1.webp",
-  "/DJ2.webp",
-  "/DJ4.webp",
-  "/DJ5.webp",
-];
+// Single fixed portrait — the adjective-synced photo shuffle proved
+// distracting. CompositeQuad's cycle logic no-ops with one texture.
+const PORTRAIT_SRCS = ["/DJ1.webp"];
 
 function HeroScene({ heroRefs }: { heroRefs: HeroRefs }) {
   const textures = useTexture(PORTRAIT_SRCS);
