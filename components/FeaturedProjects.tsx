@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePageTransition } from "@/components/PageTransition";
+import { ARCHIVE } from "@/components/archive/data";
 
 /*
  * Horizontal scroll approach: CSS sticky + Framer Motion.
@@ -371,7 +372,7 @@ export default function FeaturedProjects() {
                 </button>
 
                 <span className="font-mono text-[8px] tracking-[0.25em] text-black/30 uppercase mt-4">
-                  {PROJECTS.length} featured • 15 total entries
+                  {PROJECTS.length} featured • {ARCHIVE.length} total entries
                 </span>
               </div>
             </div>
