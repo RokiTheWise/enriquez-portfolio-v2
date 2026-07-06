@@ -371,7 +371,7 @@ export default function FeaturedProjects() {
                 </button>
 
                 <span className="font-mono text-[8px] tracking-[0.25em] text-black/30 uppercase mt-4">
-                  {PROJECTS.length} featured • 9 total entries
+                  {PROJECTS.length} featured • 15 total entries
                 </span>
               </div>
             </div>
