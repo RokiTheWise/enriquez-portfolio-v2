@@ -3,7 +3,11 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ParticleCard, GlobalSpotlight, useCardEffectsDisabled } from "./MagicBento";
+import {
+  ParticleCard,
+  GlobalSpotlight,
+  useCardEffectsDisabled,
+} from "./MagicBento";
 import { DUR, EASE_GSAP } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -80,7 +84,7 @@ function QPIRing() {
         className="font-mono text-[34px] font-bold tracking-tighter"
         fill="black"
       >
-        3.75
+        3.76
       </text>
     </svg>
   );
@@ -111,7 +115,9 @@ export default function About() {
       // Reduced motion: cards still resolve into place, but they fade rather
       // than fly in from off-screen. The pin/hold structure is preserved so the
       // scroll narrative still reads.
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
       const vw = reduced ? 0 : window.innerWidth;
 
       const allCards = [
