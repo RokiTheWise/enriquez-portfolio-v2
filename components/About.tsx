@@ -130,7 +130,11 @@ export default function About() {
 
       /* ═══════════════════════════════════════════════════════════
          Phase 1 — ENTRANCE  (no pin)
-         Cards snap into grid positions from the sides.
+         Heading and bio arrive as the section scrolls up, so the
+         section is already legible the moment it pins. The four
+         surrounding cards deliberately do NOT arrive here — they are
+         revealed during the pin (Phase 2) so that the pinned scroll
+         maps to visible progress instead of a dead hold.
          scrub: true — Lenis is the only smoothing layer, so the
          timeline tracks scroll 1:1 (no extra catch-up lag).
          ═══════════════════════════════════════════════════════════ */
@@ -159,66 +163,80 @@ export default function About() {
         0.1,
       );
 
-      // Left cards — spring-snap from left
-      entranceTl.fromTo(
-        metricsRef.current,
-        { x: -vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.55, ease: EASE_GSAP },
-        0.15,
-      );
-      entranceTl.fromTo(
-        interestsRef.current,
-        { x: -vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, ease: EASE_GSAP },
-        0.22,
-      );
-
-      // Right cards — spring-snap from right
-      entranceTl.fromTo(
-        academicRef.current,
-        { x: vw * 0.6, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.55, ease: EASE_GSAP },
-        0.18,
-      );
-      entranceTl.fromTo(
-        achievementRef.current,
-        { x: vw * 0.8, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, ease: EASE_GSAP },
-        0.25,
-      );
-
       /* ═══════════════════════════════════════════════════════════
-         Phase 2 — PIN + HOLD + EXIT
-         Once the section reaches the top it pins. The first ~70 %
-         of pin-scroll is a hold (no tweens → cards stay assembled).
-         The last 30 % is the exit animation.
+         Phase 2 — PIN + REVEAL + EXIT
+         The pin previously spent ~70 % of its budget on a hold with
+         no tweens, so roughly a viewport and a half of scrolling
+         produced no visual change and read as a frozen page.
+
+         That budget now carries the four surrounding cards in, one
+         pair at a time, so every scroll increment maps to something
+         moving. Budget trimmed 150% → 120% to match the real content.
+
+           0.00 → 0.20   metrics  (top-left)
+           0.18 → 0.40   academic (top-right)
+           0.38 → 0.60   interests(bottom-left)
+           0.58 → 0.80   achievement (bottom-right)
+           0.80 → 0.88   read beat (assembled grid)
+           0.88 → 1.00   exit
+
+         Budget is 100vh of pinned scroll (was 150%). The reveal now fills
+         the scroll that used to be a dead hold, so a longer runway would
+         just re-introduce empty scrolling after the exit completes.
          ═══════════════════════════════════════════════════════════ */
       const pinTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=150%",
+          end: () => `+=${window.innerHeight}`,
           pin: true,
           scrub: true,
           anticipatePin: 1,
         },
       });
 
-      // 0 → 0.70  — hold (no tweens, grid is locked)
+      /* Cards arrive from their own side of the grid, so the motion
+         explains where each one belongs. Reduced motion keeps the
+         same sequence but fades in place. */
+      const reveal = (
+        el: HTMLDivElement | null,
+        fromX: number,
+        at: number,
+      ) => {
+        if (!el) return;
+        pinTl.fromTo(
+          el,
+          { x: reduced ? 0 : fromX, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.22,
+            ease: EASE_GSAP,
+          },
+          at,
+        );
+      };
 
-      // 0.70 → 1.0 — exit
+      reveal(metricsRef.current, -vw * 0.35, 0.0);
+      reveal(academicRef.current, vw * 0.35, 0.18);
+      reveal(interestsRef.current, -vw * 0.35, 0.38);
+      reveal(achievementRef.current, vw * 0.35, 0.58);
+
+      // 0.88 → 1.0 — exit (short beat at 0.80–0.88 to read the full grid)
       pinTl.to(
         headingRef.current,
-        { opacity: 0, y: reduced ? 0 : -20, duration: 0.12 },
-        0.7,
+        { opacity: 0, y: reduced ? 0 : -20, duration: 0.08 },
+        0.88,
       );
       pinTl.to(
         allCards,
-        { opacity: 0, y: reduced ? 0 : -30, duration: 0.2, stagger: 0.02 },
-        0.72,
+        { opacity: 0, y: reduced ? 0 : -30, duration: 0.1, stagger: 0.015 },
+        0.9,
       );
 
-      // Force timeline length to 1.0 so hold/exit proportions are exact
+      /* The label fixes the timeline's total length at 1.0 so the ratios above
+         map onto the whole pinned runway. Without it GSAP ends the timeline at
+         the last tween (~0.98) and the remaining scroll is dead. */
       pinTl.addLabel("end", 1.0);
     }, section);
 

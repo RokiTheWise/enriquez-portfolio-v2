@@ -21,6 +21,10 @@ import { ARCHIVE } from "@/components/archive/data";
 
 const SLIDE_COUNT = 4; // 3 projects + 1 "View All" CTA panel
 
+/* Vertical scroll runway per slide, in vh. Below 100 the horizontal travel
+   still covers every slide, it just costs less scrolling to get through. */
+const SLIDE_VH = 70;
+
 /* ═══════════════════════════════════════════
    Project Data
    ═══════════════════════════════════════════ */
@@ -285,10 +289,13 @@ export default function FeaturedProjects() {
     <section id="projects">
       {/*
         Tall wrapper — provides the vertical scroll runway.
-        height = SLIDE_COUNT * 100vh so each "page" of scroll
-        reveals the next horizontal slide.
-      */}
-      {/*
+
+        Runway is deliberately shorter than SLIDE_COUNT * 100vh. Tying it 1:1
+        to the slide count meant a full screen-height of scrolling per slide,
+        which made the section feel far longer than its content justified (the
+        4th panel is a single CTA button). SLIDE_VH = 70 keeps the same
+        horizontal travel over ~30% less vertical scrolling.
+
         Reduced motion: no sideways travel driven by vertical scroll. The
         wrapper collapses to auto height and the slides stack in normal flow,
         so the same content is reachable by plain scrolling.
@@ -296,7 +303,11 @@ export default function FeaturedProjects() {
       <div
         ref={wrapperRef}
         className="relative bg-white"
-        style={reducedMotion ? undefined : { height: `${SLIDE_COUNT * 100}vh` }}
+        style={
+          reducedMotion
+            ? undefined
+            : { height: `${SLIDE_COUNT * SLIDE_VH}vh` }
+        }
       >
         {/* Sticky container — locks to viewport while wrapper scrolls */}
         <div
