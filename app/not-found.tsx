@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { EASE, DUR } from "@/lib/motion";
+import { usePageTransition } from "@/components/PageTransition";
 import ViewportBrackets from "@/components/archive/ViewportBrackets";
 import DecryptedText from "@/components/hero/DecryptedText";
 
@@ -44,9 +45,21 @@ const getPath = () => window.location.pathname;
 const getStamp = () => RENDER_STAMP;
 const getFallback = () => "—";
 
+/**
+ * True for an ordinary left-click with no modifier keys. Cmd/Ctrl/Shift/Alt
+ * clicks and middle-clicks must fall through to the browser so "open in new
+ * tab" keeps working — intercepting those would break a standard affordance.
+ */
+function isPlainClick(e: React.MouseEvent) {
+  return (
+    e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey
+  );
+}
+
 export default function NotFound() {
   const path = useSyncExternalStore(noopSubscribe, getPath, getFallback);
   const stamp = useSyncExternalStore(noopSubscribe, getStamp, getFallback);
+  const { navigate } = usePageTransition();
 
   return (
     <main className="relative min-h-[100dvh] bg-white overflow-hidden flex items-center justify-center px-6 py-20">
@@ -110,8 +123,17 @@ export default function NotFound() {
 
         {/* Actions */}
         <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Real hrefs (so middle-click, open-in-new-tab and crawlers still
+              work) but routed through navigate() on plain clicks, so leaving
+              the 404 uses the same amber curtain as every other navigation. */}
           <Link
             href="/"
+            onClick={(e) => {
+              if (isPlainClick(e)) {
+                e.preventDefault();
+                navigate("/");
+              }
+            }}
             className="group inline-flex items-center justify-center gap-3 font-mono text-[11px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black bg-black text-white px-7 py-3.5 no-underline transition-[background-color,color,transform] duration-200 hover:bg-transparent hover:text-black active:scale-[0.97] active:duration-[120ms]"
           >
             <span>Return Home</span>
@@ -122,6 +144,12 @@ export default function NotFound() {
 
           <Link
             href="/archive"
+            onClick={(e) => {
+              if (isPlainClick(e)) {
+                e.preventDefault();
+                navigate("/archive");
+              }
+            }}
             className="group inline-flex items-center justify-center gap-3 font-mono text-[11px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black/20 text-black px-7 py-3.5 no-underline transition-[border-color,background-color,transform] duration-200 hover:border-black hover:bg-black/[0.03] active:scale-[0.97] active:duration-[120ms]"
           >
             <span>Browse Archive</span>
