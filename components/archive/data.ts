@@ -33,6 +33,7 @@ export const ARCHIVE: ArchiveEntry[] = [
       { name: "pandas", tag: "DATA" },
       { name: "Statistics", tag: "METHOD" },
     ],
+    github: "https://github.com/RokiTheWise/pokemon-card-market-analysis",
     accentColor: "#3B82F6",
     image: "/pokemon-dashboard.webp",
     collaborators: [
