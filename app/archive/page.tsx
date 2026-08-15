@@ -30,7 +30,7 @@ function YearGroupHeader({ year, count, groupIdx }: { year: string; count: numbe
         {year}
       </h2>
       <div className="flex-1 h-[1px] bg-black/[0.06]" />
-      <span className="font-mono text-[8px] tracking-[0.3em] text-black/20 uppercase flex-shrink-0">
+      <span className="font-mono text-[8px] tracking-[0.3em] text-black/55 uppercase flex-shrink-0">
         {count} {count === 1 ? "Entry" : "Entries"}
       </span>
     </motion.div>
@@ -129,7 +129,7 @@ export default function ArchivePage() {
             Project <span style={{ color: "#FFB800" }}>Archive</span>
           </h1>
 
-          <p className="mt-4 font-mono text-[11px] md:text-xs leading-[1.8] text-black/40 max-w-lg">
+          <p className="mt-4 font-mono text-[11px] md:text-xs leading-[1.8] text-black/62 max-w-lg">
             A complete log of deployed systems, experiments, and academic
             coursework.
           </p>
@@ -138,16 +138,16 @@ export default function ArchivePage() {
           <div className="mt-6 flex flex-wrap items-center gap-4 md:gap-6">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-[#FFB800]" />
-              <span className="font-mono text-[10px] tracking-wider text-black/40 uppercase">
+              <span className="font-mono text-[10px] tracking-wider text-black/62 uppercase">
                 {stats.entries} Entries
               </span>
             </div>
             <span className="w-[1px] h-3 bg-black/[0.08]" />
-            <span className="font-mono text-[10px] tracking-wider text-black/30 uppercase">
+            <span className="font-mono text-[10px] tracking-wider text-black/58 uppercase">
               {stats.years} Active Years
             </span>
             <span className="w-[1px] h-3 bg-black/[0.08]" />
-            <span className="font-mono text-[10px] tracking-wider text-black/30 uppercase">
+            <span className="font-mono text-[10px] tracking-wider text-black/58 uppercase">
               {stats.technologies} Technologies
             </span>
           </div>
@@ -160,10 +160,10 @@ export default function ArchivePage() {
           transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
           className={`${LEDGER_GRID} pb-2 pl-4 md:pl-5 pr-2 md:pr-3 border-b border-black/[0.1]`}
         >
-          <span className="font-mono text-[8px] tracking-[0.3em] text-black/25 uppercase">No.</span>
-          <span className="font-mono text-[8px] tracking-[0.3em] text-black/25 uppercase">Project</span>
-          <span className="hidden md:block font-mono text-[8px] tracking-[0.3em] text-black/25 uppercase">Classification</span>
-          <span className="font-mono text-[8px] tracking-[0.3em] text-black/25 uppercase text-right md:text-left">Date</span>
+          <span className="font-mono text-[8px] tracking-[0.3em] text-black/55 uppercase">No.</span>
+          <span className="font-mono text-[8px] tracking-[0.3em] text-black/55 uppercase">Project</span>
+          <span className="hidden md:block font-mono text-[8px] tracking-[0.3em] text-black/55 uppercase">Classification</span>
+          <span className="font-mono text-[8px] tracking-[0.3em] text-black/55 uppercase text-right md:text-left">Date</span>
           <span className="hidden md:block" />
         </motion.div>
 
@@ -203,7 +203,7 @@ export default function ArchivePage() {
         >
           <div className="relative inline-block px-10 py-5">
             <ViewportBrackets color="rgba(0,0,0,0.08)" />
-            <span className="font-mono text-[8px] tracking-[0.35em] text-black/25 uppercase flex items-center gap-3">
+            <span className="font-mono text-[8px] tracking-[0.35em] text-black/55 uppercase flex items-center gap-3">
               <span className="w-1 h-1 bg-[#FFB800] inline-block" />
               End of Log · Archive v2
             </span>

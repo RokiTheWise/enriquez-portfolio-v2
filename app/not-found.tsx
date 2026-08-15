@@ -175,7 +175,7 @@ function Row({
 }) {
   return (
     <div className="flex items-baseline gap-4 py-2.5 border-b border-black/[0.08]">
-      <span className="font-mono text-[9px] tracking-[0.25em] text-black/45 uppercase w-24 flex-shrink-0">
+      <span className="font-mono text-[9px] tracking-[0.25em] text-black/62 uppercase w-24 flex-shrink-0">
         {label}
       </span>
       <span

@@ -340,7 +340,7 @@ export default function About() {
           <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
             About
           </h2>
-          <div className="mt-1 md:mt-2 font-mono text-[9px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
+          <div className="mt-1 md:mt-2 font-mono text-[9px] md:text-xs tracking-[0.3em] text-black/55 uppercase">
             Profile Overview
           </div>
         </div>
@@ -360,13 +360,13 @@ export default function About() {
               {...particleProps}
             >
               <div className="group-hover:-translate-y-1 transition-transform duration-300">
-                <p className="font-mono text-xs md:text-base leading-relaxed text-black/50">
+                <p className="font-mono text-xs md:text-base leading-relaxed text-black/65">
                   I came to Computer Science because I wanted to build things
                   that matter. That became a consistent thread of building
                   software for communities, tools that reduce friction, products
                   that reach people rather than just users.
                 </p>
-                <p className="font-mono text-xs md:text-base leading-relaxed text-black/50 mt-2 md:mt-4">
+                <p className="font-mono text-xs md:text-base leading-relaxed text-black/65 mt-2 md:mt-4">
                   Outside of building, I lead, organize, and keep learning.
                   Currently picking up machine learning. Always looking for the
                   next problem worth solving.
@@ -388,7 +388,7 @@ export default function About() {
                 <div className="relative w-20 h-20 md:w-32 md:h-32 mx-auto">
                   <QPIRing />
                 </div>
-                <span className="block font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-black/30 uppercase mt-2 md:mt-3">
+                <span className="block font-mono text-[8px] md:text-[10px] tracking-[0.25em] text-black/58 uppercase mt-2 md:mt-3">
                   Cumulative QPI
                 </span>
               </div>
@@ -431,7 +431,7 @@ export default function About() {
                 <p className="font-mono text-[10px] md:text-sm font-bold text-black/80 mt-1.5 md:mt-2">
                   BS Computer Science
                 </p>
-                <p className="font-mono text-[9px] md:text-xs text-black/25 mt-0.5">
+                <p className="font-mono text-[9px] md:text-xs text-black/55 mt-0.5">
                   Ateneo de Manila University
                 </p>
                 <div className="flex gap-3 md:gap-4 mt-2 md:mt-3">
@@ -439,7 +439,7 @@ export default function About() {
                     <span className="font-mono text-[7px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                       Year Level
                     </span>
-                    <p className="font-mono text-[9px] md:text-xs text-black/50 mt-0.5">
+                    <p className="font-mono text-[9px] md:text-xs text-black/65 mt-0.5">
                       3rd Year
                     </p>
                   </div>
@@ -447,7 +447,7 @@ export default function About() {
                     <span className="font-mono text-[7px] md:text-[9px] tracking-[0.25em] text-[#FFB800] uppercase font-semibold">
                       Status
                     </span>
-                    <p className="font-mono text-[9px] md:text-xs text-black/50 mt-0.5">
+                    <p className="font-mono text-[9px] md:text-xs text-black/65 mt-0.5">
                       Enrolled
                     </p>
                   </div>
@@ -472,7 +472,7 @@ export default function About() {
                 <p className="font-mono text-[10px] md:text-sm font-bold text-black/80 mt-1.5 md:mt-2">
                   Jose P. Rizal & EO-Ayala Scholar
                 </p>
-                <p className="font-mono text-[9px] md:text-xs text-black/25 mt-0.5">
+                <p className="font-mono text-[9px] md:text-xs text-black/55 mt-0.5">
                   Full University & Corporate Merit
                 </p>
               </div>

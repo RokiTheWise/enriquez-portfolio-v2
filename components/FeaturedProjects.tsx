@@ -177,7 +177,7 @@ function ProjectSlide({
           {/* Classification */}
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5" style={{ background: project.accentColor }} />
-            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/50 uppercase">
+            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/65 uppercase">
               {project.classification}
             </span>
           </div>
@@ -205,7 +205,7 @@ function ProjectSlide({
 
           {/* Tech Stack */}
           <div className="flex flex-col gap-2 mt-0 md:mt-1">
-            <span className="font-mono text-[8px] tracking-[0.3em] text-black/40 uppercase">
+            <span className="font-mono text-[8px] tracking-[0.3em] text-black/62 uppercase">
               Tech Stack
             </span>
             <div className="flex flex-wrap gap-0">
@@ -219,7 +219,7 @@ function ProjectSlide({
                   <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-black/80 uppercase group-hover:text-[#FFB800] transition-colors duration-300">
                     {r.name}
                   </span>
-                  <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-black/35 uppercase">
+                  <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-black/60 uppercase">
                     {r.tag}
                   </span>
                 </div>
@@ -326,7 +326,7 @@ export default function FeaturedProjects() {
             <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
               Featured Projects
             </h2>
-            <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/35 uppercase">
+            <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/60 uppercase">
               Deployment Archive • Selected Work
             </div>
 
@@ -363,7 +363,7 @@ export default function FeaturedProjects() {
               reducedMotion ? "hidden" : ""
             }`}
           >
-            <span className="font-mono text-[8px] tracking-[0.25em] text-black/25 uppercase flex items-center gap-2">
+            <span className="font-mono text-[8px] tracking-[0.25em] text-black/55 uppercase flex items-center gap-2">
               Scroll &rarr;
             </span>
 
@@ -434,7 +434,7 @@ export default function FeaturedProjects() {
                   </span>
                 </button>
 
-                <span className="font-mono text-[8px] tracking-[0.25em] text-black/30 uppercase mt-4">
+                <span className="font-mono text-[8px] tracking-[0.25em] text-black/58 uppercase mt-4">
                   {PROJECTS.length} featured • {ARCHIVE.length} total entries
                 </span>
               </div>

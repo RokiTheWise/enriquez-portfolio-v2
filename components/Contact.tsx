@@ -92,7 +92,7 @@ export default function ContactContent({
 
         <div className="w-10 h-px bg-[#FFB800]/60 mb-6" />
 
-        <p className="font-mono text-xs md:text-sm text-black/50 leading-[2] max-w-lg mb-10 tracking-wide text-center">
+        <p className="font-mono text-xs md:text-sm text-black/65 leading-[2] max-w-lg mb-10 tracking-wide text-center">
           Have a project in mind, want to collaborate,
           or just want to say hello?
           My inbox is always open.
@@ -117,7 +117,7 @@ export default function ContactContent({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="inline-flex items-center justify-center h-12 w-full md:w-12 border border-black/10 text-black/40 transition-[border-color,color,background-color,transform] duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5 active:scale-[0.97] active:duration-[120ms]"
+                className="inline-flex items-center justify-center h-12 w-full md:w-12 border border-black/10 text-black/62 transition-[border-color,color,background-color,transform] duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5 active:scale-[0.97] active:duration-[120ms]"
               >
                 {s.icon}
               </a>
@@ -125,7 +125,7 @@ export default function ContactContent({
           </div>
         </div>
 
-        <span className="absolute bottom-5 font-mono text-[8px] tracking-[0.2em] text-black/20 uppercase">
+        <span className="absolute bottom-5 font-mono text-[8px] tracking-[0.2em] text-black/55 uppercase">
           &copy; {new Date().getFullYear()} Dexter Jethro Enriquez
         </span>
       </div>

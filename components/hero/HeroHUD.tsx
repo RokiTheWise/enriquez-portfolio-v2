@@ -19,6 +19,20 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Film-grain tile, inlined so the hero has no third-party image dependency.
+ * feTurbulence generates the noise procedurally, so this is ~200 bytes rather
+ * than a bitmap, and it tiles seamlessly at any size.
+ */
+const GRAIN_DATA_URI =
+  "data:image/svg+xml;charset=utf-8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">` +
+      `<filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter>` +
+      `<rect width="160" height="160" filter="url(#n)"/>` +
+      `</svg>`,
+  );
+
 // ── Custom Brand Icons ──
 
 const GithubIcon = ({
@@ -415,7 +429,14 @@ export default function HeroHUD({
     >
       {/* Scanline / Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50" />
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-50" />
+      {/* Grain: inlined as a data URI. This previously pointed at
+          grainy-gradients.vercel.app, which now 404s — a guaranteed-failing
+          request and a console error for an effect nobody can see. The SVG
+          feTurbulence filter below is the same technique that host served. */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.02] z-50"
+        style={{ backgroundImage: `url("${GRAIN_DATA_URI}")` }}
+      />
 
       {/* ═══ TOP ZONE: Identity + CTA ═══ */}
       <div className="flex justify-between items-start gap-3">

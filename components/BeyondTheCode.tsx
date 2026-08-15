@@ -66,7 +66,7 @@ function ActivityCard({
         >
           {index}
         </span>
-        <span className="font-mono text-[9px] tracking-[0.15em] text-black/30 uppercase">
+        <span className="font-mono text-[9px] tracking-[0.15em] text-black/58 uppercase">
           {highlight}
         </span>
       </div>
@@ -167,7 +167,7 @@ export function BeyondTheCodeContent({
           <h2 className="font-mono text-[clamp(1.5rem,5vh,1.875rem)] md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
             Beyond the Code
           </h2>
-          <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
+          <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/55 uppercase">
             Activity Log • Off-screen
           </div>
         </div>
@@ -199,7 +199,7 @@ export function BeyondTheCodeContent({
               >
                 <div className="flex items-center gap-2 mb-[1.5vh] lg:mb-4">
                   <div className="w-1.5 h-1.5" style={{ background: active.card.accentColor }} />
-                  <span className="font-mono text-[9px] tracking-[0.3em] text-black/25 uppercase">
+                  <span className="font-mono text-[9px] tracking-[0.3em] text-black/55 uppercase">
                     {String(activeCard + 1).padStart(2, "0")}
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export function BeyondTheCodeContent({
                   {active.title}
                 </h3>
                 <p
-                  className="font-mono text-black/50 mt-[1.6vh] lg:mt-5 max-w-md text-[clamp(0.7rem,1.85vh,0.875rem)] leading-[1.85] lg:leading-[2]"
+                  className="font-mono text-black/65 mt-[1.6vh] lg:mt-5 max-w-md text-[clamp(0.7rem,1.85vh,0.875rem)] leading-[1.85] lg:leading-[2]"
                 >
                   {active.description}
                 </p>

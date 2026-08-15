@@ -37,7 +37,7 @@ export default function LedgerDossier({ entry }: { entry: ArchiveEntry }) {
         {/* Classification line */}
         <div className="flex items-center gap-3">
           <div className="w-1.5 h-1.5" style={{ background: entry.accentColor }} />
-          <span className="font-mono text-[9px] tracking-[0.3em] text-black/50 uppercase">
+          <span className="font-mono text-[9px] tracking-[0.3em] text-black/65 uppercase">
             {entry.month ? `${entry.month} ${entry.year} · ` : `${entry.year} · `}
             {entry.classification}
           </span>
@@ -50,7 +50,7 @@ export default function LedgerDossier({ entry }: { entry: ArchiveEntry }) {
 
         {/* Tech registry */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[8px] tracking-[0.3em] text-black/40 uppercase">
+          <span className="font-mono text-[8px] tracking-[0.3em] text-black/62 uppercase">
             Tech Stack
           </span>
           <div className="flex flex-wrap">
@@ -63,7 +63,7 @@ export default function LedgerDossier({ entry }: { entry: ArchiveEntry }) {
                 <span className="font-mono text-[11px] md:text-xs font-bold tracking-wider text-black/80 uppercase">
                   {t.name}
                 </span>
-                <span className="font-mono text-[8px] tracking-[0.2em] text-black/35 uppercase">
+                <span className="font-mono text-[8px] tracking-[0.2em] text-black/60 uppercase">
                   {t.tag}
                 </span>
               </div>
@@ -74,7 +74,7 @@ export default function LedgerDossier({ entry }: { entry: ArchiveEntry }) {
         {/* Collaborators */}
         {entry.collaborators && (
           <div className="flex flex-col gap-1">
-            <span className="font-mono text-[8px] tracking-[0.3em] text-black/40 uppercase">
+            <span className="font-mono text-[8px] tracking-[0.3em] text-black/62 uppercase">
               Built With
             </span>
             <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
@@ -84,7 +84,7 @@ export default function LedgerDossier({ entry }: { entry: ArchiveEntry }) {
                   href={c.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-[11px] text-black/50 hover:text-black transition-colors duration-150 underline underline-offset-2"
+                  className="font-mono text-[11px] text-black/65 hover:text-black transition-colors duration-150 underline underline-offset-2"
                 >
                   {c.name}
                 </a>

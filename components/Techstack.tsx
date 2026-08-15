@@ -231,7 +231,7 @@ export default function Techstack() {
           <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
             Tech Stack
           </h2>
-          <div className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
+          <div className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/55 uppercase">
             System Registry
           </div>
         </motion.div>
@@ -246,7 +246,7 @@ export default function Techstack() {
               key={cat.tag}
               className={`px-4 lg:px-6${catIdx < CATEGORIES.length - 1 ? " border-r border-black/[0.06]" : ""}`}
             >
-              <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase mb-5 pb-3 border-b border-black/[0.06]">
+              <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/55 uppercase mb-5 pb-3 border-b border-black/[0.06]">
                 {cat.label}
               </div>
               {/* Single column until there is room for two: 4 categories × 2

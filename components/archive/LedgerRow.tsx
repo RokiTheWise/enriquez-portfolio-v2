@@ -91,23 +91,23 @@ export default function LedgerRow({
           >
             {entry.project}
             {entry.collaborators && (
-              <span className="ml-2 font-normal text-[9px] md:text-[10px] tracking-[0.15em] text-black/35 align-middle">
+              <span className="ml-2 font-normal text-[9px] md:text-[10px] tracking-[0.15em] text-black/60 align-middle">
                 +{entry.collaborators.length}
               </span>
             )}
           </span>
-          <span className="md:hidden font-mono text-[8px] tracking-[0.25em] text-black/40 uppercase mt-1">
+          <span className="md:hidden font-mono text-[8px] tracking-[0.25em] text-black/62 uppercase mt-1">
             {entry.classification}
           </span>
         </span>
 
         {/* CLASSIFICATION (desktop column) */}
-        <span className="hidden md:block font-mono text-[9px] tracking-[0.25em] text-black/40 uppercase truncate">
+        <span className="hidden md:block font-mono text-[9px] tracking-[0.25em] text-black/62 uppercase truncate">
           {entry.classification}
         </span>
 
         {/* DATE */}
-        <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black/35 uppercase whitespace-nowrap text-right md:text-left">
+        <span className="font-mono text-[9px] md:text-[10px] tracking-[0.2em] text-black/60 uppercase whitespace-nowrap text-right md:text-left">
           {entry.month ? `${entry.month} ` : ""}
           {entry.year}
         </span>
