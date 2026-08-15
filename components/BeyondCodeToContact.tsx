@@ -8,11 +8,13 @@ import {
   useMotionTemplate,
   useMotionValueEvent,
 } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/motion";
 import { BeyondTheCodeContent } from "@/components/BeyondTheCode";
 import ContactContent from "@/components/Contact";
 
 export default function BeyondCodeToContact() {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
@@ -62,6 +64,15 @@ export default function BeyondCodeToContact() {
     v > 0.96 ? ("auto" as const) : ("none" as const),
   );
 
+  /*
+   * Reduced motion: an expanding/contracting circular clip across the whole
+   * viewport is exactly the kind of large-surface movement §14 asks us to
+   * replace. Same scroll choreography, but the two panels cross-fade in place
+   * and the HUD ring/crosshair (pure motion decoration) are dropped.
+   */
+  const btcOpacity = useTransform(scrollYProgress, [0.75, 0.85], [1, 0]);
+  const contactOpacity = useTransform(scrollYProgress, [0.85, 0.95], [0, 1]);
+
   // HUD crosshair: fades in just as iris starts closing
   const crosshairOpacity = useTransform(
     scrollYProgress,
@@ -89,7 +100,11 @@ export default function BeyondCodeToContact() {
         <div className="sticky top-0 h-screen w-full overflow-hidden">
 
           <motion.div
-            style={{ clipPath: btcClipPath }}
+            style={
+              reducedMotion
+                ? { opacity: btcOpacity, clipPath: "none" }
+                : { clipPath: btcClipPath }
+            }
             className="absolute inset-0 z-10"
           >
             <div className="w-full h-full overflow-hidden">
@@ -99,7 +114,11 @@ export default function BeyondCodeToContact() {
 
           {/* Contact — opening iris */}
           <motion.div
-            style={{ clipPath: contactClipPath }}
+            style={
+              reducedMotion
+                ? { opacity: contactOpacity, clipPath: "none" }
+                : { clipPath: contactClipPath }
+            }
             className="absolute inset-0 z-20"
           >
             <motion.div style={{ pointerEvents }} className="w-full h-full">
@@ -109,7 +128,7 @@ export default function BeyondCodeToContact() {
 
           {/* HUD — crosshair */}
           <motion.svg
-            style={{ opacity: crosshairOpacity }}
+            style={{ opacity: reducedMotion ? 0 : crosshairOpacity }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none"
             width="56" height="56" viewBox="0 0 56 56" fill="none"
           >
@@ -122,7 +141,10 @@ export default function BeyondCodeToContact() {
 
           {/* HUD — amber accent ring */}
           <motion.div
-            style={{ scale: ringScale, opacity: ringOpacity }}
+            style={{
+              scale: reducedMotion ? 1 : ringScale,
+              opacity: reducedMotion ? 0 : ringOpacity,
+            }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none w-[100vmax] h-[100vmax] rounded-full border border-[#FFB800]/50"
           />
         </div>

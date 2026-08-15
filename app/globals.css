@@ -128,3 +128,43 @@
     @apply font-sans;
   }
 }
+
+/*
+ * ── Reduced motion ──
+ * Gentler, not zero. Opacity and color transitions survive because they aid
+ * comprehension; movement (translate/scale/rotate) is what triggers vestibular
+ * discomfort, so that is what gets dropped.
+ *
+ * Scroll-linked motion is handled in JS via useReducedMotion() — a blanket
+ * `animation: none` here would freeze the scrubbed timelines mid-state and
+ * leave sections stuck at whatever transform they last held.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Decorative loops carry no information — stop them outright. */
+  .logoloop__track,
+  .animate-ping {
+    animation: none !important;
+  }
+}
+
+/*
+ * ── Hover gating ──
+ * Touch devices synthesize a hover on tap, which leaves transform-based hover
+ * states stuck on after the finger lifts. Motion-on-hover is opt-in for real
+ * pointers only; color/opacity hovers are left alone since a stuck color is
+ * harmless where a stuck transform is not.
+ */
+@media not all and (hover: hover) and (pointer: fine) {
+  .hover-motion {
+    transform: none !important;
+  }
+}

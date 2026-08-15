@@ -233,7 +233,14 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   }, [position]);
 
   const playOpen = useCallback(() => {
-    if (busyRef.current) return;
+    /*
+     * No busy-lockout here: dropping the open because a close is still playing
+     * makes the toggle feel dead when tapped quickly. The close tween uses
+     * `overwrite: auto`, so building the open timeline retargets from wherever
+     * the panel currently sits.
+     */
+    closeTweenRef.current?.kill();
+    closeTweenRef.current = null;
     busyRef.current = true;
     const tl = buildOpenTimeline();
     if (tl) {
@@ -260,10 +267,17 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
     const offscreen = position === 'left' ? -100 : 100;
 
+    /*
+     * Exit mirrors the entrance curve (power4.out, §7 spatial consistency) —
+     * an ease-in exit starts slow at exactly the moment the user has decided
+     * they want the panel gone. `overwrite: auto` + starting from the live
+     * xPercent means a re-open mid-close retargets from the current on-screen
+     * position rather than jumping.
+     */
     closeTweenRef.current = gsap.to(all, {
       xPercent: offscreen,
       duration: 0.32,
-      ease: 'power3.in',
+      ease: 'power4.out',
       overwrite: 'auto',
       onComplete: () => {
         const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel')) as HTMLElement[];
@@ -516,7 +530,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 right-0 h-full bg-white flex flex-col p-[6em_2em_3em_2em] overflow-y-auto z-10 backdrop-blur-[12px] pointer-events-auto"
+          className="staggered-menu-panel absolute top-0 right-0 h-full flex flex-col p-[6em_2em_3em_2em] overflow-y-auto z-10 pointer-events-auto"
           style={{ WebkitBackdropFilter: 'blur(12px)' }}
           aria-hidden={!open}
         >
@@ -613,7 +627,16 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
 .sm-scope .sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); will-change: transform; }
 .sm-scope .sm-line { display: none !important; }
-.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: white; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; flex-direction: column; padding: 6em 2em 3em 2em; overflow-y: auto; z-index: 10; }
+/*
+ * The panel previously set backdrop-filter under an opaque white background,
+ * so the blur was computed and then thrown away — GPU cost for no visual
+ * result. Either commit to the material or drop the filter; this commits.
+ */
+.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); display: flex; flex-direction: column; padding: 6em 2em 3em 2em; overflow-y: auto; z-index: 10; }
+
+@media (prefers-reduced-transparency: reduce) {
+  .sm-scope .staggered-menu-panel { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
 .sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }

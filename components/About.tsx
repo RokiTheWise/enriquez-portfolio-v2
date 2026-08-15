@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ParticleCard, GlobalSpotlight } from "./MagicBento";
+import { ParticleCard, GlobalSpotlight, useCardEffectsDisabled } from "./MagicBento";
 import { DUR, EASE_GSAP } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -91,6 +91,9 @@ function QPIRing() {
 const GLOW_COLOR = "255, 184, 0"; // #FFB800 in RGB
 
 export default function About() {
+  // ParticleCard/GlobalSpotlight are imported directly here, which bypasses the
+  // mobile gate MagicBento's own export applies — so apply it explicitly.
+  const effectsDisabled = useCardEffectsDisabled();
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const bioRef = useRef<HTMLDivElement>(null);
@@ -105,7 +108,11 @@ export default function About() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      const vw = window.innerWidth;
+      // Reduced motion: cards still resolve into place, but they fade rather
+      // than fly in from off-screen. The pin/hold structure is preserved so the
+      // scroll narrative still reads.
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const vw = reduced ? 0 : window.innerWidth;
 
       const allCards = [
         bioRef.current,
@@ -133,7 +140,7 @@ export default function About() {
       // Heading
       entranceTl.fromTo(
         headingRef.current,
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: reduced ? 0 : 30 },
         { opacity: 1, y: 0, duration: 0.3 },
         0,
       );
@@ -141,7 +148,7 @@ export default function About() {
       // Bio — center, scale up + fade with snap
       entranceTl.fromTo(
         bioRef.current,
-        { opacity: 0, scale: 0.88 },
+        { opacity: 0, scale: reduced ? 1 : 0.88 },
         { opacity: 1, scale: 1, duration: 0.6, ease: EASE_GSAP },
         0.1,
       );
@@ -194,10 +201,14 @@ export default function About() {
       // 0 → 0.70  — hold (no tweens, grid is locked)
 
       // 0.70 → 1.0 — exit
-      pinTl.to(headingRef.current, { opacity: 0, y: -20, duration: 0.12 }, 0.7);
+      pinTl.to(
+        headingRef.current,
+        { opacity: 0, y: reduced ? 0 : -20, duration: 0.12 },
+        0.7,
+      );
       pinTl.to(
         allCards,
-        { opacity: 0, y: -30, duration: 0.2, stagger: 0.02 },
+        { opacity: 0, y: reduced ? 0 : -30, duration: 0.2, stagger: 0.02 },
         0.72,
       );
 
@@ -211,17 +222,20 @@ export default function About() {
   /* ── Shared card shell ──
      ParticleCard handles hover transforms (tilt, magnetism),
      so CSS hover transforms are removed to avoid conflicts. */
+  // No backdrop-blur here: the card background is opaque, so the filter was
+  // computed and discarded on every one of these.
   const card =
-    "card card--border-glow border border-black/[0.04] backdrop-blur-md bg-white " +
+    "card card--border-glow border border-black/[0.04] bg-white " +
     "shadow-[0_2px_5px_rgba(0,0,0,0.05),0_10px_20px_rgba(0,0,0,0.04),0_20px_40px_rgba(0,0,0,0.04)] " +
     "transition-[box-shadow,border-color,background-color,opacity] duration-300 group h-full rounded-2xl";
 
   const particleProps = {
     glowColor: GLOW_COLOR,
-    enableTilt: true,
-    enableMagnetism: true,
-    clickEffect: true,
+    enableTilt: !effectsDisabled,
+    enableMagnetism: !effectsDisabled,
+    clickEffect: !effectsDisabled,
     particleCount: 8,
+    disableAnimations: effectsDisabled,
   } as const;
 
   return (
@@ -276,7 +290,8 @@ export default function About() {
 
       <GlobalSpotlight
         gridRef={gridRef}
-        enabled
+        enabled={!effectsDisabled}
+        disableAnimations={effectsDisabled}
         spotlightRadius={350}
         glowColor={GLOW_COLOR}
       />

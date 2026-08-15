@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/motion";
 import { usePageTransition } from "@/components/PageTransition";
 import { ARCHIVE } from "@/components/archive/data";
 
@@ -117,9 +118,21 @@ function ViewportBrackets({ color }: { color: string }) {
    Project Slide (full-viewport panel)
    ═══════════════════════════════════════════ */
 
-function ProjectSlide({ project }: { project: Project }) {
+function ProjectSlide({
+  project,
+  stacked = false,
+}: {
+  project: Project;
+  stacked?: boolean;
+}) {
   return (
-    <div className="relative w-screen h-screen flex-shrink-0 flex items-start md:items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20">
+    <div
+      className={`relative flex items-start md:items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20 ${
+        stacked
+          ? "w-full min-h-screen"
+          : "w-screen h-screen flex-shrink-0"
+      }`}
+    >
       {/* z-0 : Enormous outlined background index */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <span
@@ -216,7 +229,7 @@ function ProjectSlide({ project }: { project: Project }) {
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group/btn inline-flex items-center gap-2 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black bg-black text-white px-5 py-2.5 no-underline transition-colors duration-200 hover:bg-transparent hover:text-black"
+              className="group/btn inline-flex items-center gap-2 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black bg-black text-white px-5 py-2.5 no-underline transition-[background-color,color,transform] duration-200 hover:bg-transparent hover:text-black active:scale-[0.97] active:duration-[120ms]"
             >
               <span>View Deployment</span>
               <span className="inline-block transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
@@ -226,7 +239,7 @@ function ProjectSlide({ project }: { project: Project }) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/src inline-flex items-center gap-2 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black text-black px-5 py-2.5 no-underline transition-colors duration-200 hover:bg-black hover:text-white"
+                className="group/src inline-flex items-center gap-2 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase font-semibold border border-black text-black px-5 py-2.5 no-underline transition-[background-color,color,transform] duration-200 hover:bg-black hover:text-white active:scale-[0.97] active:duration-[120ms]"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="flex-shrink-0"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
                 <span>Source Code</span>
@@ -251,6 +264,7 @@ function ProjectSlide({ project }: { project: Project }) {
 export default function FeaturedProjects() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { navigate } = usePageTransition();
+  const reducedMotion = usePrefersReducedMotion();
 
   // Track vertical scroll progress through the tall wrapper (0 → 1)
   const { scrollYProgress } = useScroll({
@@ -274,15 +288,30 @@ export default function FeaturedProjects() {
         height = SLIDE_COUNT * 100vh so each "page" of scroll
         reveals the next horizontal slide.
       */}
+      {/*
+        Reduced motion: no sideways travel driven by vertical scroll. The
+        wrapper collapses to auto height and the slides stack in normal flow,
+        so the same content is reachable by plain scrolling.
+      */}
       <div
         ref={wrapperRef}
         className="relative bg-white"
-        style={{ height: `${SLIDE_COUNT * 100}vh` }}
+        style={reducedMotion ? undefined : { height: `${SLIDE_COUNT * 100}vh` }}
       >
         {/* Sticky container — locks to viewport while wrapper scrolls */}
-        <div className="sticky top-0 h-screen overflow-hidden">
+        <div
+          className={
+            reducedMotion
+              ? "relative"
+              : "sticky top-0 h-screen overflow-hidden"
+          }
+        >
           {/* HUD Overlay: Section header */}
-          <div className="absolute top-24 left-6 md:left-12 z-30 pointer-events-none">
+          <div
+            className={`${
+              reducedMotion ? "sticky" : "absolute"
+            } top-24 left-6 md:left-12 z-30 pointer-events-none`}
+          >
             <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase">
               Featured Projects
             </h2>
@@ -292,8 +321,13 @@ export default function FeaturedProjects() {
 
           </div>
 
-          {/* HUD Overlay: Progress pips */}
-          <div className="absolute bottom-8 md:bottom-12 left-6 md:left-12 z-30 pointer-events-none">
+          {/* HUD Overlay: Progress pips — describe horizontal travel, so they
+              are meaningless once the slides stack vertically. */}
+          <div
+            className={`absolute bottom-8 md:bottom-12 left-6 md:left-12 z-30 pointer-events-none ${
+              reducedMotion ? "hidden" : ""
+            }`}
+          >
             <div className="flex items-center gap-4">
               {PROJECTS.map((p, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -313,7 +347,11 @@ export default function FeaturedProjects() {
           </div>
 
           {/* HUD Overlay: Scroll hint */}
-          <div className="absolute bottom-8 md:bottom-12 right-6 md:right-12 z-30 pointer-events-none">
+          <div
+            className={`absolute bottom-8 md:bottom-12 right-6 md:right-12 z-30 pointer-events-none ${
+              reducedMotion ? "hidden" : ""
+            }`}
+          >
             <span className="font-mono text-[8px] tracking-[0.25em] text-black/25 uppercase flex items-center gap-2">
               Scroll &rarr;
             </span>
@@ -322,15 +360,29 @@ export default function FeaturedProjects() {
 
           {/* Horizontal track — translated by scroll progress */}
           <motion.div
-            className="flex h-full will-change-transform"
-            style={{ x }}
+            className={
+              reducedMotion
+                ? "flex flex-col"
+                : "flex h-full will-change-transform"
+            }
+            style={reducedMotion ? undefined : { x }}
           >
             {PROJECTS.map((project) => (
-              <ProjectSlide key={project.title} project={project} />
+              <ProjectSlide
+                key={project.title}
+                project={project}
+                stacked={reducedMotion}
+              />
             ))}
 
             {/* 4th panel — View All Projects CTA */}
-            <div className="relative w-screen h-screen flex-shrink-0 flex items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20">
+            <div
+              className={`relative flex items-center justify-center pt-40 md:pt-52 pb-8 md:pb-20 ${
+                reducedMotion
+                  ? "w-full min-h-screen"
+                  : "w-screen h-screen flex-shrink-0"
+              }`}
+            >
               <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
                 <span
                   className="font-mono font-bold leading-none"
@@ -363,7 +415,7 @@ export default function FeaturedProjects() {
 
                 <button
                   onClick={() => navigate("/archive")}
-                  className="group inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-semibold border border-black bg-black text-white px-8 py-4 mt-4 transition-colors duration-200 hover:bg-transparent hover:text-black cursor-pointer"
+                  className="group inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-semibold border border-black bg-black text-white px-8 py-4 mt-4 transition-[background-color,color,transform] duration-200 hover:bg-transparent hover:text-black active:scale-[0.97] active:duration-[120ms] cursor-pointer"
                 >
                   <span>View All Projects</span>
                   <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">

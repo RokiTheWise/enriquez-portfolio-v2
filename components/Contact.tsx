@@ -101,7 +101,7 @@ export default function ContactContent({
         <div className="w-full max-w-lg flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center justify-center gap-3">
           <a
             href="mailto:dexterjethro.enriquez@gmail.com"
-            className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-[#FFB800] px-8 py-4 font-mono text-xs font-bold tracking-[0.18em] text-black uppercase transition-all duration-200 hover:bg-black hover:text-[#FFB800]"
+            className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-[#FFB800] px-8 py-4 font-mono text-xs font-bold tracking-[0.18em] text-black uppercase transition-[background-color,color,transform] duration-200 hover:bg-black hover:text-[#FFB800] active:scale-[0.97] active:duration-[120ms]"
           >
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -117,7 +117,7 @@ export default function ContactContent({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="inline-flex items-center justify-center h-12 w-full md:w-12 border border-black/10 text-black/40 transition-all duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5"
+                className="inline-flex items-center justify-center h-12 w-full md:w-12 border border-black/10 text-black/40 transition-[border-color,color,background-color,transform] duration-200 hover:border-[#FFB800] hover:text-[#FFB800] hover:bg-[#FFB800]/5 active:scale-[0.97] active:duration-[120ms]"
               >
                 {s.icon}
               </a>

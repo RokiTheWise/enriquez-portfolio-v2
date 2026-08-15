@@ -91,15 +91,25 @@ const calculateSpotlightValues = (radius: number) => ({
   fadeDistance: radius * 0.75
 });
 
-const updateCardGlowProperties = (card: HTMLElement, mouseX: number, mouseY: number, glow: number, radius: number) => {
-  const rect = card.getBoundingClientRect();
-  const relativeX = ((mouseX - rect.left) / rect.width) * 100;
-  const relativeY = ((mouseY - rect.top) / rect.height) * 100;
+/*
+ * Writing custom properties on a card forces a style recalc for its subtree,
+ * so only write what actually changed. A card that is dark and stays dark
+ * (glow 0 → 0, the common case for all but the nearest card) writes nothing.
+ * --glow-radius is constant per mount and is set once at init instead.
+ */
+const updateCardGlowProperties = (card: HTMLElement, mouseX: number, mouseY: number, glow: number) => {
+  const previous = card.dataset.glow;
+  const next = glow.toFixed(3);
 
-  card.style.setProperty('--glow-x', `${relativeX}%`);
-  card.style.setProperty('--glow-y', `${relativeY}%`);
-  card.style.setProperty('--glow-intensity', glow.toString());
-  card.style.setProperty('--glow-radius', `${radius}px`);
+  if (previous === next && glow === 0) return;
+  card.dataset.glow = next;
+
+  if (glow > 0) {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--glow-x', `${((mouseX - rect.left) / rect.width) * 100}%`);
+    card.style.setProperty('--glow-y', `${((mouseY - rect.top) / rect.height) * 100}%`);
+  }
+  card.style.setProperty('--glow-intensity', next);
 };
 
 const ParticleCard: React.FC<{
@@ -148,7 +158,7 @@ const ParticleCard: React.FC<{
 
     particlesRef.current.forEach(particle => {
       gsap.to(particle, {
-        scale: 0,
+        scale: 0.9,
         opacity: 0,
         duration: 0.3,
         ease: 'back.in(1.7)',
@@ -175,7 +185,7 @@ const ParticleCard: React.FC<{
         cardRef.current.appendChild(clone);
         particlesRef.current.push(clone);
 
-        gsap.fromTo(clone, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
+        gsap.fromTo(clone, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
 
         gsap.to(clone, {
           x: (Math.random() - 0.5) * 100,
@@ -398,7 +408,13 @@ const GlobalSpotlight: React.FC<{
     document.body.appendChild(spotlight);
     spotlightRef.current = spotlight;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    // --glow-radius never changes after mount; set it once rather than on
+    // every pointer move.
+    gridRef.current.querySelectorAll('.card').forEach(card => {
+      (card as HTMLElement).style.setProperty('--glow-radius', `${spotlightRadius}px`);
+    });
+
+    const processMouseMove = (e: MouseEvent) => {
       if (!spotlightRef.current || !gridRef.current) return;
 
       const section = gridRef.current.closest('.bento-section');
@@ -416,7 +432,9 @@ const GlobalSpotlight: React.FC<{
           ease: 'power2.out'
         });
         cards.forEach(card => {
-          (card as HTMLElement).style.setProperty('--glow-intensity', '0');
+          const cardElement = card as HTMLElement;
+          cardElement.dataset.glow = '0.000';
+          cardElement.style.setProperty('--glow-intensity', '0');
         });
         return;
       }
@@ -442,7 +460,7 @@ const GlobalSpotlight: React.FC<{
           glowIntensity = (fadeDistance - effectiveDistance) / (fadeDistance - proximity);
         }
 
-        updateCardGlowProperties(cardElement, e.clientX, e.clientY, glowIntensity, spotlightRadius);
+        updateCardGlowProperties(cardElement, e.clientX, e.clientY, glowIntensity);
       });
 
       gsap.to(spotlightRef.current, {
@@ -466,10 +484,26 @@ const GlobalSpotlight: React.FC<{
       });
     };
 
+    // Coalesce bursts of pointer events into one write per frame — mousemove
+    // can fire several times per frame and each pass touches every card.
+    let frame = 0;
+    let pending: MouseEvent | null = null;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      pending = e;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (pending) processMouseMove(pending);
+      });
+    };
+
     const handleMouseLeave = () => {
       isInsideSection.current = false;
       gridRef.current?.querySelectorAll('.card').forEach(card => {
-        (card as HTMLElement).style.setProperty('--glow-intensity', '0');
+        const cardElement = card as HTMLElement;
+        cardElement.dataset.glow = '0.000';
+        cardElement.style.setProperty('--glow-intensity', '0');
       });
       if (spotlightRef.current) {
         gsap.to(spotlightRef.current, {
@@ -484,6 +518,7 @@ const GlobalSpotlight: React.FC<{
     document.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
+      if (frame) cancelAnimationFrame(frame);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
       spotlightRef.current?.parentNode?.removeChild(spotlightRef.current);
@@ -519,6 +554,32 @@ const useMobileDetection = () => {
   }, []);
 
   return isMobile;
+};
+
+/**
+ * Single gate for the pointer-driven card effects (tilt, magnetism, particles,
+ * spotlight). Consumers that import ParticleCard/GlobalSpotlight directly must
+ * use this — otherwise they bypass the mobile check that MagicBento's own
+ * default export applies and run per-card physics on touch devices.
+ *
+ * Also honours prefers-reduced-motion: these effects are pure decoration, so
+ * they are dropped entirely rather than softened.
+ */
+export const useCardEffectsDisabled = () => {
+  const isMobile = useMobileDetection();
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(mq.matches);
+
+    update();
+    mq.addEventListener('change', update);
+
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  return isMobile || reducedMotion;
 };
 
 const MagicBento: React.FC<BentoProps> = ({

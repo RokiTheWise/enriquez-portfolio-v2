@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import LogoLoop from "./LogoLoop";
 import { DUR, EASE } from "@/lib/motion";
 
@@ -116,15 +116,18 @@ const loopLogos = REGISTRY.map((item) => ({
 function TechModule({ item, index }: { item: TechItem; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const reducedMotion = useReducedMotion();
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
       animate={isInView ? { opacity: 1, y: 0 } : undefined}
       transition={{
         duration: DUR.base,
-        delay: index * 0.03,
+        // Stagger is decorative; collapse it under reduced motion so the grid
+        // simply appears rather than rippling.
+        delay: reducedMotion ? 0 : index * 0.03,
         ease: EASE,
       }}
       className="group flex items-center gap-3 py-3 px-2 cursor-default"
@@ -132,7 +135,7 @@ function TechModule({ item, index }: { item: TechItem; index: number }) {
       <img
         src={item.icon}
         alt={item.name}
-        className="h-5 w-5 md:h-6 md:w-6 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:[filter:brightness(0)_saturate(100%)_invert(73%)_sepia(58%)_saturate(1000%)_hue-rotate(5deg)_brightness(103%)] transition-all duration-300"
+        className="h-5 w-5 md:h-6 md:w-6 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:[filter:brightness(0)_saturate(100%)_invert(73%)_sepia(58%)_saturate(1000%)_hue-rotate(5deg)_brightness(103%)] transition-[opacity,filter] duration-300"
       />
       <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-black/80 uppercase truncate group-hover:text-[#FFB800] transition-colors duration-300">
         {item.name}
@@ -146,6 +149,7 @@ function TechModule({ item, index }: { item: TechItem; index: number }) {
 export default function Techstack() {
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
+  const reducedMotion = useReducedMotion();
 
   let globalIndex = 0;
 
@@ -173,7 +177,7 @@ export default function Techstack() {
         {/* Section header */}
         <motion.div
           ref={headingRef}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: reducedMotion ? 0 : 20 }}
           animate={headingInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: DUR.base, ease: EASE }}
           className="mb-10 md:mb-16 text-center px-6 md:px-12"

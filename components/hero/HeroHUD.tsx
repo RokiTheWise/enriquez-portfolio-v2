@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
+import {
+  motion,
+  useSpring,
+  useMotionValue,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import type { MotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { clsx, type ClassValue } from "clsx";
@@ -212,7 +218,7 @@ const SocialLink = ({ icon: Icon, href }: { icon: any; href: string }) => {
       rel="noopener noreferrer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="pointer-events-auto flex items-center transition-all duration-300"
+      className="pointer-events-auto flex items-center active:scale-[0.97] transition-transform duration-[120ms]"
     >
       <div
         className={cn(
@@ -221,11 +227,16 @@ const SocialLink = ({ icon: Icon, href }: { icon: any; href: string }) => {
         )}
       >
         <span className="font-mono text-[10px] md:text-base opacity-50">[</span>
+        {/*
+          Fixed `size` + scale on hover: animating the SVG's width/height
+          attributes re-lays-out the row on every hover, where a transform
+          stays on the compositor.
+        */}
         <Icon
-          size={isHovered ? 24 : 20}
+          size={20}
           className={cn(
-            "transition-all duration-300",
-            isHovered && "drop-shadow-[0_0_12px_rgba(255,184,0,0.6)] scale-110",
+            "transition-[transform,filter] duration-300",
+            isHovered && "drop-shadow-[0_0_12px_rgba(255,184,0,0.6)] scale-[1.2]",
           )}
         />
         <span className="font-mono text-[10px] md:text-base opacity-50">]</span>
@@ -251,6 +262,7 @@ const HUDButton = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<HTMLAnchorElement>(null);
+  const reducedMotion = useReducedMotion();
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -260,7 +272,11 @@ const HUDButton = ({
   const springY = useSpring(y, springConfig);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (!ref.current || reducedMotion) return;
+    // Coarse pointers synthesize a mousemove on tap, which would leave the
+    // button stuck at its magnetic offset after the finger lifts.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -285,18 +301,19 @@ const HUDButton = ({
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
+        whileTap={{ scale: 0.97 }}
         style={{ x: springX, y: springY }}
         className={cn(
-          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-all duration-300 py-2.5 md:py-2",
+          "pointer-events-auto relative group flex items-center font-mono tracking-widest text-black uppercase transition-colors duration-300 py-2.5 md:py-2",
           className,
         )}
       >
         {/* Amber status square — appears on hover/tap */}
         <motion.span
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{
             opacity: isHovered ? 1 : 0,
-            scale: isHovered ? 1 : 0,
+            scale: isHovered ? 1 : 0.9,
           }}
           transition={{ duration: 0.15 }}
           className="mr-2 md:mr-3 w-1.5 h-1.5 bg-[#FFB800] shadow-[0_0_8px_rgba(255,184,0,0.6)] flex-shrink-0"

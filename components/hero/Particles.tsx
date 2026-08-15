@@ -35,6 +35,18 @@ export default function Particles({ heroRefs }: ParticlesProps) {
   const meshRef = useRef<THREE.Points>(null);
   const clock = useMemo(() => new THREE.Clock(), []);
 
+  /*
+   * Reduced motion keeps the particle field — it is the hero's identity — but
+   * freezes its drift and cursor repulsion, so it reads as a static composition
+   * rather than a continuously moving background.
+   */
+  const reducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    [],
+  );
+
   // Cursor position in world space, with smoothed velocity for the bow wave.
   const cursorRef = useRef({
     x: 0,
@@ -100,10 +112,17 @@ export default function Particles({ heroRefs }: ParticlesProps) {
     const dt = Math.min(clock.getDelta(), 0.05);
     const elapsed = clock.getElapsedTime();
 
-    uniforms.uTime.value = elapsed * PARTICLE_SPEED;
-
+    // Scroll-linked fade stays — it tracks the user's own input rather than
+    // playing on its own — but the time-driven drift is pinned to frame 0.
     const scroll = heroRefs.scrollProgressRef.current;
     uniforms.uScrollFade.value = Math.max(0, Math.min(1, (scroll - 0.5) / 0.3));
+
+    if (reducedMotion) {
+      uniforms.uTime.value = 0;
+      return;
+    }
+
+    uniforms.uTime.value = elapsed * PARTICLE_SPEED;
 
     const mesh = meshRef.current;
     if (!mesh) return;

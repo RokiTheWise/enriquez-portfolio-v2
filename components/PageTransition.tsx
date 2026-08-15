@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { animate } from "framer-motion";
+import { EASE_IN_OUT } from "@/lib/motion";
 
 interface TransitionContextValue {
   navigate: (href: string) => void;
@@ -43,14 +44,36 @@ export default function PageTransition({ children }: { children: React.ReactNode
       const segment = href === "/" || href.startsWith("/?") ? "Home" : href.replace(/^\//, "").split("/")[0];
       setLabel(segment.charAt(0).toUpperCase() + segment.slice(1));
 
+      /*
+       * A full-viewport surface travelling across the screen is the exact kind
+       * of motion §14 asks us to drop. Reduced motion gets the same curtain as
+       * a stationary cross-fade, so the navigation is still covered.
+       */
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduced) {
+        animate(el, { x: "0%", opacity: [0, 1] }, { duration: 0.2, ease: "easeOut" })
+          .then(() =>
+            new Promise<void>((res) => setTimeout(() => { router.push(href); res(); }, HOLD * 1000))
+          )
+          .then(() => animate(el, { opacity: 0 }, { duration: 0.2, ease: "easeOut" }))
+          .then(() => {
+            if (!mountedRef.current) return;
+            animate(el, { x: "100%", opacity: 1 }, { duration: 0 });
+            setLabel("");
+            isAnimatingRef.current = false;
+          });
+        return;
+      }
+
       // Sweep in from right
-      animate(el, { x: "0%" }, { duration: SWEEP_IN, ease: [0.76, 0, 0.24, 1] })
+      animate(el, { x: "0%" }, { duration: SWEEP_IN, ease: EASE_IN_OUT })
         .then(() =>
           new Promise<void>((res) => setTimeout(() => { router.push(href); res(); }, HOLD * 1000))
         )
         .then(() =>
           // Exit to the left
-          animate(el, { x: "-100%" }, { duration: SWEEP_OUT, ease: [0.76, 0, 0.24, 1] })
+          animate(el, { x: "-100%" }, { duration: SWEEP_OUT, ease: EASE_IN_OUT })
         )
         .then(() => {
           if (!mountedRef.current) return;

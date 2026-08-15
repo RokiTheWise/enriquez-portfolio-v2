@@ -100,7 +100,7 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
           transition={{
             duration: TOTAL_MS / 1000,
             times: [0, phase1End, phase2End, 1],
-            ease: ["easeOut", "linear", "easeIn"],
+            ease: ["easeOut", "linear", "easeOut"],
           }}
         >
           <motion.div

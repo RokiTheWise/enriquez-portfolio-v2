@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useEffect, Suspense } from "react";
+import { useRef, useMemo, useEffect, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { particleVertex } from "@/components/hero/shaders";
@@ -128,6 +128,22 @@ function ParticleMesh() {
 }
 
 export default function ContactParticles() {
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(mq.matches);
+
+    update();
+    mq.addEventListener("change", update);
+
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // A continuously drifting full-bleed particle field is decorative motion
+  // behind the page's primary CTA — drop it rather than soften it.
+  if (reducedMotion) return null;
+
   return (
     <div className="absolute inset-0" style={{ pointerEvents: "none", zIndex: 0 }} aria-hidden="true">
       <Canvas
