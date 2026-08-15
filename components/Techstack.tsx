@@ -99,6 +99,36 @@ const CATEGORIES: TechCategory[] = [
         name: "GSC",
         icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googlesearchconsole.svg",
       },
+      {
+        name: "Cloudflare",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/cloudflare.svg",
+      },
+    ],
+  },
+  {
+    label: "Data",
+    tag: "DATA",
+    items: [
+      {
+        name: "NumPy",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/numpy.svg",
+      },
+      {
+        name: "pandas",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/pandas.svg",
+      },
+      {
+        /* simple-icons has no matplotlib mark (no permissive brand asset), so
+           this reuses the Python glyph rather than 404ing like the others. */
+        name: "Matplotlib",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/python.svg",
+      },
+      {
+        /* SQL is a language, not a brand — PostgreSQL is the dialect actually
+           used here (see Supabase above), so its mark stands in. */
+        name: "SQL",
+        icon: "https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/postgresql.svg",
+      },
     ],
   },
 ];
@@ -148,14 +178,14 @@ function TechModule({
         delay: reducedMotion ? 0 : delay,
         ease: EASE,
       }}
-      className="group flex items-center gap-3 py-3 px-2 cursor-default"
+      className="group flex items-center gap-2 py-3 px-1 cursor-default"
     >
       <img
         src={item.icon}
         alt={item.name}
         className="h-5 w-5 md:h-6 md:w-6 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:[filter:brightness(0)_saturate(100%)_invert(73%)_sepia(58%)_saturate(1000%)_hue-rotate(5deg)_brightness(103%)] transition-[opacity,filter] duration-300"
       />
-      <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-black/80 uppercase truncate group-hover:text-[#FFB800] transition-colors duration-300">
+      <span className="font-mono text-xs md:text-[13px] lg:text-sm font-bold tracking-tight lg:tracking-wider text-black/80 uppercase truncate group-hover:text-[#FFB800] transition-colors duration-300">
         {item.name}
       </span>
     </motion.div>
@@ -207,16 +237,21 @@ export default function Techstack() {
         </motion.div>
 
         {/* Desktop: 3 major columns with 2-col sub-grids + dividers */}
-        <div className="hidden md:grid w-full px-12 lg:px-20 xl:px-32 grid-cols-3">
+        {/* One column per category — 4 across on desktop. Padding is kept
+            tight so each column's 2-wide item grid has room for the longest
+            names (JavaScript, PostgreSQL, Matplotlib) without truncating. */}
+        <div className="hidden md:grid w-full px-3 lg:px-6 xl:px-10 grid-cols-4">
           {CATEGORIES.map((cat, catIdx) => (
             <div
               key={cat.tag}
-              className={`px-8 lg:px-10${catIdx < CATEGORIES.length - 1 ? " border-r border-black/[0.06]" : ""}`}
+              className={`px-4 lg:px-6${catIdx < CATEGORIES.length - 1 ? " border-r border-black/[0.06]" : ""}`}
             >
               <div className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase mb-5 pb-3 border-b border-black/[0.06]">
                 {cat.label}
               </div>
-              <div className="grid grid-cols-2 gap-y-1 gap-x-4">
+              {/* Single column until there is room for two: 4 categories × 2
+                  sub-columns is 8 names across, which only fits ≥1440px. */}
+              <div className="grid grid-cols-1 2xl:grid-cols-2 gap-y-1 gap-x-4">
                 {/* Index is per-category so each 2-column sub-grid sweeps
                     from its own top-left. */}
                 {cat.items.map((item, itemIdx) => (
