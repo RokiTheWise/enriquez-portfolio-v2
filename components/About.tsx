@@ -336,8 +336,8 @@ export default function About() {
                 </p>
                 <p className="font-mono text-xs md:text-base leading-relaxed text-black/50 mt-2 md:mt-4">
                   Outside of building, I lead, organize, and keep learning.
-                  Currently picking up French. Always looking for the next
-                  problem worth solving.
+                  Currently picking up Machine Learning. Always looking for the
+                  next problem worth solving.
                 </p>
               </div>
             </ParticleCard>
