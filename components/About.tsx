@@ -226,19 +226,33 @@ export default function About() {
   }, []);
 
   /* ── Shared card shell ──
-     ParticleCard handles hover transforms (tilt, magnetism),
-     so CSS hover transforms are removed to avoid conflicts. */
-  // No backdrop-blur here: the card background is opaque, so the filter was
-  // computed and discarded on every one of these.
+     Hover treatment is opacity/colour only (border glow + spotlight). The
+     inner `group-hover:-translate-y-1` lift is real CSS :hover, so unlike the
+     old mousemove-driven tilt it cannot be triggered by scrolling past.
+
+     No backdrop-blur here: the card background is opaque, so the filter was
+     computed and discarded on every one of these. */
   const card =
     "card card--border-glow border border-black/[0.04] bg-white " +
     "shadow-[0_2px_5px_rgba(0,0,0,0.05),0_10px_20px_rgba(0,0,0,0.04),0_20px_40px_rgba(0,0,0,0.04)] " +
     "transition-[box-shadow,border-color,background-color,opacity] duration-300 group h-full rounded-2xl";
 
+  /*
+   * Tilt and magnetism are off by design.
+   *
+   * Both are driven by mousemove, but scrolling moves the card under a
+   * stationary cursor — which fires mousemove with no hovering intent. Cards
+   * would tilt and drift purely from scrolling past them, and because the
+   * cursor is rarely near a card's centre at that moment, the rotation lands
+   * at an off-axis angle that reads as a skew against the neighbouring cards.
+   *
+   * The border glow and spotlight stay: they are opacity/colour only, so they
+   * degrade gracefully under the same stray mousemove events.
+   */
   const particleProps = {
     glowColor: GLOW_COLOR,
-    enableTilt: !effectsDisabled,
-    enableMagnetism: !effectsDisabled,
+    enableTilt: false,
+    enableMagnetism: false,
     clickEffect: !effectsDisabled,
     particleCount: 8,
     disableAnimations: effectsDisabled,
