@@ -24,7 +24,7 @@ function YearGroupHeader({ year, count, groupIdx }: { year: string; count: numbe
       className="flex items-baseline gap-4 pt-14 pb-4 first:pt-0"
     >
       <h2
-        className="font-mono text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.95] flex-shrink-0"
+        className="font-mono text-4xl md:text-6xl font-bold tracking-display-md md:tracking-display-lg uppercase leading-[0.95] flex-shrink-0"
         style={{ color: "#FFB800" }}
       >
         {year}
@@ -73,7 +73,16 @@ export default function ArchivePage() {
       <header className="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-sm">
         <div className="flex items-center justify-between p-[2em]">
           {/* Logo + Name — pixel-matched to StaggeredMenu header */}
-          <Link href="/" className="flex items-center gap-2 md:gap-3 select-none">
+          {/* Routed through navigate() so the logo exits behind the same
+              curtain as the Return button, rather than jumping. */}
+          <Link
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+            }}
+            className="flex items-center gap-2 md:gap-3 select-none cursor-pointer"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/DexDev-Logo-96.png"
@@ -116,7 +125,7 @@ export default function ArchivePage() {
             </span>
           </div>
 
-          <h1 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase leading-[0.95]">
+          <h1 className="font-mono text-4xl md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase leading-[0.95]">
             Project <span style={{ color: "#FFB800" }}>Archive</span>
           </h1>
 

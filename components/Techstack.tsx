@@ -113,10 +113,28 @@ const loopLogos = REGISTRY.map((item) => ({
 
 /* ── Tech Module ── */
 
-function TechModule({ item, index }: { item: TechItem; index: number }) {
+function TechModule({
+  item,
+  index,
+  columns,
+}: {
+  item: TechItem;
+  index: number;
+  columns: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
   const reducedMotion = useReducedMotion();
+
+  /*
+   * Stagger diagonally from the top-left rather than by flat index. A running
+   * counter across a multi-column grid zig-zags in reading order (col1, col2,
+   * col3, back to col1) instead of sweeping in one direction; keying the delay
+   * off row + column makes the ripple travel the way the eye expects.
+   */
+  const row = Math.floor(index / columns);
+  const col = index % columns;
+  const delay = (row + col) * 0.03;
 
   return (
     <motion.div
@@ -127,7 +145,7 @@ function TechModule({ item, index }: { item: TechItem; index: number }) {
         duration: DUR.base,
         // Stagger is decorative; collapse it under reduced motion so the grid
         // simply appears rather than rippling.
-        delay: reducedMotion ? 0 : index * 0.03,
+        delay: reducedMotion ? 0 : delay,
         ease: EASE,
       }}
       className="group flex items-center gap-3 py-3 px-2 cursor-default"
@@ -150,8 +168,6 @@ export default function Techstack() {
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
   const reducedMotion = useReducedMotion();
-
-  let globalIndex = 0;
 
   return (
     <section
@@ -182,7 +198,7 @@ export default function Techstack() {
           transition={{ duration: DUR.base, ease: EASE }}
           className="mb-10 md:mb-16 text-center px-6 md:px-12"
         >
-          <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-tighter text-black uppercase">
+          <h2 className="font-mono text-4xl md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
             Tech Stack
           </h2>
           <div className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
@@ -201,10 +217,16 @@ export default function Techstack() {
                 {cat.label}
               </div>
               <div className="grid grid-cols-2 gap-y-1 gap-x-4">
-                {cat.items.map((item) => {
-                  const idx = globalIndex++;
-                  return <TechModule key={item.name} item={item} index={idx} />;
-                })}
+                {/* Index is per-category so each 2-column sub-grid sweeps
+                    from its own top-left. */}
+                {cat.items.map((item, itemIdx) => (
+                  <TechModule
+                    key={item.name}
+                    item={item}
+                    index={itemIdx}
+                    columns={2}
+                  />
+                ))}
               </div>
             </div>
           ))}
@@ -214,7 +236,12 @@ export default function Techstack() {
         <div className="md:hidden w-full px-4">
           <div className="grid grid-cols-3 gap-x-1">
             {REGISTRY.map((item, idx) => (
-              <TechModule key={item.name} item={item} index={idx} />
+              <TechModule
+                key={item.name}
+                item={item}
+                index={idx}
+                columns={3}
+              />
             ))}
           </div>
         </div>

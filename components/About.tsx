@@ -305,7 +305,7 @@ export default function About() {
       <div className="h-full flex flex-col pt-24 md:pt-0 md:justify-center px-4 md:px-12 max-w-6xl mx-auto">
         {/* ── Heading ── */}
         <div ref={headingRef} className="mb-3 md:mb-10 opacity-0">
-          <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-tighter text-black uppercase">
+          <h2 className="font-mono text-3xl md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
             About
           </h2>
           <div className="mt-1 md:mt-2 font-mono text-[9px] md:text-xs tracking-[0.3em] text-black/25 uppercase">
@@ -336,7 +336,7 @@ export default function About() {
                 </p>
                 <p className="font-mono text-xs md:text-base leading-relaxed text-black/50 mt-2 md:mt-4">
                   Outside of building, I lead, organize, and keep learning.
-                  Currently picking up Machine Learning. Always looking for the
+                  Currently picking up machine learning. Always looking for the
                   next problem worth solving.
                 </p>
               </div>

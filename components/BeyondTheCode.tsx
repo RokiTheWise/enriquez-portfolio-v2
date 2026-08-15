@@ -164,7 +164,7 @@ export function BeyondTheCodeContent({
       <div className="relative h-full max-w-6xl mx-auto px-6 md:px-12 flex flex-col pt-[max(5rem,12svh)] pb-[4svh] lg:pt-24 lg:pb-12">
         {/* Header — in flow at the top */}
         <div className="flex-shrink-0">
-          <h2 className="font-mono text-[clamp(1.5rem,5vh,1.875rem)] md:text-6xl font-bold tracking-tighter text-black uppercase">
+          <h2 className="font-mono text-[clamp(1.5rem,5vh,1.875rem)] md:text-6xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
             Beyond the Code
           </h2>
           <div className="mt-2 font-mono text-[10px] md:text-xs tracking-[0.3em] text-black/25 uppercase">

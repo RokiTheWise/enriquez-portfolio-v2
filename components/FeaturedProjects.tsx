@@ -186,7 +186,7 @@ function ProjectSlide({
             >
               Project {project.index}
             </span>
-            <h3 className="font-mono text-2xl md:text-4xl font-bold tracking-tighter text-black uppercase leading-[0.95]">
+            <h3 className="font-mono text-2xl md:text-4xl font-bold tracking-display-sm md:tracking-display-md text-black uppercase leading-[0.95]">
               {project.title}
             </h3>
           </div>
@@ -312,7 +312,7 @@ export default function FeaturedProjects() {
               reducedMotion ? "sticky" : "absolute"
             } top-24 left-6 md:left-12 z-30 pointer-events-none`}
           >
-            <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase">
+            <h2 className="font-mono text-3xl md:text-5xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase">
               Featured Projects
             </h2>
             <div className="mt-2 font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-black/35 uppercase">
@@ -405,7 +405,7 @@ export default function FeaturedProjects() {
                   <div className="w-8 h-[1px] bg-[#FFB800]/30" />
                 </div>
 
-                <h3 className="font-mono text-3xl md:text-5xl font-bold tracking-tighter text-black uppercase leading-[0.95]">
+                <h3 className="font-mono text-3xl md:text-5xl font-bold tracking-display-md md:tracking-display-lg text-black uppercase leading-[0.95]">
                   Project Archive
                 </h3>
 

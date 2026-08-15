@@ -37,10 +37,35 @@ export default function BeyondCodeToContact() {
   const CARD_COUNT = 6;
   const BTC_PHASE_END = 0.75;
   const [activeCard, setActiveCard] = useState(0);
+
+  /*
+   * Hysteresis on the band boundaries. A bare Math.floor flips the active card
+   * the instant progress crosses an edge, so parking the scroll on a boundary
+   * and jiggling swaps the card back and forth — and because the swap
+   * cross-fades, you briefly see two headlines at once.
+   *
+   * Requiring the scroll to travel HYSTERESIS past the edge before committing
+   * means a small wobble holds the current card instead.
+   */
+  const HYSTERESIS = 0.18; // fraction of one band's width
+
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const band = Math.floor((v / BTC_PHASE_END) * CARD_COUNT);
-    const next = Math.min(Math.max(band, 0), CARD_COUNT - 1);
-    setActiveCard((prev) => (prev === next ? prev : next));
+    const exact = (v / BTC_PHASE_END) * CARD_COUNT;
+
+    setActiveCard((prev) => {
+      const band = Math.min(Math.max(Math.floor(exact), 0), CARD_COUNT - 1);
+      if (band === prev) return prev;
+
+      // Only the adjacent band needs the deadzone — a larger jump (fast scroll
+      // or an anchor) is unambiguous intent, so honour it exactly.
+      if (Math.abs(band - prev) === 1) {
+        const offsetInBand = exact - band; // 0 → 1 within the target band
+        const travelled = band > prev ? offsetInBand : 1 - offsetInBand;
+        if (travelled < HYSTERESIS) return prev;
+      }
+
+      return band;
+    });
   });
 
   // BeyondTheCode iris: full open until 75%, closes to pinhole at 85%

@@ -157,6 +157,24 @@
 }
 
 /*
+ * ── Optical tracking ──
+ * Letter-spacing is size-specific: as display type grows, the space between
+ * letters grows with it and starts to read as loose, so larger text wants
+ * progressively tighter tracking. Tailwind's `tracking-tighter` is one fixed
+ * value (-0.05em) applied from text-2xl through text-6xl, so it is slightly
+ * off at one end of that range.
+ *
+ * CSS cannot read an element's computed font-size back into a calc(), so this
+ * is expressed as three deliberate steps rather than a continuous curve. Use
+ * the one matching the heading's rendered size.
+ */
+/* Registered via @utility so responsive variants (md:, lg:) work — a plain
+   class selector here would not generate them. */
+@utility tracking-display-sm { letter-spacing: -0.025em; } /* ~1.5rem  (text-2xl) */
+@utility tracking-display-md { letter-spacing: -0.038em; } /* ~2.25rem (text-4xl) */
+@utility tracking-display-lg { letter-spacing: -0.05em; }  /* ~3.75rem+ (text-6xl) */
+
+/*
  * ── Hover gating ──
  * Touch devices synthesize a hover on tap, which leaves transform-based hover
  * states stuck on after the finger lifts. Motion-on-hover is opt-in for real
