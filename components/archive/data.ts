@@ -96,6 +96,23 @@ export const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Mar",
+    project: "Recipebook",
+    classification: "BACKEND / DJANGO",
+    description:
+      "A Django app for storing recipes and the ingredients they call for, built to learn the framework's class-based views and relational modelling. The data model is the point: Ingredient and Recipe are separate tables joined by a RecipeIngredient through-model that carries the quantity — so \"flour\" exists once and is reused across every recipe that needs it, each with its own \"2 cups\" or \"250g\". Deletes cascade through the join table, and a recipe reaches its rows via a reverse relation the detail template iterates directly. Public browsing is read-only through RecipeListView and RecipeDetailView; all authoring happens in the Django admin, where the recipe form nests an inline editor so a recipe and its ingredient quantities are entered on one page rather than three.",
+    tech: [
+      { name: "Django", tag: "FRAMEWORK" },
+      { name: "Python", tag: "CORE" },
+      { name: "SQLite", tag: "DATABASE" },
+      { name: "Django ORM", tag: "DATA MODEL" },
+    ],
+    github: "https://github.com/RokiTheWise/recipebook-enriquez-dexterjethro",
+    accentColor: "#10B981",
+    image: "/recipebook.webp",
+  },
+  {
+    year: "2026",
+    month: "Mar",
     project: "Aklatang Galera",
     classification: "CIVIC TECH",
     description: "A localized civic portal unifying educational resources, livelihood programs, and government services for the people of Puerto Galera. Features a bilingual (Filipino/English) interface, Semantic Scholar-powered library search across 30+ curated databases, a livelihood hub connecting locals to TESDA, DOLE, and DTI resources, and a public services directory for scholarships, eLGU permits, and government transparency feeds — all optimized for mobile-first access.",
