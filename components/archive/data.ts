@@ -23,6 +23,25 @@ export const ARCHIVE: ArchiveEntry[] = [
   {
     year: "2026",
     month: "Jul",
+    project: "Pokémon Market Analysis",
+    classification: "MARKET RESEARCH",
+    description:
+      "A Tableau dashboard and written analysis asking whether buying or grading Pokémon cards was actually a good idea in 2025. Across 540 chase cards tracked monthly from January 2021 to November 2025, the median price rose 37.46% — but cutting the same data at the end of 2024 shows it down 22.84%, with 60% of cards underwater instead of 41%. The headline gain is a composition effect: cards enter the dataset as they release, so the sample keeps filling with newer, pricier cards and the median rises because the mix changes, not because anyone's collection gained value. The rest of the analysis turns that into rules a buyer can use — the median card returned roughly 4.4% annually, losing to Philippine land at 8–12%; gains sit almost entirely in 2025-released sets; and grading multiplies value 4.3× under $10 but only 1.2× above $50, so single-card grading only clears its own $25–80 fee above about $125 raw. Medians throughout, since the return distribution has a long right tail — the biggest gain in the data is +14,960% off a $0.05 baseline. Every calculated field was verified separately in pandas.",
+    tech: [
+      { name: "Tableau", tag: "VISUALIZATION" },
+      { name: "Python", tag: "VERIFICATION" },
+      { name: "pandas", tag: "DATA" },
+      { name: "Statistics", tag: "METHOD" },
+    ],
+    accentColor: "#3B82F6",
+    image: "/pokemon-dashboard.webp",
+    collaborators: [
+      { name: "Nathaniel Josh B. Quinto", github: "https://github.com/Nutellosaur" },
+    ],
+  },
+  {
+    year: "2026",
+    month: "Jul",
     project: "PBA Player Radar",
     classification: "DATA VISUALIZATION",
     description: "A data viz exercise built while learning pandas + matplotlib for a Data Viz class. It takes a small hand-assembled PBA Finals box score dataset, cleans it — dropping unused columns, removing header/separator rows that leaked into the data, fixing an inconsistent MINS time format, and averaging each player's stats across however many games they appeared in — then normalizes 8 key stats (PTS, OREB, DREB, AST, STL, BLK, FG%, 3P%) on a 0–1 scale relative to the best performer league-wide, not just the two players being compared. This keeps the chart honest: a mediocre finals player shows up as genuinely small even against another mediocre player, instead of being artificially inflated by a two-player comparison. Prompts you to pick two players from a numbered list and renders an overlapping radar chart comparing them.",
