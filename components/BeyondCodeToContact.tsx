@@ -118,10 +118,16 @@ export default function BeyondCodeToContact() {
       {/*
         Wrapper height = scroll budget. ~75% covers the 6 activity cards
         (snap-swap), the remaining ~25% drives the iris into Contact.
-        Mobile gets extra height (1050vh) so each card band feels unhurried.
+        Mobile gets a little extra so each card band feels unhurried.
+
+        Was 900/1050vh, which spent ~112vh per card — over a full screen of
+        scrolling for a headline and two sentences, and made this one section
+        more than half the page's total length. 420/480vh puts each card at
+        ~52vh, still an unhurried beat at less than half the scroll cost.
+
         Keep vh (NOT dvh) — dvh on the pin breaks Lenis.
       */}
-      <div ref={wrapperRef} className="relative h-[1050vh] lg:h-[900vh]">
+      <div ref={wrapperRef} className="relative h-[480vh] lg:h-[420vh]">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
 
           <motion.div
