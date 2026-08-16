@@ -628,16 +628,16 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); will-change: transform; }
 .sm-scope .sm-line { display: none !important; }
 /*
- * The panel previously set backdrop-filter under an opaque white background,
- * so the blur was computed and then thrown away — GPU cost for no visual
- * result. Either commit to the material or drop the filter; this commits.
+ * Opaque white. The panel used to be 82% white over a blur, but the amber
+ * prelayers sweeping in behind it showed through as a yellow cast on the
+ * settled menu. The sweep is worth keeping — it is the open animation — so
+ * the panel blocks it instead of tinting with it.
+ *
+ * backdrop-filter goes with it: nothing shows through an opaque background,
+ * so the blur would be computed and then discarded, which is what an earlier
+ * pass here already found. Opaque and no filter is the cheap, correct pair.
  */
-.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); display: flex; flex-direction: column; padding: 6em 2em 3em 2em; overflow-y: auto; z-index: 10; }
-
-
-@media (prefers-reduced-transparency: reduce) {
-  .sm-scope .staggered-menu-panel { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
+.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: #ffffff; display: flex; flex-direction: column; padding: 6em 2em 3em 2em; overflow-y: auto; z-index: 10; }
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
 .sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
