@@ -544,7 +544,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 items.map((it, idx) => (
                   <li className="sm-panel-itemWrap relative overflow-hidden leading-none" key={it.label + idx}>
                     <a
-                      className="sm-panel-item relative text-black font-mono font-bold text-[4rem] cursor-pointer leading-none tracking-tighter uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em]"
+                      className="sm-panel-item relative text-black font-mono font-bold cursor-pointer leading-none tracking-tighter uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em]"
                       href={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -558,7 +558,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 ))
               ) : (
                 <li className="sm-panel-itemWrap relative overflow-hidden leading-none" aria-hidden="true">
-                  <span className="sm-panel-item relative text-black font-mono font-bold text-[4rem] cursor-pointer leading-none tracking-tighter uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em]">
+                  <span className="sm-panel-item relative text-black font-mono font-bold cursor-pointer leading-none tracking-tighter uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em]">
                     <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                       No items
                     </span>
@@ -634,6 +634,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
  */
 .sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); display: flex; flex-direction: column; padding: 6em 2em 3em 2em; overflow-y: auto; z-index: 10; }
 
+
 @media (prefers-reduced-transparency: reduce) {
   .sm-scope .staggered-menu-panel { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
@@ -662,6 +663,90 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.1em; right: 3.2em; font-size: 18px; font-weight: 400; color: var(--sm-accent, #ff0000); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); font-family: var(--font-geist-mono), ui-monospace, monospace; }
 @media (max-width: 1024px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; }  }
 @media (max-width: 640px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; }  }
+
+/*
+ * Fluid fit — fill the panel, never overflow it.
+ *
+ * The panel holds six nav items, the resume button and the socials row. A
+ * fixed 4rem item overflowed short windows; stepping the size down at fixed
+ * breakpoints fixed that but left tall-ish windows (~700-760px) with a large
+ * dead gap at the bottom, because the type shrank further than the space
+ * actually required.
+ *
+ * Instead the item size is continuous in vh, so it tracks the window rather
+ * than jumping at thresholds: clamp() floors it for very short windows and
+ * caps it at the original 4rem so nothing grows past the current design on
+ * tall screens. The nav list then takes the leftover space and distributes
+ * its rows evenly, which is what makes the block reach the resume button
+ * instead of bunching at the top.
+ *
+ * These must stay LAST in this sheet. They carry the same specificity as the
+ * unconditional .sm-panel-item rule above, so source order is what lets them
+ * win — a media query does not add specificity.
+ */
+/*
+ * Height drives the size, but panel WIDTH is the real ceiling: the longest
+ * label ("PROJECTS") plus the number gutter has to fit on one line, and the
+ * panel is only ~356px wide on desktop and narrower on phones. min() lets
+ * whichever constraint binds first win — vh on short windows, vw on narrow
+ * ones — so the type never outgrows the column it lives in.
+ */
+.sm-scope .sm-panel-item { font-size: clamp(2.25rem, min(9.6vh, 17.5vw), 4.5rem); }
+
+/* Below the 1024px breakpoint the panel spans the full width, so the vw term
+   above would over-scale — bound it to the panel instead. */
+@media (max-width: 1024px) {
+  .sm-scope .sm-panel-item { font-size: clamp(2.25rem, min(9.2vh, 15.5vw), 4rem); }
+}
+
+/*
+ * The list fills its track but does NOT spread the rows: space-evenly turned
+ * every spare pixel into six visible gaps, which is what made the menu read
+ * as loose. Packing the rows to the top instead lets the slack go into the
+ * type (via the vh term above) rather than between the lines, so the block
+ * stays dense the way the original did.
+ */
+.sm-scope .sm-panel-list {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  min-height: 0;
+  gap: clamp(0.125rem, 0.5vh, 0.375rem);
+}
+
+/*
+ * Once the type hits its width ceiling (~72px, set by "PROJECTS" against the
+ * panel column) tall windows still have slack left over. space-between would
+ * scatter that into voids between the nav, the button and the socials;
+ * pinning to the top strands it all below the socials. Centring the group
+ * keeps the blocks tight to each other and splits the remainder above and
+ * below, so the panel reads as composed at every height.
+ */
+.sm-scope .sm-panel-inner { justify-content: center; }
+
+/* Padding and inter-block rhythm ease off as the window shortens. */
+.sm-scope .staggered-menu-panel {
+  padding: clamp(4em, 7.5vh, 6em) 2em clamp(1.75em, 3.5vh, 3em) 2em;
+}
+.sm-scope .sm-panel-inner { gap: clamp(0.75rem, 1.8vh, 1.25rem); }
+.sm-scope .sm-socials { padding-top: clamp(0.5rem, 1.4vh, 1rem); }
+
+/*
+ * Numbering. The original offsets were in em, so they tracked the font size
+ * while the label's character count did not — with fluid type the number
+ * either collided with a long label ("PROJECTS", "CONTACT") or, if the
+ * gutter was widened in em/ch, was pushed clean off the panel edge.
+ *
+ * Anchoring to the list instead makes the column independent of type size:
+ * the <li> is the positioning context, the number pins to its right edge,
+ * and the item reserves a fixed gutter so the longest label stops short of
+ * that column. Both are absolute lengths, so they hold at every size.
+ */
+.sm-scope .sm-panel-item { padding-right: 2.1rem; }
+.sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after {
+  right: 0;
+  top: 0.15em;
+  font-size: clamp(11px, 1.5vh, 16px);
+}
       `}</style>
     </div>
   );

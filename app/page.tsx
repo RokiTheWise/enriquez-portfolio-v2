@@ -15,7 +15,7 @@ import StartupLoader from "@/components/StartupLoader";
 const MENU_ITEMS = [
   { label: "Home", ariaLabel: "Go to top", link: "#" },
   { label: "About", ariaLabel: "About section", link: "#about" },
-  { label: "Tech Stack", ariaLabel: "Tech stack section", link: "#techstack" },
+  { label: "Stack", ariaLabel: "Tech stack section", link: "#techstack" },
   { label: "Projects", ariaLabel: "Featured projects", link: "#projects" },
   { label: "Beyond", ariaLabel: "Beyond the code", link: "#beyond" },
   { label: "Contact", ariaLabel: "Get in touch", link: "#contact" },
