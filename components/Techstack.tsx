@@ -205,7 +205,7 @@ export default function Techstack() {
       className="relative w-full bg-white h-screen flex flex-col pt-20 pb-20 md:pt-0 md:pb-0"
     >
       {/* Top LogoLoop — pinned to top, below nav clearance */}
-      <div className="relative overflow-hidden h-10 md:h-12 [&_img]:opacity-[0.12]">
+      <div className="relative shrink-0 overflow-hidden h-10 md:h-12 [&_img]:opacity-[0.12]">
         <LogoLoop
           logos={loopLogos}
           speed={50}
@@ -219,7 +219,7 @@ export default function Techstack() {
       </div>
 
       {/* Center content — fills remaining space */}
-      <div className="flex-1 flex flex-col justify-center py-10 md:py-16">
+      <div className="flex-1 min-h-0 flex flex-col justify-center py-4 md:py-16">
         {/* Section header */}
         <motion.div
           ref={headingRef}
@@ -283,7 +283,7 @@ export default function Techstack() {
       </div>
 
       {/* Bottom LogoLoop — pinned to bottom */}
-      <div className="relative overflow-hidden h-10 md:h-12 [&_img]:opacity-[0.12]">
+      <div className="relative shrink-0 overflow-hidden h-10 md:h-12 [&_img]:opacity-[0.12]">
         <LogoLoop
           logos={loopLogos}
           speed={50}
